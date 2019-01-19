@@ -28,7 +28,8 @@ PATCHES := \
 	patches/0001-makefile-changes-to-support-a-parent-directory.patch \
 	patches/0002-add-top_dir-in-the-correct-place.patch               \
 	patches/0003-fix-tests.patch                                      \
-	patches/0004-More-TOP_DIR-fixes.patch
+	patches/0004-More-TOP_DIR-fixes.patch                             \
+	patches/0005-Allow-overriding-keymap-file-with-KEYMAP_C-value-in-.patch
 
 apply-patch = patch -d $(TOP_DIR) --forward --no-backup-if-mismatch -r- -p1 -i $(CURDIR)/$(1)
 q.mk: $(PATCHES)

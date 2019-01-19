@@ -1,0 +1,28 @@
+From 780cda5cbc479aadc2a6df9e96ebd083744d92ca Mon Sep 17 00:00:00 2001
+From: Aleksei Bavshin <alebastr89@gmail.com>
+Date: Sat, 19 Jan 2019 00:45:45 -0800
+Subject: [PATCH] Allow overriding keymap file with KEYMAP_C value in rules.mk
+
+---
+ build_keyboard.mk | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/build_keyboard.mk b/build_keyboard.mk
+index d1d2693fe..75deaf424 100644
+--- a/build_keyboard.mk
++++ b/build_keyboard.mk
+@@ -126,6 +126,11 @@ else ifneq ("$(wildcard keymap.c)","")
+     -include rules.mk
+     KEYMAP_C := keymap.c
+     KEYMAP_PATH := .
++# allow user-defined values of KEYMAP_C and KEYMAP_PATH
++else ifneq ("$(wildcard rules.mk)", "")
++    include rules.mk
++    KEYMAP_C ?= keymap.c
++    KEYMAP_PATH ?= .
+ else ifneq ($(LAYOUTS),)
+     include $(TOP_DIR)/build_layout.mk
+ else
+-- 
+2.20.1
+
