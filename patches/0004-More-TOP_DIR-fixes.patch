@@ -1,0 +1,39 @@
+From 2a7c651f66e39c0bf03584da1fb4339116aa8864 Mon Sep 17 00:00:00 2001
+From: Aleksei Bavshin <alebastr89@gmail.com>
+Date: Fri, 18 Jan 2019 18:21:04 -0800
+Subject: [PATCH] More TOP_DIR fixes
+
+---
+ build_keyboard.mk                | 2 +-
+ quantum/visualizer/visualizer.mk | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build_keyboard.mk b/build_keyboard.mk
+index 1d60f3ad7..ffa30158f 100644
+--- a/build_keyboard.mk
++++ b/build_keyboard.mk
+@@ -135,7 +135,7 @@ ifeq ($(strip $(CONVERT_TO_PROTON_C)), yes)
+     OPT_DEFS += -DCONVERT_TO_PROTON_C
+ endif
+ 
+-include quantum/mcu_selection.mk
++include $(TOP_DIR)/quantum/mcu_selection.mk
+ 
+ ifdef MCU_FAMILY
+     OPT_DEFS += -DQMK_STM32
+diff --git a/quantum/visualizer/visualizer.mk b/quantum/visualizer/visualizer.mk
+index 3bf3f7de6..afdc5551e 100644
+--- a/quantum/visualizer/visualizer.mk
++++ b/quantum/visualizer/visualizer.mk
+@@ -76,7 +76,7 @@ SRC += $(VISUALIZER_DIR)/default_animations.c
+ 
+ include $(GFXLIB)/gfx.mk
+ # For the common_gfxconf.h
+-GFXINC += quantum/visualizer
++GFXINC += $(TOP_DIR)/quantum/visualizer
+ 
+ GFXSRC := $(patsubst $(TOP_DIR)/%,%,$(GFXSRC))
+ GFXDEFS := $(patsubst %,-D%,$(patsubst -D%,%,$(GFXDEFS)))
+-- 
+2.20.1
+

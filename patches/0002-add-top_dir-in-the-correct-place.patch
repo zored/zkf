@@ -1,0 +1,37 @@
+From 583541c7e01b4e8184adbb4d40a81f92aec0e131 Mon Sep 17 00:00:00 2001
+From: Jack Humbert <jack.humb@gmail.com>
+Date: Tue, 4 Dec 2018 00:43:23 -0500
+Subject: [PATCH 2/4] add top_dir in the correct place
+
+---
+ build_keyboard.mk | 2 ++
+ common.mk         | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/build_keyboard.mk b/build_keyboard.mk
+index 17e1d08a0..d1d2693fe 100644
+--- a/build_keyboard.mk
++++ b/build_keyboard.mk
+@@ -12,6 +12,8 @@ endif
+ 
+ .DEFAULT_GOAL := all
+ 
++TOP_DIR ?= .
++
+ include $(TOP_DIR)/common.mk
+ 
+ # Set the filename for the final firmware binary
+diff --git a/common.mk b/common.mk
+index b12bd9c96..e8b410367 100644
+--- a/common.mk
++++ b/common.mk
+@@ -1,6 +1,4 @@
+ # Directory common source files exist
+-TOP_DIR ?= .
+-
+ include $(TOP_DIR)/message.mk
+ 
+ TMK_DIR = tmk_core
+-- 
+2.20.1
+
