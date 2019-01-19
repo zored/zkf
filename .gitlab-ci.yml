@@ -4,12 +4,13 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 build:
+  stage: build
   tags:
   - docker
   - linux
   script:
   - make
   artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    name: "$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHA:0:8}"
     paths:
     - 'whitefox-*.bin'
