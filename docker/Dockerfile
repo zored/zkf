@@ -18,6 +18,7 @@ RUN dnf -y --setopt=tsflags=nodocs update && \
         gcc-c++ \
         git \
         make \
+        patch \
         wget \
         zip unzip \
     && dnf -y clean all
