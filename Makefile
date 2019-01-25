@@ -5,7 +5,7 @@ KEYBOARD := whitefox
 KEYMAP :=
 TARGET ?= whitefox-alebastr-$(QMK_VERSION)+$(KEYMAP_VERSION)
 
-TOP_DIR := qmk_firmware
+TOP_DIR := vendor/qmk_firmware
 
 .DEFAULT_GOAL := all
 
@@ -35,7 +35,7 @@ apply-patch = patch -d $(TOP_DIR) --forward --no-backup-if-mismatch -r- -p1 -i $
 q.mk: $(PATCHES)
 	git -C $(TOP_DIR) reset --hard >&2
 	$(foreach patch, $(PATCHES), $(call apply-patch,$(patch));)
-	echo "include qmk_firmware/build_keyboard.mk" > $@
+	echo "include $(TOP_DIR)/build_keyboard.mk" > $@
 
 # The dark magic of GNU make.
 # Presence of q.mk means that the target was executed and patches were applied

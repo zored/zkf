@@ -1,3 +1,4 @@
+QMK_DIR  := ../vendor/qmk_firmware
 CXXFLAGS += -std=c++17
 CXXFLAGS += -fno-exceptions -fno-rtti
 CXXFLAGS += -fomit-frame-pointer -falign-functions=16 -ffunction-sections -fdata-sections -fno-common -fshort-wchar 
@@ -5,13 +6,13 @@ CXXFLAGS += -Os -w -Wall -Wundef -Werror -pedantic
 CXXFLAGS += -I.
 CXXFLAGS += -I..
 CXXFLAGS += -I../vendor
-CXXFLAGS += -I../qmk_firmware
-CXXFLAGS += -I../qmk_firmware/tmk_core
-CXXFLAGS += -I../qmk_firmware/quantum
-CXXFLAGS += -I../qmk_firmware/quantum/keymap_extras
-CXXFLAGS += -I../qmk_firmware/quantum/audio
-CXXFLAGS += -I../qmk_firmware/quantum/process_keycode
-CXXFLAGS += -I../qmk_firmware/tmk_core/common
+CXXFLAGS += -I$(QMK_DIR)
+CXXFLAGS += -I$(QMK_DIR)/tmk_core
+CXXFLAGS += -I$(QMK_DIR)/quantum
+CXXFLAGS += -I$(QMK_DIR)/quantum/keymap_extras
+CXXFLAGS += -I$(QMK_DIR)/quantum/audio
+CXXFLAGS += -I$(QMK_DIR)/quantum/process_keycode
+CXXFLAGS += -I$(QMK_DIR)/tmk_core/common
 
 OBJ    = parser-test.o
 OUTPUT = parser-test
