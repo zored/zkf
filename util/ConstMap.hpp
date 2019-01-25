@@ -10,7 +10,7 @@ namespace util {
         } else if (fst > snd) {
             return 1;
         } else {
-            return 0;
+            return -1;
         }
     }
 
