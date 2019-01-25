@@ -80,11 +80,11 @@ namespace util {
     constexpr auto take_while(const util::string& str, const Fn& fn) {
         size_t pos = 0;
         while (pos < str.size()) {
-            const auto codePoint = util::get_char(str.substr(pos));
-            if (!fn(codePoint.first)) {
+            const auto [codePoint, len] = util::get_char(str.substr(pos));
+            if (!fn(codePoint)) {
                 break;
             }
-            pos += codePoint.second;
+            pos += len;
         }
         return str.substr(0, pos);
     }
