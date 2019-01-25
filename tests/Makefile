@@ -2,7 +2,9 @@ CXXFLAGS += -std=c++17
 CXXFLAGS += -fno-exceptions -fno-rtti
 CXXFLAGS += -fomit-frame-pointer -falign-functions=16 -ffunction-sections -fdata-sections -fno-common -fshort-wchar 
 CXXFLAGS += -Os -w -Wall -Wundef -Werror -pedantic
-CXXFLAGS += -I. -I..
+CXXFLAGS += -I.
+CXXFLAGS += -I..
+CXXFLAGS += -I../vendor
 CXXFLAGS += -I../qmk_firmware
 CXXFLAGS += -I../qmk_firmware/tmk_core
 CXXFLAGS += -I../qmk_firmware/quantum
@@ -25,3 +27,6 @@ $(OUTPUT).o: ../util/*.hpp
 
 %.sym: | %.o
 	nm -C --defined-only $| >$@
+
+%.dep: %.cpp
+	$(CXX) $(CXXFLAGS) -M $<

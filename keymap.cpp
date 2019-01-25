@@ -55,17 +55,17 @@ const uint16_t fn_actions[] = {
 
 constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
     keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│Esc│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ \ │ ` │Ins│
-├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┼───┤
-│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │ [ │ ] │BSpc │Del│
-├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┼───┤
-│ Fn0  │ A │ S │ D │ F │ G │ H │ J │ K │ L │ ; │ ' │ Enter  │Brk│
-├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬───┼───┤
-│ LShift │ Z │ X │ C │ V │ B │ N │ M │ , │ . │ / │RShift│ ↑ │App│
-├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴──┬───┼───┼───┤
-│LCtl│LGui│LAlt│         Space          │RAlt│ RCtl │ ← │ ↓ │ → │
-└────┴────┴────┴────────────────────────┴────┴──────┴───┴───┴───┘
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
+│Esc│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ \ │ `  │Ins │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┼────┤
+│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │ [ │ ] │BSpc  │Del │
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴──────┼────┤
+│ Fn0  │ A │ S │ D │ F │ G │ H │ J │ K │ L │ ; │ ' │ Enter   │Brk │
+├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬────┼────┤
+│ LShift │ Z │ X │ C │ V │ B │ N │ M │ , │ . │ / │RShift│ ↑  │App │
+├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴─┬────┼────┼────┤
+│LCtl│LGui│LAlt│         Space          │RAlt│RCtl │ ←  │ ↓  │ →  │
+└────┴────┴────┴────────────────────────┴────┴─────┴────┴────┴────┘
 )keymap"sv)),
     keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
@@ -83,6 +83,6 @@ constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
 };
 
 const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = layout(68, LAYOUT_truefox, layers[0]),
-    [1] = layout(68, LAYOUT_truefox, layers[1])
+    [0] = apply_array(LAYOUT_truefox, KEYMAP_SIZE, layers[0]),
+    [1] = apply_array(LAYOUT_truefox, KEYMAP_SIZE, layers[1])
 };

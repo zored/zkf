@@ -24,7 +24,7 @@ namespace util {
             :_data{std::forward<Items>(items)...} {
 
         }
-        constexpr const Value operator() (const Key& key) const {
+        constexpr const Value operator[] (const Key& key) const {
             for (const auto& elem: _data) {
                 if (Compare(elem.first, key) == 0) {
                     return elem.second;

@@ -12,7 +12,13 @@ namespace util {
     using string = std::string_view;
     using namespace std::literals;
 
-    constexpr auto get_char(const string& str) {
+    /**
+     * Not quite correct UTF-8 decoder.
+     *
+     * In order to filter Unicode characters by blocks we need
+     * actual character codes instead of variable length sequences
+     */
+    constexpr const auto get_char(const string& str) {
         char32_t codePoint = str[0];
         size_t seq = 0;
         if ((codePoint & 0x80) == 0) {
@@ -31,25 +37,13 @@ namespace util {
         }
 
         if (seq > str.size()) {
-            failwith("Not enough data");
+            failwith("Incomplete UTF-8 sequence");
         }
 
         for (size_t i = 1; i < seq; ++i) {
             codePoint |= ((char32_t)str[i] & 0x3F) << ((seq - i - 1) * 6);
         }
-        return codePoint;
-    }
-
-    constexpr inline size_t seq_length(const char32_t& c) {
-        if (c < 0x0080) {
-            return 1;
-        } else if (c < 0x0800) {
-            return 2;
-        } else if (c < 0x10000) {
-            return 3;
-        } else {
-            return 4;
-        }
+        return std::pair{codePoint, seq};
     }
 
     constexpr bool is_delimiter(const char32_t& c) {
@@ -57,7 +51,14 @@ namespace util {
     }
 
     constexpr bool is_space(const char32_t& c) {
-        return (c == ' ') || (c == '\t');
+        return (c ==  ' ')
+            || (c >=   0x09 && c <=   0x0D)
+            || (c == 0x1680)||(c == 0x180E)
+            || (c >= 0x2000 && c <= 0x2006)
+            || (c >= 0x2008 && c <= 0x200A)
+            || (c == 0x2028)||(c == 0x2029)
+            || (c == 0x205F)||(c == 0x3000)
+            ;
     }
 
     constexpr auto trim(const string& str) {
@@ -77,11 +78,13 @@ namespace util {
 
     template<typename Fn>
     constexpr auto take_while(const util::string& str, const Fn& fn) {
-        auto codePoint = util::get_char(str);
         size_t pos = 0;
-        while (fn(codePoint) && pos < str.size()) {
-            pos      += util::seq_length(codePoint);
-            codePoint = util::get_char(str.substr(pos));
+        while (pos < str.size()) {
+            const auto codePoint = util::get_char(str.substr(pos));
+            if (!fn(codePoint.first)) {
+                break;
+            }
+            pos += codePoint.second;
         }
         return str.substr(0, pos);
     }
@@ -98,5 +101,4 @@ namespace util {
         }
         return fst.size() - snd.size();
     }
-
 } // util

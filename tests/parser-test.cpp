@@ -11,12 +11,12 @@ extern "C" {
 
 #include <util/keymap.hpp>
 
-static_assert(util::get_char("a")/*.first*/ == 'a');
-static_assert(util::get_char("←")/*.first*/ == 0x2190);
+static_assert(util::get_char("a").first == 'a');
+static_assert(util::get_char("←").first == 0x2190);
 
-static_assert(str2keycode("b") == KC_B);
-static_assert(str2keycode("RSft") == KC_RSFT);
-static_assert(str2keycode("→") == KC_RGHT);
+static_assert(str2keycode["b"] == KC_B);
+static_assert(str2keycode["RSft"] == KC_RSFT);
+static_assert(str2keycode["→"] == KC_RGHT);
 
 /* Keymap for truefox layout */
 #define LAYOUT_truefox_simple( \
@@ -47,17 +47,17 @@ static_assert(str2keycode("→") == KC_RGHT);
 
 constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
     keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-│Esc│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ \ │ ` │Ins│
-├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┼───┤
-│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │ [ │ ] │BSpc │Del│
-├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┼───┤
-│ Fn0  │ A │ S │ D │ F │ G │ H │ J │ K │ L │ ; │ ' │ Enter  │Brk│
-├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬───┼───┤
-│ LShift │ Z │ X │ C │ V │ B │ N │ M │ , │ . │ / │RShift│ ↑ │App│
-├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴──┬───┼───┼───┤
-│LCtl│LGui│LAlt│         Space          │RAlt│ RCtl │ ← │ ↓ │ → │
-└────┴────┴────┴────────────────────────┴────┴──────┴───┴───┴───┘
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
+│Esc│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ \ │ `  │Ins │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┼────┤
+│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │ [ │ ] │BSpc  │Del │
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴──────┼────┤
+│ Fn0  │ A │ S │ D │ F │ G │ H │ J │ K │ L │ ; │ ' │ Enter   │Brk │
+├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬────┼────┤
+│ LShift │ Z │ X │ C │ V │ B │ N │ M │ , │ . │ / │RShift│ ↑  │App │
+├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴─┬────┼────┼────┤
+│LCtl│LGui│LAlt│         Space          │RAlt│RCtl │ ←  │ ↓  │ →  │
+└────┴────┴────┴────────────────────────┴────┴─────┴────┴────┴────┘
 )keymap"sv)),
     keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
@@ -75,7 +75,7 @@ constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
 };
 
 const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-[0] = layout(68, LAYOUT_truefox, layers[0]),
+[0] = apply_array(LAYOUT_truefox, KEYMAP_SIZE, layers[0]),
 [1] = LAYOUT_truefox_simple( \
     ESC,    1,    2,    3,    4,    5,    6,    7,    8,    9,    0, MINS,  EQL,BSLS,GRV,  INS, \
      TAB,    Q,    W,    E,    R,    T,    Y,    U,    I,    O,    P, LBRC, RBRC,   BSPC,  DEL, \
@@ -83,7 +83,7 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        LSFT,    Z,    X,    C,    V,    B,    N,    M, COMM,  DOT, SLSH,      RSFT,   UP,  APP, \
    LCTL, LGUI, LALT,                 SPC,                    RALT, RCTL,      LEFT, DOWN, RGHT  \
 ),
-[2] = layout(68, LAYOUT_truefox, layers[1]),
+[2] = apply_array(LAYOUT_truefox, KEYMAP_SIZE, layers[1]),
 [3] = LAYOUT_truefox_simple( \
       _,   F1,   F2,   F3,   F4,   F5,   F6,   F7,   F8,   F9,  F10,  F11,  F12,  _, FN2, PSCR, \
        _,    _,    _,    _,    _,    _,    _,    _, MPRV, MPLY, MNXT, VOLD, VOLU,   MUTE,  RST, \
@@ -103,27 +103,15 @@ int main() {
     for (auto keymap = 0; keymap < array_size(keymaps); keymap += 2) {
         for (auto row = 0; row < array_size(keymaps[keymap]); ++row) {
             for (auto col = 0; col < array_size(keymaps[keymap][row]); ++col) {
-                printf("| %05u %c ", keymaps[keymap][row][col],
-                        keymaps[keymap][row][col] == keymaps[keymap + 1][row][col] ? '=' : '!');
+                auto match = keymaps[keymap][row][col] == keymaps[keymap + 1][row][col];
+                printf("| \e[%sm% 5u:% 5u\e[0m ",
+                        match ? "32" : "31",
+                        keymaps[keymap  ][row][col],
+                        keymaps[keymap+1][row][col]);
             }
             puts("|");
         }
         puts("---");
     }
-#if 0
-    std::array<size_t, 5> rows = { 16, 15, 14, 14, 9 };
-    auto rows = { 15, 14,  }
-    for (const auto& layer: layers) {
-        size_t row = 0, col = 0;
-        for (const auto& key : layer) {
-            printf("| %05u ", key);
-            if (++col == rows[row]) {
-                col = 0;
-                row++;
-                puts("|");
-            }
-        }
-    }
-#endif
     return EXIT_SUCCESS;
 }
