@@ -8,18 +8,57 @@ void failwith(const std::string_view& msg) {
 
 }
 
-namespace util {
-    using string = std::string_view;
-    using namespace std::literals;
+/* #define U32_STRINGS */
 
-    /**
-     * Not quite correct UTF-8 decoder.
-     *
-     * In order to filter Unicode characters by blocks we need
-     * actual character codes instead of variable length sequences
-     */
-    constexpr const auto get_char(const string& str) {
-        char32_t codePoint = str[0];
+#ifdef U32_STRINGS
+#   define STR(x) U##x##sv
+#else
+#   define STR(x) x##sv
+#endif
+
+namespace util {
+    template<class CharT>
+    struct ci_char_traits: public std::char_traits<CharT> {
+        /* FIXME: ASCII-only to_upper implementation */
+        constexpr static CharT to_upper(const CharT& c) {
+            return (c >= 97 && c <= 122) ? (c - 32) : c;
+        }
+        constexpr static int compare(const CharT* fst, const CharT* snd, size_t n) {
+            for (size_t i = 0; i < n; ++i) {
+                if (to_upper(fst[i]) != to_upper(snd[i])) {
+                    return to_upper(fst[i]) - to_upper(snd[i]);
+                }
+            }
+            return 0;
+        }
+    };
+
+    template<class CharT>
+    using basic_string = std::basic_string_view<CharT, ci_char_traits<CharT>>;
+
+    namespace literals {
+        inline constexpr basic_string<char>
+        operator ""sv(const char* str,  size_t len) noexcept {
+            return basic_string<char>{str, len};
+        }
+
+        inline constexpr basic_string<char32_t>
+        operator ""sv(const char32_t* str,  size_t len) noexcept {
+            return basic_string<char32_t>{str, len};
+        }
+    } // literals
+
+    using namespace util::literals;
+
+    template<class CharT>
+    constexpr const auto get_char(const basic_string<CharT>& str, const size_t pos = 0) {
+        return std::pair{str[pos], 1};
+    }
+
+    /* Not quite correct UTF-8 decoder. */
+    template <>
+    constexpr const auto get_char<char>(const basic_string<char>& str, const size_t pos) {
+        char32_t codePoint = str[pos];
         size_t seq = 0;
         if ((codePoint & 0x80) == 0) {
             seq = 1;
@@ -41,7 +80,7 @@ namespace util {
         }
 
         for (size_t i = 1; i < seq; ++i) {
-            codePoint |= ((char32_t)str[i] & 0x3F) << ((seq - i - 1) * 6);
+            codePoint |= ((char32_t)str[pos + i] & 0x3F) << ((seq - i - 1) * 6);
         }
         return std::pair{codePoint, seq};
     }
@@ -61,26 +100,32 @@ namespace util {
             ;
     }
 
-    constexpr auto trim(const string& str) {
+    template<typename CharT>
+    constexpr auto trim(const basic_string<CharT>& str) {
         size_t left = 0;
-        while(is_space(str[left])) {
-            ++left;
+        while (left < str.size()) {
+            const auto [code, len] = get_char(str, left);
+            if (!is_space(code)) {
+                break;
+            }
+            left += len;
         }
         if (left >= str.size()) {
-            return ""sv;
+            return STR("");
         }
         size_t right = str.size() - 1;
+        /* FIXME: this only works correctly for char32_t */
         while(is_space(str[right])) {
             --right;
         }
         return str.substr(left, right - left + 1);
     }
 
-    template<typename Fn>
-    constexpr auto take_while(const util::string& str, const Fn& fn) {
+    template<typename CharT, typename Fn>
+    constexpr auto take_while(const basic_string<CharT>& str, const Fn& fn) {
         size_t pos = 0;
         while (pos < str.size()) {
-            const auto [codePoint, len] = util::get_char(str.substr(pos));
+            const auto [codePoint, len] = util::get_char(str, pos);
             if (!fn(codePoint)) {
                 break;
             }
@@ -89,16 +134,11 @@ namespace util {
         return str.substr(0, pos);
     }
 
-    constexpr char to_upper(const char32_t& c) {
-        return (c >= 97 && c <= 122) ? (c - 32) : c;
-    }
-
-    constexpr int compare_ci(const string& fst, const string& snd) {
-        for (size_t i = 0; i < std::min(fst.size(), snd.size()); ++i) {
-            if (to_upper(fst[i]) != to_upper(snd[i])) {
-                return to_upper(fst[i]) - to_upper(snd[i]);
-            }
-        }
-        return fst.size() - snd.size();
+    /* GCC 7.x: basic_string_view::compare is not constexpr; */
+    template<typename CharT>
+    constexpr bool operator == (const basic_string<CharT>& fst, const basic_string<CharT>& snd) {
+        const auto ret = basic_string<CharT>::traits_type::compare(fst.data(), snd.data(),
+                std::min(fst.size(), snd.size()));
+        return (ret == 0) && fst.size() == snd.size();
     }
 } // util

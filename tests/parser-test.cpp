@@ -10,13 +10,12 @@ extern "C" {
 };
 
 #include <util/keymap.hpp>
+static_assert(util::get_char(STR("a")).first == 'a');
+static_assert(util::get_char(STR("←")).first == 0x2190);
 
-static_assert(util::get_char("a").first == 'a');
-static_assert(util::get_char("←").first == 0x2190);
-
-static_assert(str2keycode["b"] == KC_B);
-static_assert(str2keycode["RSft"] == KC_RSFT);
-static_assert(str2keycode["→"] == KC_RGHT);
+static_assert(str2keycode[STR("b")] == KC_B);
+static_assert(str2keycode[STR("RSft")] == KC_RSFT);
+static_assert(str2keycode[STR("→")] == KC_RGHT);
 
 /* Keymap for truefox layout */
 #define LAYOUT_truefox_simple( \
@@ -46,7 +45,7 @@ static_assert(str2keycode["→"] == KC_RGHT);
 #define KEYMAP_SIZE 68
 
 constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
-    keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
+    layer(KEYMAP_SIZE, R"keymap(
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
 │Esc│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ \ │ `  │Ins │
 ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┼────┤
@@ -58,8 +57,8 @@ constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
 ├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴─┬────┼────┼────┤
 │LCtl│LGui│LAlt│         Space          │RAlt│RCtl │ ←  │ ↓  │ →  │
 └────┴────┴────┴────────────────────────┴────┴─────┴────┴────┴────┘
-)keymap"sv)),
-    keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
+)keymap"),
+    layer(KEYMAP_SIZE, R"keymap(
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
 │   │ F1│ F2│ F3│ F4│ F5│ F6│ F7│ F8│ F9│F10│F11│F12│   │Fn2 │PScr│
 ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┼────┤
@@ -71,7 +70,7 @@ constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
 ├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴─┬────┼────┼────┤
 │    │    │    │                        │    │     │Home│PgDn│End │
 └────┴────┴────┴────────────────────────┴────┴─────┴────┴────┴────┘
-)keymap"sv))
+)keymap")
 };
 
 const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {

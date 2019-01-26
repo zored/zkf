@@ -54,7 +54,7 @@ const uint16_t fn_actions[] = {
 #define KEYMAP_SIZE 68
 
 constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
-    keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
+    layer(KEYMAP_SIZE, R"keymap(
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
 │Esc│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │ \ │ `  │Ins │
 ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┼────┤
@@ -66,8 +66,8 @@ constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
 ├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴─┬────┼────┼────┤
 │LCtl│LGui│LAlt│         Space          │RAlt│RCtl │ ←  │ ↓  │ →  │
 └────┴────┴────┴────────────────────────┴────┴─────┴────┴────┴────┘
-)keymap"sv)),
-    keycodes(tokenize<KEYMAP_SIZE>(R"keymap(
+)keymap"),
+    layer(KEYMAP_SIZE, R"keymap(
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┐
 │   │ F1│ F2│ F3│ F4│ F5│ F6│ F7│ F8│ F9│F10│F11│F12│   │Fn2 │PScr│
 ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┼────┤
@@ -79,7 +79,7 @@ constexpr std::array<std::array<keycode_t, KEYMAP_SIZE>, 2> layers = {
 ├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴─┬────┼────┼────┤
 │    │    │    │                        │    │     │Home│PgDn│End │
 └────┴────┴────┴────────────────────────┴────┴─────┴────┴────┴────┘
-)keymap"sv))
+)keymap")
 };
 
 const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {

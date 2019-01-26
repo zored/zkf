@@ -1,15 +1,17 @@
 #include <array>
 
-#include <util/ConstMap.hpp>
+#include <util/cmap.hpp>
 #include <util/macros.hpp>
 #include <util/string.hpp>
 
-using keycode_t = uint16_t;
-using namespace std::literals;
+#define layer(size, str) keycodes(tokenize<size>(STR(str)))
 
-template<size_t Count>
-constexpr auto tokenize(const util::string& str) {
-    std::array<util::string, Count> words{ 0 };
+using keycode_t = uint16_t;
+using namespace util::literals;
+
+template<size_t Count = 128, class CharT>
+constexpr auto tokenize(const util::basic_string<CharT>& str) {
+    std::array<util::basic_string<CharT>, Count> words{ 0 };
     size_t counter = 0;
     size_t pos = 0;
     do {
@@ -29,19 +31,13 @@ constexpr auto tokenize(const util::string& str) {
     if (counter != Count) {
         failwith("Not enough keycodes");
     }
+
     return words;
 }
 
-namespace util {
-    template<>
-    constexpr int Compare<util::string>(const util::string& fst, const util::string& snd) {
-        return util::compare_ci(fst, snd);
-    }
-}
-
-constexpr auto str2keycode = util::make_map<util::string, keycode_t>(
-#   define KC1(x) std::pair{#x##sv, KC_##x}
-#   define KC2(k,v) std::pair{k##sv, v}
+constexpr auto str2keycode = util::make_cmap<decltype(STR("")), keycode_t>(
+#   define KC1(x) std::pair{STR(#x), KC_##x}
+#   define KC2(k,v) std::pair{STR(k), v}
     map_list(KC1, // alnum
         A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
         1, 2, 3, 4, 5, 6, 7, 8, 9, 0
@@ -102,8 +98,8 @@ constexpr auto str2keycode = util::make_map<util::string, keycode_t>(
 #undef KC2
 );
 
-template<size_t N>
-constexpr auto keycodes(const std::array<util::string, N>& keys) {
+template<size_t N, class CharT>
+constexpr auto keycodes(const std::array<util::basic_string<CharT>, N>& keys) {
     std::array<keycode_t, N> codes{ 0 };
     for (size_t i = 0; i < keys.size(); ++i) {
         codes[i] = keys[i].size() ? str2keycode[keys[i]] : KC_TRANSPARENT;
