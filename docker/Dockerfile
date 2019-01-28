@@ -11,7 +11,7 @@ RUN dnf -y --setopt=tsflags=nodocs update && \
         avr-gcc-c++ \
         avr-libc \
         avrdude \
-        clang \
+        boost-devel \
         dfu-programmer \
         dfu-util \
         gcc \
