@@ -3,7 +3,7 @@
 
 KEYBOARD := whitefox
 KEYMAP :=
-TARGET ?= whitefox-alebastr-$(QMK_VERSION)+$(KEYMAP_VERSION)
+TARGET ?= whitefox-alebastr-$(KEYMAP_VERSION)
 
 TOP_DIR := vendor/qmk_firmware
 
@@ -15,8 +15,8 @@ docker-build:
 	docker run --rm -v $(CURDIR):/build registry.alebastr.su/alebastr/qmk-whitefox-keymap make
 
 # Generate the version.h file
-KEYMAP_VERSION := $(shell git describe --abbrev=6 --always 2>/dev/null)
-QMK_VERSION := $(shell git -C $(TOP_DIR) describe --abbrev=6 --always --tags 2>/dev/null)
+KEYMAP_VERSION := $(shell git describe --abbrev=6 --always --tags 2>/dev/null)
+QMK_VERSION := $(shell git -C $(TOP_DIR) describe --abbrev=6 --always --tags  2>/dev/null)
 BUILD_DATE := $(shell date +"%Y-%m-%d-%H:%M:%S")
 
 $(TOP_DIR)/quantum/version.h:
