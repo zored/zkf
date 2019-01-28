@@ -25,5 +25,4 @@ RUN dnf -y --setopt=tsflags=nodocs update && \
 
 VOLUME  /build
 WORKDIR /build
-
 CMD make
