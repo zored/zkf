@@ -1,36 +1,46 @@
 image: registry.alebastr.su/alebastr/qmk-whitefox-keymap
+
+stages:
+  - pre-build
+  - build
+
 variables:
-  GIT_SUBMODULE_STRATEGY: recursive
+  DOCKER_HOST: tcp://localhost:2375
+  DOCKER_DRIVER: overlay2
+  GIT_SUBMODULE_STRATEGY: none
 
 build:
   stage: build
   tags:
-  - docker:linux
+    - docker:linux
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      # Cache external submodules to speed-up build
+      - .git/modules/
+      - vendor/qmk_firmware/
   script:
-  - make
+    - git submodule update --init --recursive
+    - make
   artifacts:
     name: "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
     - 'whitefox-*.bin'
 
 build-docker:
-  stage: build
+  stage: pre-build
   image: docker:stable
   services:
-  - docker:dind
+    - docker:dind
   tags:
-  - docker:linux
-  variables:
-    DOCKER_HOST: tcp://localhost:2375
-    DOCKER_DRIVER: overlay2
-    GIT_SUBMODULE_STRATEGY: none
+    - docker:linux
   only:
     changes:
-    - docker/*
+      - docker/*
     refs:
-    - master
+      - master
   script:
-  - cd docker
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - docker build -t $CI_REGISTRY_IMAGE:latest .
-  - docker push $CI_REGISTRY_IMAGE:latest
+    - cd docker
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
