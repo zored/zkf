@@ -1,11 +1,10 @@
 extern "C" {
 #include QMK_KEYBOARD_H
+#include <visualizer/visualizer.h>
+#include <visualizer/default_animations.h>
 }
 
 enum Backlight: uint8_t {
-#ifdef BACKLIGHT_BREATHING
-    BREATHING,
-#endif
     OFF,
     ON
 };
@@ -22,13 +21,6 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
         if (record->event.pressed) {
             switch (backlight) {
             case Backlight::ON:
-#ifdef BACKLIGHT_BREATHING
-                breathing_enable();
-                backlight = Backlight::BREATHING;
-                break;
-            case Backlight::BREATHING:
-                breathing_disable();
-#endif
                 backlight_disable();
                 backlight = Backlight::OFF;
                 break;
@@ -47,6 +39,30 @@ const uint16_t fn_actions[] = {
     [1] = ACTION_LAYER_MOMENTARY(2),
     [2] = ACTION_FUNCTION(Fn::BACKLIGHT)
 };
+
+static bool initial_update = true;
+
+void initialize_user_visualizer(visualizer_state_t* state) {
+    initial_update = true;
+    start_keyframe_animation(&default_startup_animation);
+}
+
+void user_visualizer_resume(visualizer_state_t* state) {
+    initial_update = true;
+    start_keyframe_animation(&default_startup_animation);
+}
+
+void user_visualizer_suspend(visualizer_state_t* state) {
+    start_keyframe_animation(&default_suspend_animation);
+}
+
+void update_user_visualizer_state(visualizer_state_t* state,
+        visualizer_keyboard_status_t* prev_status) {
+    if (initial_update) {
+        initial_update=false;
+        start_keyframe_animation(&led_test_animation);
+    }
+}
 
 #include <util/keymap.hpp>
 
