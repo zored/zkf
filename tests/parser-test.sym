@@ -1,14 +1,3 @@
 0000000000000000 R keymaps
 0000000000000000 T main
-0000000000000000 W rgblight_decrease_hue
-0000000000000000 W rgblight_decrease_sat
-0000000000000000 W rgblight_decrease_speed
-0000000000000000 W rgblight_decrease_val
-0000000000000000 W rgblight_increase_hue
-0000000000000000 W rgblight_increase_sat
-0000000000000000 W rgblight_increase_speed
-0000000000000000 W rgblight_increase_val
-0000000000000000 W rgblight_step
-0000000000000000 W rgblight_step_reverse
-0000000000000000 W rgblight_toggle
 0000000000000000 T failwith(std::basic_string_view<char, std::char_traits<char> > const&)
