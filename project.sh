@@ -13,16 +13,24 @@ Current HEX file is: $hex
 
 TEXT
 
+init-docker () {
+  docker-machine start || true
+  eval $(docker-machine env) || true
+}
+
 case $1 in
  build|b)
-  init-docker () {
-    docker-machine start || true
-    eval $(docker-machine env) || true
-  }
-
   init-docker
   make docker-build
   ## mv ergodox_ez_zored.hex $hex
+ ;;
+
+ docker-build|d)
+  init-docker
+  docker build \
+    --tag zored/alebastr-qmk-whitefox-keymap:latest \
+    --file ./docker/Dockerfile \
+    ./docker
  ;;
 
  sync|s)

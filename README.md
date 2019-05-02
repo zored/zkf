@@ -5,7 +5,10 @@ Zored Keyboard Firmwares — are firmwares for my keyboards:
 
 ## Usage
 ```bash
+# Clone with submodules:
 git clone --recurse-submodules zored/alebastr-qmk-whitefox-keymap
+
+# Build and flash firmwares:
 ./project.sh build-and-flash
 ```
 
