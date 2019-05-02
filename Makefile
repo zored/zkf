@@ -12,7 +12,7 @@ TOP_DIR := vendor/qmk_firmware
 all: $(TOP_DIR)/quantum/version.h
 
 docker-build:
-	docker run --rm -v $(CURDIR):/build registry.alebastr.su/alebastr/qmk-whitefox-keymap make
+	docker run --rm -v $(CURDIR):/build zored/alebastr-qmk-whitefox-keymap make
 
 # Generate the version.h file
 KEYMAP_VERSION := $(shell git describe --abbrev=6 --always --tags 2>/dev/null)
