@@ -11,9 +11,6 @@ TOP_DIR := vendor/qmk_firmware
 
 all: $(TOP_DIR)/quantum/version.h
 
-docker-build:
-	docker run --rm -v $(CURDIR):/build zored/alebastr-qmk-whitefox-keymap make
-
 # Generate the version.h file
 KEYMAP_VERSION := $(shell git describe --abbrev=6 --always --tags 2>/dev/null)
 QMK_VERSION := $(shell git -C $(TOP_DIR) describe --abbrev=6 --always --tags  2>/dev/null)
@@ -22,6 +19,7 @@ BUILD_DATE := $(shell date +"%Y-%m-%d-%H:%M:%S")
 $(TOP_DIR)/quantum/version.h:
 	echo '#define QMK_VERSION "$(QMK_VERSION)"' > $@
 	echo '#define QMK_BUILDDATE "$(BUILD_DATE)"' >> $@
+	echo "Version is filled!"
 
 # Apply embedded qmk_firmware patches
 PATCHES := \

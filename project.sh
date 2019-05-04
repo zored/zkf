@@ -14,14 +14,15 @@ Current HEX file is: $hex
 TEXT
 
 init-docker () {
-  docker-machine start || true
-  eval $(docker-machine env) || true
+  local machine=${DOCKER_MACHINE:-default}
+  docker-machine start $machine || true
+  eval $(docker-machine env $machine) || true
 }
 
 case $1 in
  build|b)
   init-docker
-  make docker-build
+  docker run --rm -v "/$PWD:/build" zored/alebastr-qmk-whitefox-keymap make
   ## mv ergodox_ez_zored.hex $hex
  ;;
 
