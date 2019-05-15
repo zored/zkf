@@ -1,9 +1,9 @@
 # based on:
 # https://github.com/jackhumbert/qmk_firmware_embeded
 
-KEYBOARD := whitefox
+KEYBOARD := ergodox_ez
 KEYMAP :=
-TARGET ?= whitefox-alebastr-$(KEYMAP_VERSION)
+TARGET ?= ergodox_ez_zored_$(KEYMAP_VERSION)
 
 TOP_DIR := vendor/qmk_firmware
 
@@ -19,19 +19,11 @@ BUILD_DATE := $(shell date +"%Y-%m-%d-%H:%M:%S")
 $(TOP_DIR)/quantum/version.h:
 	echo '#define QMK_VERSION "$(QMK_VERSION)"' > $@
 	echo '#define QMK_BUILDDATE "$(BUILD_DATE)"' >> $@
-	echo "Version is filled!"
 
-# Apply embedded qmk_firmware patches
-PATCHES := \
-	patches/0001-makefile-changes-to-support-a-parent-directory.patch \
-	patches/0002-add-top_dir-in-the-correct-place.patch               \
-	patches/0003-fix-tests.patch                                      \
-	patches/0004-More-TOP_DIR-fixes.patch
-
-apply-patch = patch -d $(TOP_DIR) --forward --no-backup-if-mismatch -r- -p1 -i $(CURDIR)/$(1)
-q.mk: $(PATCHES)
+apply-patch = patch -d $(TOP_DIR) --forward --no-backup-if-mismatch -r- -p1 -i $(CURDIR)/patches/$(1)
+q.mk:
 	git -C $(TOP_DIR) reset --hard >&2
-	$(foreach patch, $(PATCHES), $(call apply-patch,$(patch));)
+	$(foreach patch, $(shell ls $(CURDIR)/patches/), $(call apply-patch,$(patch));)
 	echo "include $(TOP_DIR)/build_keyboard.mk" > $@
 
 # The dark magic of GNU make.

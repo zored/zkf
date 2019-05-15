@@ -1,18 +1,6 @@
 #/usr/bin/env bash
 set -ex
 
-# Add tags and uncomment!
-# version=$(git describe --dirty)
-# hex=${version}.hex
-# [[ -e $hex ]] && exists='exists' || exists='does not exist'
-
-cat <<TEXT
-
-Current HEX file is: $hex
-($exists)
-
-TEXT
-
 init-docker () {
   local machine=${DOCKER_MACHINE:-default}
   docker-machine start $machine || true
@@ -22,7 +10,10 @@ init-docker () {
 case $1 in
  build|b)
   init-docker
-  docker run --rm -v "/$PWD:/build" zored/alebastr-qmk-whitefox-keymap make
+  required_files='visualizer.c'
+  touch $required_files
+  docker run --rm -v "/$PWD:/build" zored/alebastr-qmk-whitefox-keymap make || true
+  rm -f $required_files
   ## mv ergodox_ez_zored.hex $hex
  ;;
 
@@ -35,11 +26,9 @@ case $1 in
  ;;
 
  sync|s)
-  #git remote add target git@github.com:qmk/qmk_firmware.git || true
-  #git fetch target master:master
-  #git merge target/master
-  echo NOT IMPLEMENTED
-  exit 2
+  echo 'Updating QMK library'
+  rm q.mk
+  make $_
  ;;
 
  teensy|t)
@@ -47,13 +36,19 @@ case $1 in
   pushd $_
   git clone https://github.com/zored/teensy_loader_cli . || true
   git checkout zored || true
-  OS=MACOSX make
+  OS=${2:-WINDOWS} make # MACOSX
   popd
  ;;
 
  flash|f)
-  mcu='atmega32u4'
+  echo 'Retrieving HEX file.'
+  hex=$(ls *${2}*.hex)
+  count=$(echo $hex | wc --lines)
+  if [[ $count != '1' ]]; then
+    echo "Found $count HEX files. Specify version."
+  fi
 
+  mcu='atmega32u4'
   teensy_vendor=./vendor/teensy/teensy_loader_cli
   if [[ -e $teensy_vendor ]]; then
     teensy="$teensy_vendor --mcu=$mcu -v"

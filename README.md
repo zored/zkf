@@ -13,6 +13,12 @@ git clone --recurse-submodules zored/alebastr-qmk-whitefox-keymap
 ```
 
 ## TODO
+- Migrate from [C](./keymap.c) to [C++](./src/main.cpp):
+    + Get rid of designated initializers.
+- Guess OS in `project.sh`.
+- Compile `teensy` on Windows.
+- Replace builder image: Fedora -> Alpine.
+- Simplify dark magic of `Makefile`.
 - Move to separate repository: `alebastr-qmk-whitefox-keymap` -> `zfk`.
 
 ## 💖

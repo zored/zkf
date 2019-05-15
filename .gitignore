@@ -5,3 +5,6 @@
 .build/
 q.mk
 tests/parser-test
+/*.c
+vendor/teensy/
+*.hex
