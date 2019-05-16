@@ -1,3 +1,4 @@
+#include <array>
 #include <features/combo.hpp>
 
 using namespace ZFK;
