@@ -36,8 +36,8 @@ namespace ZFK {
     private:
       vector<Combo> combos = {};
     public:
-      void add(Combo combo) {
-        combos.push_back(combo);
+      void add(Combo* combo) {
+        combos.push_back(*combo);
       }
       void apply(void);
       QmkCombo* getQmkCombos() {

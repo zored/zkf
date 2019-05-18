@@ -2,7 +2,7 @@ extern "C" {
 #include QMK_KEYBOARD_H
 }
 
-#include <pnew.cpp>
+#include <util/new.cpp>
 
 #include <iterator>
 #include <vector>
@@ -10,7 +10,11 @@ extern "C" {
 
 using namespace ZFK;
 
-ComboCollection* combos = new ComboCollection();
-vector<Keycode> input1 = {KC_Y, KC_U};
-combos->add(new KeycodeCombo(input1, KC_ESC));
-combos->apply();
+void zored_main(void) {
+	ComboCollection* combos = new ComboCollection();
+	vector<Keycode> input1 {{KC_Y},{KC_U}};
+	combos->add(new KeycodeCombo(input1, KC_ESC));
+	//combos->apply();
+}
+
+zored_main();
