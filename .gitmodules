@@ -2,3 +2,12 @@
 	path = vendor/qmk_firmware
 	url = https://github.com/qmk/qmk_firmware.git
 	ignore = dirty
+[submodule "vendor/uclibcpp"]
+	path = vendor/uclibcpp
+	url = git://git.busybox.net/uClibc++
+[submodule "vendor/sgi-stl"]
+	path = vendor/sgi-stl
+	url = https://github.com/karottc/sgi-stl
+[submodule "vendor/avr-stl"]
+	path = vendor/avr-stl
+	url = https://github.com/andysworkshop/avr-stl

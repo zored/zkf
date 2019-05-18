@@ -426,7 +426,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_PGUP,
         KC_PGDN,        KC_TAB,         KC_ENT
     ),
- 
+
   [L_SYM] = LAYOUT_ergodox(
     _______,        TD(DNC_F1),     TD(DNC_F2),     TD(DNC_F3),     TD(DNC_F4),     TD(DNC_F5),     _______,
     _______,        KC_EXLM,        KC_AT,          KC_LCBR,        KC_RCBR,        KC_BSLS,        _______,

@@ -1,4 +1,10 @@
-#include <array>
+extern "C" {
+#include QMK_KEYBOARD_H
+}
+
+#include <pnew.cpp>
+#include <iterator>
+#include <vector>
 #include <features/combo.hpp>
 
 using namespace ZFK;
