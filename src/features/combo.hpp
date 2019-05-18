@@ -12,22 +12,25 @@ namespace ZFK {
     protected:
       vector<Keycode> input;
     public:
+      Combo(vector<Keycode> input): input(input) {}
       void onkeydown(void) {}
       void onkeyup(void) {}
-      vector<Keycode>& getInput(void) const {
+      vector<Keycode>& getInput(void) {
         return input;
       }
-  }
+  };
 
   class KeycodeCombo: public Combo {
     private:
       Keycode output;
     public:
-      KeycodeCombo(vector<Keycode>& input, Keycode output): input(input), output(output) {}
+      KeycodeCombo(vector<Keycode>& input, Keycode output): Combo(input), output(output) {
+        this->input = input;
+      }
       void onkeyup (void) {
         tap_code(output);
       }
-  }
+  };
 
   class ComboCollection {
     private:
@@ -40,10 +43,10 @@ namespace ZFK {
       QmkCombo* getQmkCombos() {
         vector<QmkCombo> qmkCombos = {};
 
-        for (auto const& combo: combos) {
+        for (auto& combo: combos) {
           vector<Keycode> keysVector = combo.getInput();
           keysVector.push_back(COMBO_END);
-          Keycode* keys = keysVector.data();
+          Keycode* keys = &keysVector[0];
 
           QmkCombo qmkCombo;
           qmkCombo.keys = keys;
@@ -51,7 +54,7 @@ namespace ZFK {
           qmkCombos.push_back(qmkCombo);
         }
 
-        return qmkCombos.data();
+        return &qmkCombos[0];
       }
       int getCount() {
         return combos.size();
@@ -65,5 +68,5 @@ namespace ZFK {
 
         combo.onkeyup();
       }
-  }
+  };
 }
