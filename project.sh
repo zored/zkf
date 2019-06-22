@@ -43,7 +43,7 @@ case $1 in
  flash|f)
   echo 'Retrieving HEX file.'
   hex=$(ls *${2}*.hex)
-  count=$(echo $hex | wc --lines)
+  count=$(echo $hex | wc -l)
   if [[ $count != '1' ]]; then
     echo "Found $count HEX files. Specify version."
   fi

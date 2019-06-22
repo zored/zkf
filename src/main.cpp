@@ -16,5 +16,3 @@ void zored_main(void) {
 	combos->add(new KeycodeCombo(input1, KC_ESC));
 	//combos->apply();
 }
-
-zored_main();
