@@ -8,3 +8,4 @@ tests/parser-test
 /*.c
 vendor/teensy/
 *.hex
+node_modules/

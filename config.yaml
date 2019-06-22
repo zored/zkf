@@ -1,5 +1,6 @@
 keys:
-  "sym":
+  sym:
+    type: dance
     tap:
     - [caps]
     - [to-symbol]
@@ -7,14 +8,16 @@ keys:
     - [to-symbol]
     - [to-symbol, ctrl]
     - [to-symbol, alt]
-  "z+":
+  z+:
+    type: dance
     tap: 
     - [z]
     hold:
     - [ctrl]
     - [ctrl, shift]
     - [ctrl, shift, alt]
-  ";+":
+  ;+:
+    type: dance
     tap:
     - [;]
     hold:
