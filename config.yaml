@@ -1,0 +1,45 @@
+keys:
+  "sym":
+    tap:
+    - [caps]
+    - [to-symbol]
+    hold:
+    - [to-symbol]
+    - [to-symbol, ctrl]
+    - [to-symbol, alt]
+  "z+":
+    tap: 
+    - [z]
+    hold:
+    - [ctrl]
+    - [ctrl, shift]
+    - [ctrl, shift, alt]
+  ";+":
+    tap:
+    - [;]
+    hold:
+    - [to-navigation]
+    - [to-symbol]
+keyboards:
+  ergodox:
+    layouts:
+      default:
+        keys:
+          left:
+            - [esc,2,3,4,5,~]
+            - [tab,q,w,e,r,t,~]
+            - [capsy,a,s,d,f,g]
+            - [shift(,z+,x,c,v,b,~]
+            - [~,~,~,left,right]
+            - [esc,~]
+            - [home]
+            - [space,backspace,end]
+          right:
+            - [~,6,7,8,9,0,~]
+            - [~,y,u,i,o,p,\]
+            - [h,j,k,l,;+,"'"]
+            - [~,n,m,",",".","/",shift)]
+            - ["[","]","\\","`",use-plover]
+            - [esc,~]
+            - [page-up]
+            - [page-down,tab,enter]
