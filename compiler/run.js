@@ -1,17 +1,19 @@
-"use strict";
+"use strict"
 
 const fs = require('fs')
 const ARRAY_GLUE = ',\n'
 const INDENT = '  '
+const _ = require('lodash')
 
 function main() {
-  const config = getConfig();
-  const keys = config.keys
-  const layerKeys = flattern(config.keyboards.ergodox.layers.default.keys)
-    .map(key => createKey(key))
-    .map(key => createAdvanedKey(key, keys))
+  const config = getConfig()
+  const defaultLayer = config.keyboards.ergodox.layers.default.keys
+  const layerStructure = flatternStructure(defaultLayer)
+  const keyFactory = new KeyFactory(config.keys, config.map)
+  const layerKeys = flattern(defaultLayer)
+    .map(key => keyFactory.create(key))
 
-  compileTemplate(layerKeys)
+  compileTemplate(layerKeys, layerStructure)
 
   console.log('Done!')
 }
@@ -33,18 +35,37 @@ class Key {
   get releaseCode() {
     return `unregister_win_code(${this.codeName});`
   }
+  get layerCodeName() {
+    return this.codeName
+  }
 }
 
 class Layer {
-  constructor (name, keys) {
+  constructor (name, keys, structure) {
     this.name = name
     this.keys = keys || []
+    this.structure = structure
   }
   get codeName () {
     return 'LAYER_' + this.name.toUpperCase()
   }
-  get keyCodes () {
-    return this.keys.map(key => key.codeName)
+  get keyCodesString () {
+    let i = 0
+
+    const keyCodesString = _.map(this.structure, (count, name) => {
+      const keyCodes = this.keys.slice(i, i+count).map(key => key.layerCodeName)
+      i += count
+
+      return rtrim(`
+/* ${name} */ ${keyCodes},
+    `)
+    }).join('')
+
+    if (i !== this.keys.length) {
+      throw new Exception(`Layer ${this.name} doesn't suit default layer structure.`)
+    }
+
+    return keyCodesString
   }
   toString() {
     return this.codeName
@@ -94,7 +115,7 @@ class DanceKey extends Key {
     return 'DANCE_' + super.codeName
   }
   get actions () {
-    return this.tapAction.allActionsRecursive.concat(this.holdAction.allActionsRecursive);
+    return this.tapAction.allActionsRecursive.concat(this.holdAction.allActionsRecursive)
   }
   get onDanceCode () {
     return `
@@ -107,7 +128,7 @@ class DanceKey extends Key {
         // Tap actions:
         ${this.tapAction.onDanceCode}
       }
-      break;
+      break
     `
   }
   get onDanceResetCode () {
@@ -115,6 +136,9 @@ class DanceKey extends Key {
         ${this.holdAction.onDanceResetCode}
         ${this.tapAction.onDanceResetCode}
     `
+  }
+  get layerCodeName () {
+    return `TD(${super.layerCodeName})`
   }
 }
 
@@ -162,10 +186,10 @@ class KeySequence extends Action {
     `)).join('')) + this.onDanceStateCode(false)
   }
   onDanceStateCode(active) {
-    const state = active ? this.codeName : 0;
+    const state = active ? this.codeName : 0
 
     return `
-            dance_states[danceKey] = ${state};
+            dance_states[danceKey] = ${state}
     `
   }
 }
@@ -184,7 +208,7 @@ class TapDanceAction extends Action {
       return `
           case ${count}:
             ${action.onDanceCode}
-            return;
+            return
       `
     }).join('')
 
@@ -194,7 +218,7 @@ class TapDanceAction extends Action {
 
           default:
             ${this.manyDancesCode}
-            return;
+            return
         }
     `
   }
@@ -202,7 +226,7 @@ class TapDanceAction extends Action {
     return this.actions.map(action => `
           case ${action.codeName}:
             ${action.onDanceResetCode}
-            break;
+            break
     `).join('')
   }
   get manyDancesCode() {
@@ -236,11 +260,11 @@ class TapDanceAction extends Action {
 function getConfig() {
   const yaml = require('js-yaml')
 
-  return yaml.safeLoad(fs.readFileSync('config.yaml', 'utf8'));
+  return yaml.safeLoad(fs.readFileSync('config.yaml', 'utf8'))
 }
 
-function glueEnum (items) {
-  return items.map((item,index) => index == 0 ? `${item} = 1` : item).join(ARRAY_GLUE + INDENT)
+function glueEnum (items, initialValue = '1') {
+  return items.map((item,index) => index == 0 ? `${item} = ${initialValue}` : item).join(ARRAY_GLUE + INDENT)
 }
 
 function rtrim (value) {
@@ -252,7 +276,7 @@ function ltrim (value) {
 }
 
 function getDanceTemplateData (layerKeys) {
-  const keys = layerKeys.filter(key => key instanceof DanceKey);
+  const keys = layerKeys.filter(key => key instanceof DanceKey)
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
   const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).join(''))
@@ -274,107 +298,150 @@ function getDanceTemplateData (layerKeys) {
 }
 
 function getLayersTemplateData(layers) {
-  return layers.map(layer => `
+  const keys = layers.map(layer => `
 [${layer.codeName}] = LAYOUT_ergodox(
-  ${layer.keyCodes.join(',')}
+  ${layer.keyCodesString}
 )
   `).join(ARRAY_GLUE)
+
+  const names = glueEnum(layers.map(layer => layer.codeName), 0)
+
+  return {keys, names}
 }
 
-function compileTemplate (layerKeys) {
+function compileTemplate (layerKeys, layerStructure) {
   const Mustache = require('Mustache')
 
   const result = Mustache.render(fs.readFileSync('keymap.c.mustache', 'utf8'), {
     dance: getDanceTemplateData(layerKeys),
-    layers: getLayersTemplateData([new Layer('default', layerKeys)]),
-  });
+    layers: getLayersTemplateData([new Layer('default', layerKeys, layerStructure)]),
+  })
   fs.writeFileSync('keymap.new.c', result)
 }
 
 // general
 function flattern(item) {
   if (!(item instanceof Object) && !(item instanceof Array)) {
-    return [item]	
+    return [item]
   }
 
-  const callback = ([,value]) => flattern(value)
+  return _.flatMap(item, value => flattern(value))
+}
 
-  return Object.entries(item).flatMap(callback)
+function flatternStructure(item, structureKey, nextKey) {
+  if (!(item instanceof Object) && !(item instanceof Array)) {
+    return [structureKey]
+  }
+
+  if (nextKey) {
+    if (structureKey) {
+      structureKey += '-' + nextKey
+    }
+    else {
+      structureKey = nextKey
+    }
+  }
+
+  const structureKeys = Object
+    .entries(item)
+    .flatMap(([key,value]) => flatternStructure(value, structureKey, key))
+
+  if (structureKey != null) {
+    return structureKeys
+  }
+
+  return _.countBy(structureKeys)
 }
 
 // key
 
-function createKey (key) {
-  if (key == null) {
-    return new NullKey()
+class KeyFactory {
+  constructor(perKeyConfig, nameMap) {
+    this.perKeyConfig = perKeyConfig
+    this.nameMap = nameMap || {}
   }
 
-  if (Number.isInteger(key)) {
-    key = key.toString()
-  };
+  create(value) {
+    const key = this._createFromScalar(value)
 
-  return new Key(key)
+    return this._createKeysFromConfig(key) || this._createKeyByName(key) || key
+  }
+
+  _createFromScalar(value) {
+    if (value === null) {
+      return new NullKey()
+    }
+
+    if (_.isNumber(value)) {
+      value = value.toString()
+    }
+
+    if (_.isString(value)) {
+      value = this.nameMap[value] || value
+
+      return new Key(value)
+    }
+
+    throw new Exception(`Undefined key value type: ${value}.`)
+  }
+
+  _createKeyByName(key) {
+    const {name} = key
+    if (typeof name !== 'string') {
+      return null
+    }
+
+    const match = name.match(/^(?<type>toggle|hold)(?<layer>[A-Z0-9].+)$/)
+    if (match == null) {
+      return null
+    }
+
+    const {type, layer} = match.groups
+    const layerObject = new Layer(layer)
+
+    switch (type) {
+      case 'hold':
+        return new LayerHoldKey(layerObject)
+      case 'toggle':
+        return new LayerToggleKey(layerObject)
+    }
+  }
+
+  _createKeysFromConfig (key) {
+    const perKeyConfig = this.perKeyConfig
+    if (!perKeyConfig) {
+      return null
+    }
+
+    const config = perKeyConfig[key.name]
+    if (!(config instanceof Object)) {
+      return null
+    }
+
+    switch (config.type) {
+      case 'dance':
+        const {tap, hold} = config
+        const createActions = (stepsActions, manyDancesType) => new TapDanceAction(
+          stepsActions.map(stepActions => this._createTapStepAction(stepActions)),
+          manyDancesType
+        )
+
+
+        return new DanceKey(
+          key.name,
+          createActions(tap, 'repeatFirst'),
+          createActions(hold, 'startLast')
+        )
+    }
+
+    throw new Exception(`Undefined .keys.${key.name} config type: ${config.type}`)
+  }
+  _createTapStepAction (stepActions) {
+    const keys = stepActions.map(item => this.create(item))
+
+    return new KeySequence(keys)
+  }
 }
 
-function createAdvanedKey (key, keys) {
-  return createKeysFromConfig(key, keys) || createKeyByName(key) || key
-}
-
-function createKeyByName(key) {
-  const {name} = key
-  if (typeof name !== 'string') {
-    return null
-  }
-
-  const match = name.match(/^(?<type>toggle|hold)(?<layer>[A-Z0-9].+)$/)
-  if (match == null) {
-    return null
-  }
-
-  const {type, layer} = match.groups
-  const layerObject = new Layer(layer)
-
-  switch (type) {
-    case 'hold':
-      return new LayerHoldKey(layerObject)
-    case 'toggle':
-      return new LayerToggleKey(layerObject)
-  }
-}
-
-function createKeysFromConfig (key, keys) {
-  if (!keys) {
-    return null
-  }
-
-  const config = keys[key.name]
-  if (!(config instanceof Object)) {
-    return null
-  }
-
-  switch (config.type) {
-    case 'dance':
-      const {tap, hold} = config
-      const createActions = (stepsActions, manyDancesType) => new TapDanceAction(
-        stepsActions.map(stepActions => createTapStepAction(stepActions)),
-        manyDancesType
-      )
-
-
-      return new DanceKey(
-        key.name,
-        createActions(tap, 'repeatFirst'),
-        createActions(hold, 'startLast')
-      )
-  }
-
-  throw new Exception(`Undefined .keys.${key.name} config type: ${config.type}`)
-}
-
-function createTapStepAction (stepActions) {
-  const keys = stepActions.map(item => createAdvanedKey(createKey(item)))
-
-  return new KeySequence(keys)
-}
 
 main()

@@ -222,15 +222,11 @@ enum custom_keycodes {
 
 
 enum layers {
-  L_DEF = 0,
-  L_PLO,
-  L_SYM,
-  L_NAV,
-  L_EMO,
+{{{layers.names}}}
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-{{{layers}}}
+{{{layers.keys}}}
 };
 
 void matrix_init_user(void) {

@@ -9,6 +9,7 @@ keyboards:
             - [capsDance, a, s, d, f, g]
             - ["shift(", zDance, x, c, v, b, ~]
             - [~, ~, ~, left, right]
+          left-thumb:
             - [esc, ~]
             - [home]
             - [space, backspace, end]
@@ -18,6 +19,7 @@ keyboards:
             - [h, j, k, l, semicolonDance, "'"]
             - [~, n, m, ",", ".", "/", "shift)"]
             - ["[", "]", \, "`", togglePlover]
+          right-thumb:
             - [esc, ~]
             - [pageUp]
             - [pageDown, tab, enter]
@@ -55,8 +57,10 @@ map:
     ",": COMM
     "`": GRV
     .: DOT
-    \: BSL
+    \: BSLS
+    /: SLSH
     pageUp: PGUP
-    pageDown: PGUP
+    pageDown: PGDN
     space: SPC
     backspace: BSPC
+    enter: ENT
