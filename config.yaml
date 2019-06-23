@@ -1,14 +1,37 @@
+keyboards:
+  ergodox:
+    layers:
+      default:
+        keys:
+          left:
+            - [esc, 1, 2, 3, 4, 5, ~]
+            - [tab, q, w, e, r, t, ~]
+            - [capsDance, a, s, d, f, g]
+            - ["shift(", zDance, x, c, v, b, ~]
+            - [~, ~, ~, left, right]
+            - [esc, ~]
+            - [home]
+            - [space, backspace, end]
+          right:
+            - [~, 6, 7, 8, 9, 0, ~]
+            - [~, y, u, i, o, p, \]
+            - [h, j, k, l, semicolonDance, "'"]
+            - [~, n, m, ",", ".", "/", "shift)"]
+            - ["[", "]", \, "`", togglePlover]
+            - [esc, ~]
+            - [pageUp]
+            - [pageDown, tab, enter]
 keys:
-  sym:
+  capsDance:
     type: dance
     tap:
-    - [caps]
-    - [to-symbol]
+    - [capsLock]
+    - [toggleSymbol]
     hold:
-    - [to-symbol]
-    - [to-symbol, ctrl]
-    - [to-symbol, alt]
-  z+:
+    - [holdSymbol]
+    - [holdSymbol, ctrl]
+    - [holdSymbol, alt]
+  zDance:
     type: dance
     tap: 
     - [z]
@@ -16,33 +39,24 @@ keys:
     - [ctrl]
     - [ctrl, shift]
     - [ctrl, shift, alt]
-  ;+:
+  semicolonDance:
     type: dance
     tap:
-    - [;]
+    - [semicolon]
     hold:
-    - [to-navigation]
-    - [to-symbol]
-keyboards:
-  ergodox:
-    layouts:
-      default:
-        keys:
-          left:
-            - [esc,2,3,4,5,~]
-            - [tab,q,w,e,r,t,~]
-            - [capsy,a,s,d,f,g]
-            - [shift(,z+,x,c,v,b,~]
-            - [~,~,~,left,right]
-            - [esc,~]
-            - [home]
-            - [space,backspace,end]
-          right:
-            - [~,6,7,8,9,0,~]
-            - [~,y,u,i,o,p,\]
-            - [h,j,k,l,;+,"'"]
-            - [~,n,m,",",".","/",shift)]
-            - ["[","]","\\","`",use-plover]
-            - [esc,~]
-            - [page-up]
-            - [page-down,tab,enter]
+    - [holdNavigation]
+    - [holdSymbol]
+map:
+    "shift(": LSPO
+    "shift)": RSPO
+    "[": LBRC 
+    "]": RBRC 
+    "'": QUOT
+    ",": COMM
+    "`": GRV
+    .: DOT
+    \: BSL
+    pageUp: PGUP
+    pageDown: PGUP
+    space: SPC
+    backspace: BSPC
