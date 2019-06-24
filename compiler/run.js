@@ -195,9 +195,11 @@ class NullKey extends Key {
   }
 }
 
+let lastActionId = 0
+
 class Action {
   constructor (id) {
-    this.id = id
+    this.id = id + '_' + (++lastActionId)
   }
   get codeName () {
     if (this.id === null) {
@@ -277,7 +279,7 @@ class TapDanceAction extends Action {
     `).join('')
   }
   get uniqActions () {
-    return _.uniqBy(this.actions, 'name')
+    return _.uniqBy(this.actions, action => action.id)
   }
   get manyDancesCode () {
     let action
@@ -337,17 +339,17 @@ function getDanceTemplateData (layers) {
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
   const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).join(''))
-  const actionNames = glueEnum(keys
+  const actionKeys = keys
     .flatMap(key => key.actions)
     .map(key => key.codeName)
     .filter(key => key != null)
-  )
+  const actionNames = glueEnum(actionKeys)
   const actions = keys.map(key => `[${key.codeName}] = DANCE_MODIFIER()`).join(ARRAY_GLUE + INDENT)
 
   return {
     names,
     actionNames,
-    count: actionNames.length,
+    count: actionKeys.length,
     onDance,
     onDanceReset,
     actions

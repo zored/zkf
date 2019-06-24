@@ -7,6 +7,7 @@ init-docker () {
   eval $(docker-machine env $machine) || true
 }
 
+NODE_IMAGE=node:12.4.0-alpine
 SYNC_FILE=q.mk
 
 case $1 in
@@ -14,11 +15,11 @@ case $1 in
   if [[ ! -e $SYNC_FILE ]]; then
     $0 sync
   fi
-  init-docker
   required_files='visualizer.c'
   touch $required_files
-  compiler/run.js
-  docker run --rm -v "/$PWD:/build" zored/alebastr-qmk-whitefox-keymap make || true
+  init-docker
+  docker run --rm -v "/$PWD:/build" --workdir=//build $NODE_IMAGE compiler/run.js
+  docker run --rm -v "/$PWD:/build" --workdir=//build zored/zkf make
   rm -f $required_files
   ## mv ergodox_ez_zored.hex $hex
  ;;
@@ -26,12 +27,17 @@ case $1 in
  docker-build|d)
   init-docker
   docker build \
-    --tag zored/alebastr-qmk-whitefox-keymap:latest \
+    --tag zored/zkf:latest \
     --file ./docker/Dockerfile \
     ./docker
  ;;
 
  sync|s)
+  init-docker
+  docker run --rm -v "/$PWD:/build" --workdir=//build/compiler $NODE_IMAGE yarn install
+  docker pull zored/alebastr-qmk-whitefox-keymap
+  docker tag $_ zored/zkf
+
   cd compiler
   yarn install
   cd -
