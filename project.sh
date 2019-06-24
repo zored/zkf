@@ -7,11 +7,17 @@ init-docker () {
   eval $(docker-machine env $machine) || true
 }
 
+SYNC_FILE=q.mk
+
 case $1 in
  build|b)
+  if [[ ! -e $SYNC_FILE ]]; then
+    $0 sync
+  fi
   init-docker
   required_files='visualizer.c'
   touch $required_files
+  compiler/run.js
   docker run --rm -v "/$PWD:/build" zored/alebastr-qmk-whitefox-keymap make || true
   rm -f $required_files
   ## mv ergodox_ez_zored.hex $hex
@@ -27,7 +33,7 @@ case $1 in
 
  sync|s)
   echo 'Updating QMK library'
-  rm -f q.mk
+  rm -f $SYNC_FILE
   make $_
  ;;
 

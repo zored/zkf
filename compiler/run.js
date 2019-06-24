@@ -13,9 +13,9 @@ function main() {
   const layerStructure = flatternStructure(layersConfig.default)
   const keyFactory = new KeyFactory(config.keys, config.map)
   const layers = new LayerCollection(
-    _.map(layersConfig, (keys, name) => new Layer(name, keyFactory.createFromObject(keys), layerStructure))
+    _.map(layersConfig, ({keys, lights}, name) => new Layer(name, keyFactory.createFromObject(keys), layerStructure, lights))
   )
-  compileTemplate(layers)
+  compileTemplate(layers, keyboard)
   console.log('Done!')
 }
 
@@ -24,7 +24,7 @@ class Key {
   constructor(name){
     this.name = name
 
-    if (name !== null && name.match(/^(UC|DYN)_/)) {
+    if (name !== null && name.match(/^(UC|DYN|ZKC)_/)) {
       this.noPrefix = true
     }
   }
@@ -74,31 +74,39 @@ class LayerCollection {
     return this.layers
   }
 
+  get allWithLights () {
+    return this.layers.filter(layer => layer.lights.length > 0)
+  }
+
   get allKeys () {
     return this.layers.flatMap(layer => layer.keys)
   }
 }
 
 class Layer {
-  constructor (name, keys, structure) {
+  constructor (name, keys, structure, lights) {
     this.name = name
     this.keys = keys || []
-    this.structure = structure
+    this.structure = structure || null
+    this._lights = lights || []
   }
   get codeName () {
     return 'LAYER_' + this.name.toUpperCase()
   }
+  get lights () {
+    return this._lights
+  }
   get keyCodesString () {
     let i = 0
 
-    const keyCodesString = _.map(this.structure, (count, name) => {
+    const keyCodesString = _.trim(_.map(this.structure, (count, name) => {
       const keyCodes = this.keys.slice(i, i+count).map(key => key.layerCodeName)
       i += count
 
       return rtrim(`
 /* ${name} */ ${keyCodes},
     `)
-    }).join('')
+    }).join(''), ',')
 
     if (i !== this.keys.length) {
       throw new Error(`Layer '${this.name}' doesn't suit default layer structure: ${JSON.stringify(this.structure)}`)
@@ -167,7 +175,7 @@ class DanceKey extends Key {
         // Tap actions:
         ${this.tapAction.onDanceCode}
       }
-      break
+      break;
     `
   }
   get onDanceResetCode () {
@@ -228,7 +236,7 @@ class KeySequence extends Action {
     const state = active ? this.codeName : 0
 
     return `
-            dance_states[danceKey] = ${state}
+            dance_key_states[dance_key] = ${state};
     `
   }
 }
@@ -247,7 +255,7 @@ class TapDanceAction extends Action {
       return `
           case ${count}:
             ${action.onDanceCode}
-            return
+            return;
       `
     }).join('')
 
@@ -262,11 +270,14 @@ class TapDanceAction extends Action {
     `
   }
   get onDanceResetCode() {
-    return this.actions.map(action => `
+    return this.uniqActions.map(action => `
           case ${action.codeName}:
             ${action.onDanceResetCode}
-            break
+            break;
     `).join('')
+  }
+  get uniqActions () {
+    return _.uniqBy(this.actions, 'name')
   }
   get manyDancesCode() {
     let action
@@ -310,7 +321,7 @@ function getConfig() {
 }
 
 function glueEnum (items, initialValue = '1') {
-  return items.map((item,index) => index == 0 ? `${item} = ${initialValue}` : item).join(ARRAY_GLUE + INDENT)
+  return _.uniq(items).map((item,index) => index == 0 ? `${item} = ${initialValue}` : item).join(ARRAY_GLUE + INDENT)
 }
 
 function rtrim (value) {
@@ -336,7 +347,7 @@ function getDanceTemplateData (layers) {
   return {
     names,
     actionNames,
-    count: keys.length,
+    count: actionNames.length,
     onDance,
     onDanceReset,
     actions
@@ -366,13 +377,26 @@ function getLayersTemplateData(layers) {
   return {keys, names}
 }
 
-function compileTemplate (layers) {
+function getErgodoxTemplateData (layers, keyboard) {
+  const lights = layers.allWithLights.map(layer => `
+    case ${layer.codeName}:
+      ` + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
+      break;
+  `).join('')
+
+  return {
+    lights
+  }
+}
+
+function compileTemplate (layers, keyboard) {
   const Mustache = require('Mustache')
 
   const result = Mustache.render(fs.readFileSync('keymap.c.mustache', 'utf8'), {
     dance: getDanceTemplateData(layers),
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers),
+    ergodox: getErgodoxTemplateData(layers, keyboard),
   })
   fs.writeFileSync('keymap.c', result)
 }

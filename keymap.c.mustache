@@ -1,4 +1,4 @@
-fu#include "ergodox_ez.h"
+#include "ergodox_ez.h"
 #include "debug.h"
 #include "action_layer.h"
 #include "version.h"
@@ -152,6 +152,10 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
   }
 };
 
+enum layers {
+{{{layers.names}}}
+};
+
 {{#dance}}
 enum dance_keys {
   {{{dance.names}}}
@@ -198,11 +202,6 @@ enum custom_keycodes {
 
 #include "dynamic_macro.h"
 
-
-enum layers {
-{{{layers.names}}}
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 {{{layers.keys}}}
 };
@@ -238,25 +237,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return !complete;
 };
 
+{{#ergodox}}
 uint32_t layer_state_set_user(uint32_t state) {
   dim_leds();
 
   ergodox_led_all_set(LED_BRIGHTNESS_LO);
   switch (biton32(state)) {
-    case L_NAV:
-      ergodox_right_led_on(1);
-      break;
-    case L_SYM:
-      ergodox_right_led_on(2);
-      break;
-    case L_PLO:
-      ergodox_right_led_on(3);
-      break;
-    case L_EMO:
-      ergodox_right_led_on(1);
-      ergodox_right_led_on(3);
-      break;
+    {{{ergodox.lights}}}
   }
 
   return state;
 };
+
+{{/ergodox}}

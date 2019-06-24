@@ -1,4 +1,4 @@
-fu#include "ergodox_ez.h"
+#include "ergodox_ez.h"
 #include "debug.h"
 #include "action_layer.h"
 #include "version.h"
@@ -170,6 +170,14 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
   }
 };
 
+enum layers {
+LAYER_DEFAULT = 0,
+  LAYER_SYMBOL,
+  LAYER_NAVIGATION,
+  LAYER_EMOJI,
+  LAYER_PLOVER
+};
+
 enum dance_keys {
   DANCE_KC_CAPSDANCE = 1,
   DANCE_KC_ZDANCE,
@@ -189,15 +197,14 @@ enum dance_action_names {
   ACTION_SEQ__CAPSLOCK = 1,
   ACTION_SEQ__TOGGLE_LAYER_SYMBOL,
   ACTION_SEQ__HOLD_LAYER_SYMBOL,
-  ACTION_SEQ__HOLD_LAYER_SYMBOL__CTRL,
-  ACTION_SEQ__HOLD_LAYER_SYMBOL__ALT,
+  ACTION_SEQ__HOLD_LAYER_SYMBOL__LCTRL,
+  ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT,
   ACTION_SEQ__Z,
-  ACTION_SEQ__CTRL,
-  ACTION_SEQ__CTRL__SHIFT,
-  ACTION_SEQ__CTRL__SHIFT__ALT,
-  ACTION_SEQ__SEMICOLON,
+  ACTION_SEQ__LCTRL,
+  ACTION_SEQ__LCTRL__LSHIFT,
+  ACTION_SEQ__LCTRL__LSHIFT__LALT,
+  ACTION_SEQ__SCOLON,
   ACTION_SEQ__HOLD_LAYER_NAVIGATION,
-  ACTION_SEQ__HOLD_LAYER_SYMBOL,
   ACTION_SEQ__F7,
   ACTION_SEQ__F17,
   ACTION_SEQ__F8,
@@ -220,7 +227,7 @@ enum dance_action_names {
   ACTION_SEQ__F20
 };
 
-static int dance_key_states[13] = {0};
+static int dance_key_states[703] = {0};
 
 void on_dance(qk_tap_dance_state_t *state, void *user_data) {
   uint16_t dance_key = state->keycode - QK_TAP_DANCE;
@@ -239,30 +246,30 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             layer_on(LAYER_SYMBOL);
-            dance_states[danceKey] = ACTION_SEQ__HOLD_LAYER_SYMBOL
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL;
     
-            return
+            return;
       
           case 2:
             layer_on(LAYER_SYMBOL);
-            register_win_code(KC_CTRL);
-            dance_states[danceKey] = ACTION_SEQ__HOLD_LAYER_SYMBOL__CTRL
+            register_win_code(KC_LCTRL);
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL__LCTRL;
     
-            return
+            return;
       
           case 3:
             layer_on(LAYER_SYMBOL);
-            register_win_code(KC_ALT);
-            dance_states[danceKey] = ACTION_SEQ__HOLD_LAYER_SYMBOL__ALT
+            register_win_code(KC_LALT);
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT;
     
-            return
+            return;
       
 
           default:
             
           layer_on(LAYER_SYMBOL);
-            register_win_code(KC_ALT);
-            dance_states[danceKey] = ACTION_SEQ__HOLD_LAYER_SYMBOL__ALT
+            register_win_code(KC_LALT);
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT;
     
         
             return;
@@ -276,25 +283,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_CAPSLOCK);
-            dance_states[danceKey] = ACTION_SEQ__CAPSLOCK
+            dance_key_states[dance_key] = ACTION_SEQ__CAPSLOCK;
     
-            return
+            return;
       
           case 2:
             layer_invert(LAYER_SYMBOL);
-            dance_states[danceKey] = ACTION_SEQ__TOGGLE_LAYER_SYMBOL
+            dance_key_states[dance_key] = ACTION_SEQ__TOGGLE_LAYER_SYMBOL;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_CAPSLOCK);
-            dance_states[danceKey] = ACTION_SEQ__CAPSLOCK
+            dance_key_states[dance_key] = ACTION_SEQ__CAPSLOCK;
     
             unregister_win_code(KC_CAPSLOCK);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -302,7 +309,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_ZDANCE:
       if (state->pressed) {
@@ -311,33 +318,33 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           
           case 1:
-            register_win_code(KC_CTRL);
-            dance_states[danceKey] = ACTION_SEQ__CTRL
+            register_win_code(KC_LCTRL);
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL;
     
-            return
+            return;
       
           case 2:
-            register_win_code(KC_CTRL);
-            register_win_code(KC_SHIFT);
-            dance_states[danceKey] = ACTION_SEQ__CTRL__SHIFT
+            register_win_code(KC_LCTRL);
+            register_win_code(KC_LSHIFT);
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT;
     
-            return
+            return;
       
           case 3:
-            register_win_code(KC_CTRL);
-            register_win_code(KC_SHIFT);
-            register_win_code(KC_ALT);
-            dance_states[danceKey] = ACTION_SEQ__CTRL__SHIFT__ALT
+            register_win_code(KC_LCTRL);
+            register_win_code(KC_LSHIFT);
+            register_win_code(KC_LALT);
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT__LALT;
     
-            return
+            return;
       
 
           default:
             
-          register_win_code(KC_CTRL);
-            register_win_code(KC_SHIFT);
-            register_win_code(KC_ALT);
-            dance_states[danceKey] = ACTION_SEQ__CTRL__SHIFT__ALT
+          register_win_code(KC_LCTRL);
+            register_win_code(KC_LSHIFT);
+            register_win_code(KC_LALT);
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT__LALT;
     
         
             return;
@@ -351,19 +358,19 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_Z);
-            dance_states[danceKey] = ACTION_SEQ__Z
+            dance_key_states[dance_key] = ACTION_SEQ__Z;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_Z);
-            dance_states[danceKey] = ACTION_SEQ__Z
+            dance_key_states[dance_key] = ACTION_SEQ__Z;
     
             unregister_win_code(KC_Z);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -371,7 +378,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_SEMICOLONDANCE:
       if (state->pressed) {
@@ -381,21 +388,21 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             layer_on(LAYER_NAVIGATION);
-            dance_states[danceKey] = ACTION_SEQ__HOLD_LAYER_NAVIGATION
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION;
     
-            return
+            return;
       
           case 2:
             layer_on(LAYER_SYMBOL);
-            dance_states[danceKey] = ACTION_SEQ__HOLD_LAYER_SYMBOL
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL;
     
-            return
+            return;
       
 
           default:
             
           layer_on(LAYER_SYMBOL);
-            dance_states[danceKey] = ACTION_SEQ__HOLD_LAYER_SYMBOL
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL;
     
         
             return;
@@ -408,20 +415,20 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           
           case 1:
-            register_win_code(KC_SEMICOLON);
-            dance_states[danceKey] = ACTION_SEQ__SEMICOLON
+            register_win_code(KC_SCOLON);
+            dance_key_states[dance_key] = ACTION_SEQ__SCOLON;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
-            register_win_code(KC_SEMICOLON);
-            dance_states[danceKey] = ACTION_SEQ__SEMICOLON
+            register_win_code(KC_SCOLON);
+            dance_key_states[dance_key] = ACTION_SEQ__SCOLON;
     
-            unregister_win_code(KC_SEMICOLON);
-            dance_states[danceKey] = 0
+            unregister_win_code(KC_SCOLON);
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -429,7 +436,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F7DANCE:
       if (state->pressed) {
@@ -451,25 +458,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F7);
-            dance_states[danceKey] = ACTION_SEQ__F7
+            dance_key_states[dance_key] = ACTION_SEQ__F7;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F17);
-            dance_states[danceKey] = ACTION_SEQ__F17
+            dance_key_states[dance_key] = ACTION_SEQ__F17;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F7);
-            dance_states[danceKey] = ACTION_SEQ__F7
+            dance_key_states[dance_key] = ACTION_SEQ__F7;
     
             unregister_win_code(KC_F7);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -477,7 +484,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F8DANCE:
       if (state->pressed) {
@@ -499,25 +506,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F8);
-            dance_states[danceKey] = ACTION_SEQ__F8
+            dance_key_states[dance_key] = ACTION_SEQ__F8;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F18);
-            dance_states[danceKey] = ACTION_SEQ__F18
+            dance_key_states[dance_key] = ACTION_SEQ__F18;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F8);
-            dance_states[danceKey] = ACTION_SEQ__F8
+            dance_key_states[dance_key] = ACTION_SEQ__F8;
     
             unregister_win_code(KC_F8);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -525,7 +532,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F9DANCE:
       if (state->pressed) {
@@ -547,25 +554,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F9);
-            dance_states[danceKey] = ACTION_SEQ__F9
+            dance_key_states[dance_key] = ACTION_SEQ__F9;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F19);
-            dance_states[danceKey] = ACTION_SEQ__F19
+            dance_key_states[dance_key] = ACTION_SEQ__F19;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F9);
-            dance_states[danceKey] = ACTION_SEQ__F9
+            dance_key_states[dance_key] = ACTION_SEQ__F9;
     
             unregister_win_code(KC_F9);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -573,7 +580,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F4DANCE:
       if (state->pressed) {
@@ -595,25 +602,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F4);
-            dance_states[danceKey] = ACTION_SEQ__F4
+            dance_key_states[dance_key] = ACTION_SEQ__F4;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F14);
-            dance_states[danceKey] = ACTION_SEQ__F14
+            dance_key_states[dance_key] = ACTION_SEQ__F14;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F4);
-            dance_states[danceKey] = ACTION_SEQ__F4
+            dance_key_states[dance_key] = ACTION_SEQ__F4;
     
             unregister_win_code(KC_F4);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -621,7 +628,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F5DANCE:
       if (state->pressed) {
@@ -643,25 +650,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F5);
-            dance_states[danceKey] = ACTION_SEQ__F5
+            dance_key_states[dance_key] = ACTION_SEQ__F5;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F15);
-            dance_states[danceKey] = ACTION_SEQ__F15
+            dance_key_states[dance_key] = ACTION_SEQ__F15;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F5);
-            dance_states[danceKey] = ACTION_SEQ__F5
+            dance_key_states[dance_key] = ACTION_SEQ__F5;
     
             unregister_win_code(KC_F5);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -669,7 +676,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F6DANCE:
       if (state->pressed) {
@@ -691,25 +698,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F6);
-            dance_states[danceKey] = ACTION_SEQ__F6
+            dance_key_states[dance_key] = ACTION_SEQ__F6;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F16);
-            dance_states[danceKey] = ACTION_SEQ__F16
+            dance_key_states[dance_key] = ACTION_SEQ__F16;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F6);
-            dance_states[danceKey] = ACTION_SEQ__F6
+            dance_key_states[dance_key] = ACTION_SEQ__F6;
     
             unregister_win_code(KC_F6);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -717,7 +724,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F1DANCE:
       if (state->pressed) {
@@ -739,25 +746,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F1);
-            dance_states[danceKey] = ACTION_SEQ__F1
+            dance_key_states[dance_key] = ACTION_SEQ__F1;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F11);
-            dance_states[danceKey] = ACTION_SEQ__F11
+            dance_key_states[dance_key] = ACTION_SEQ__F11;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F1);
-            dance_states[danceKey] = ACTION_SEQ__F1
+            dance_key_states[dance_key] = ACTION_SEQ__F1;
     
             unregister_win_code(KC_F1);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -765,7 +772,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F2DANCE:
       if (state->pressed) {
@@ -787,25 +794,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F2);
-            dance_states[danceKey] = ACTION_SEQ__F2
+            dance_key_states[dance_key] = ACTION_SEQ__F2;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F12);
-            dance_states[danceKey] = ACTION_SEQ__F12
+            dance_key_states[dance_key] = ACTION_SEQ__F12;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F2);
-            dance_states[danceKey] = ACTION_SEQ__F2
+            dance_key_states[dance_key] = ACTION_SEQ__F2;
     
             unregister_win_code(KC_F2);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -813,7 +820,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F3DANCE:
       if (state->pressed) {
@@ -835,25 +842,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F3);
-            dance_states[danceKey] = ACTION_SEQ__F3
+            dance_key_states[dance_key] = ACTION_SEQ__F3;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F13);
-            dance_states[danceKey] = ACTION_SEQ__F13
+            dance_key_states[dance_key] = ACTION_SEQ__F13;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F3);
-            dance_states[danceKey] = ACTION_SEQ__F3
+            dance_key_states[dance_key] = ACTION_SEQ__F3;
     
             unregister_win_code(KC_F3);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -861,7 +868,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
     case DANCE_KC_F10DANCE:
       if (state->pressed) {
@@ -883,25 +890,25 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           
           case 1:
             register_win_code(KC_F10);
-            dance_states[danceKey] = ACTION_SEQ__F10
+            dance_key_states[dance_key] = ACTION_SEQ__F10;
     
-            return
+            return;
       
           case 2:
             register_win_code(KC_F20);
-            dance_states[danceKey] = ACTION_SEQ__F20
+            dance_key_states[dance_key] = ACTION_SEQ__F20;
     
-            return
+            return;
       
 
           default:
             
           for (int i=0; i < state->count; i++) {
             register_win_code(KC_F10);
-            dance_states[danceKey] = ACTION_SEQ__F10
+            dance_key_states[dance_key] = ACTION_SEQ__F10;
     
             unregister_win_code(KC_F10);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
           }
         
@@ -909,7 +916,7 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         }
     
       }
-      break
+      break;
     
   }
 }
@@ -919,237 +926,136 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
   switch (dance_key_states[dance_key]) {
     case ACTION_SEQ__HOLD_LAYER_SYMBOL:
             layer_off(LAYER_SYMBOL);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__HOLD_LAYER_SYMBOL__CTRL:
-            layer_off(LAYER_SYMBOL);
-            unregister_win_code(KC_CTRL);
-            dance_states[danceKey] = 0
-    
-            break
-    
-          case ACTION_SEQ__HOLD_LAYER_SYMBOL__ALT:
-            layer_off(LAYER_SYMBOL);
-            unregister_win_code(KC_ALT);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
         
           case ACTION_SEQ__CAPSLOCK:
             unregister_win_code(KC_CAPSLOCK);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__TOGGLE_LAYER_SYMBOL:
-            
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
-          case ACTION_SEQ__CTRL:
-            unregister_win_code(KC_CTRL);
-            dance_states[danceKey] = 0
+          case ACTION_SEQ__LCTRL:
+            unregister_win_code(KC_LCTRL);
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__CTRL__SHIFT:
-            unregister_win_code(KC_CTRL);
-            unregister_win_code(KC_SHIFT);
-            dance_states[danceKey] = 0
-    
-            break
-    
-          case ACTION_SEQ__CTRL__SHIFT__ALT:
-            unregister_win_code(KC_CTRL);
-            unregister_win_code(KC_SHIFT);
-            unregister_win_code(KC_ALT);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
         
           case ACTION_SEQ__Z:
             unregister_win_code(KC_Z);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
+            break;
     
     
         
           case ACTION_SEQ__HOLD_LAYER_NAVIGATION:
             layer_off(LAYER_NAVIGATION);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__HOLD_LAYER_SYMBOL:
-            layer_off(LAYER_SYMBOL);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
         
-          case ACTION_SEQ__SEMICOLON:
-            unregister_win_code(KC_SEMICOLON);
-            dance_states[danceKey] = 0
+          case ACTION_SEQ__SCOLON:
+            unregister_win_code(KC_SCOLON);
+            dance_key_states[dance_key] = 0;
     
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F7:
             unregister_win_code(KC_F7);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F17:
-            unregister_win_code(KC_F17);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F8:
             unregister_win_code(KC_F8);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F18:
-            unregister_win_code(KC_F18);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F9:
             unregister_win_code(KC_F9);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F19:
-            unregister_win_code(KC_F19);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F4:
             unregister_win_code(KC_F4);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F14:
-            unregister_win_code(KC_F14);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F5:
             unregister_win_code(KC_F5);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F15:
-            unregister_win_code(KC_F15);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F6:
             unregister_win_code(KC_F6);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F16:
-            unregister_win_code(KC_F16);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F1:
             unregister_win_code(KC_F1);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F11:
-            unregister_win_code(KC_F11);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F2:
             unregister_win_code(KC_F2);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F12:
-            unregister_win_code(KC_F12);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F3:
             unregister_win_code(KC_F3);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F13:
-            unregister_win_code(KC_F13);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
         
         
           case ACTION_SEQ__F10:
             unregister_win_code(KC_F10);
-            dance_states[danceKey] = 0
+            dance_key_states[dance_key] = 0;
     
-            break
-    
-          case ACTION_SEQ__F20:
-            unregister_win_code(KC_F20);
-            dance_states[danceKey] = 0
-    
-            break
+            break;
     
     
   }
@@ -1183,97 +1089,110 @@ enum custom_keycodes {
 
 #include "dynamic_macro.h"
 
-
-enum layers {
-LAYER_DEFAULT = 0,
-  LAYER_SYMBOL,
-  LAYER_NAVIGATION,
-  LAYER_EMOJI
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_DEFAULT] = LAYOUT_ergodox(
   
-/* left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
-/* left-1 */ KC_TAB,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
-/* left-2 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,
-/* left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),KC_X,KC_C,KC_V,KC_B,_______,
-/* left-4 */ _______,_______,_______,KC_LEFT,KC_RGHT,
-/* left-thumb-0 */ KC_ESC,_______,
-/* left-thumb-1 */ KC_HOME,
-/* left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
-/* right-0 */ _______,KC_6,KC_7,KC_8,KC_9,KC_0,_______,
-/* right-1 */ _______,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
-/* right-2 */ KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),KC_QUOT,
-/* right-3 */ _______,KC_N,KC_M,KC_COMM,KC_DOT,KC_SLSH,KC_RSPO,
-/* right-4 */ KC_LBRC,KC_RBRC,KC_BSLS,KC_GRV,TG(LAYER_PLOVER),
-/* right-thumb-0 */ KC_ESC,_______,
-/* right-thumb-1 */ KC_PGUP,
-/* right-thumb-2 */ KC_PGDN,KC_TAB,KC_ENT,
+/* keys-left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
+/* keys-left-1 */ KC_TAB,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
+/* keys-left-2 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,
+/* keys-left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),KC_X,KC_C,KC_V,KC_B,_______,
+/* keys-left-4 */ _______,_______,_______,KC_LEFT,KC_RGHT,
+/* keys-left-thumb-0 */ KC_ESC,_______,
+/* keys-left-thumb-1 */ KC_HOME,
+/* keys-left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
+/* keys-right-0 */ _______,KC_6,KC_7,KC_8,KC_9,KC_0,_______,
+/* keys-right-1 */ _______,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
+/* keys-right-2 */ KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),KC_QUOT,
+/* keys-right-3 */ _______,KC_N,KC_M,KC_COMM,KC_DOT,KC_SLSH,KC_RSPC,
+/* keys-right-4 */ KC_LBRC,KC_RBRC,KC_BSLS,KC_GRV,TG(LAYER_PLOVER),
+/* keys-right-thumb-0 */ KC_ESC,_______,
+/* keys-right-thumb-1 */ KC_PGUP,
+/* keys-right-thumb-2 */ KC_PGDN,KC_TAB,KC_ENT
 )
   ,
 
 [LAYER_SYMBOL] = LAYOUT_ergodox(
   
-/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-1 */ _______,KC_EXLM,KC_AT,_______,KC_BSLS,KC_PIPE,_______,
-/* left-2 */ KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,_______,
-/* left-3 */ KC_PERC,KC_CIRC,KC_LBRC,KC_RBRC,KC_TILD,_______,_______,
-/* left-4 */ _______,_______,_______,_______,_______,
-/* left-thumb-0 */ _______,_______,
-/* left-thumb-1 */ _______,
-/* left-thumb-2 */ KC_DELETE,_______,_______,
-/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* right-1 */ KC_PPLS,KC_7,KC_8,KC_9,_______,_______,KC_EQL,
-/* right-2 */ KC_4,KC_5,KC_6,KC_PAST,_______,_______,
-/* right-3 */ KC_MINS,KC_1,KC_2,KC_3,KC_AMPR,_______,_______,
-/* right-4 */ _______,KC_EQL,KC_0,KC_DOT,_______,
-/* right-thumb-0 */ _______,_______,
-/* right-thumb-1 */ _______,
-/* right-thumb-2 */ _______,_______,_______,
+/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-1 */ _______,KC_EXLM,KC_AT,_______,KC_BSLS,KC_PIPE,_______,
+/* keys-left-2 */ KC_HASH,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,_______,
+/* keys-left-3 */ KC_PERC,KC_CIRC,KC_LBRC,KC_RBRC,KC_TILD,_______,_______,
+/* keys-left-4 */ _______,_______,_______,_______,_______,
+/* keys-left-thumb-0 */ _______,_______,
+/* keys-left-thumb-1 */ _______,
+/* keys-left-thumb-2 */ KC_DELETE,_______,_______,
+/* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-right-1 */ KC_PPLS,KC_7,KC_8,KC_9,_______,_______,KC_EQL,
+/* keys-right-2 */ KC_4,KC_5,KC_6,KC_PAST,_______,_______,
+/* keys-right-3 */ KC_MINS,KC_1,KC_2,KC_3,KC_AMPR,_______,_______,
+/* keys-right-4 */ _______,KC_EQL,KC_0,KC_DOT,_______,
+/* keys-right-thumb-0 */ _______,_______,
+/* keys-right-thumb-1 */ _______,
+/* keys-right-thumb-2 */ _______,_______,_______
 )
   ,
 
 [LAYER_NAVIGATION] = LAYOUT_ergodox(
   
-/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
-/* left-2 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,
-/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-4 */ _______,_______,_______,_______,_______,
-/* left-thumb-0 */ _______,_______,
-/* left-thumb-1 */ _______,
-/* left-thumb-2 */ _______,_______,_______,
-/* right-0 */ _______,KC_PWR,KC_SLEP,UC_M_WC,UC_M_OS,_______,_______,
-/* right-1 */ _______,_______,KC_BRID,KC_BRIU,_______,_______,_______,
-/* right-2 */ KC_LEFT,KC_DOWN,KC_UP,KC_RGHT,_______,_______,
-/* right-3 */ _______,KC_WH_L,KC_WH_D,KC_WH_U,KC_WH_R,_______,_______,
-/* right-4 */ KC_VOLD,KC_VOLU,KC_MUTE,_______,_______,
-/* right-thumb-0 */ _______,_______,
-/* right-thumb-1 */ _______,
-/* right-thumb-2 */ _______,_______,_______,
+/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
+/* keys-left-2 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,
+/* keys-left-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-4 */ _______,_______,_______,_______,_______,
+/* keys-left-thumb-0 */ _______,_______,
+/* keys-left-thumb-1 */ _______,
+/* keys-left-thumb-2 */ _______,_______,_______,
+/* keys-right-0 */ _______,KC_PWR,KC_SLEP,UC_M_WC,UC_M_OS,_______,_______,
+/* keys-right-1 */ _______,_______,KC_BRID,KC_BRIU,_______,_______,_______,
+/* keys-right-2 */ KC_LEFT,KC_DOWN,KC_UP,KC_RGHT,_______,_______,
+/* keys-right-3 */ _______,KC_WH_L,KC_WH_D,KC_WH_U,KC_WH_R,_______,_______,
+/* keys-right-4 */ KC_VOLD,KC_VOLU,KC_MUTE,_______,_______,
+/* keys-right-thumb-0 */ _______,_______,
+/* keys-right-thumb-1 */ _______,
+/* keys-right-thumb-2 */ _______,_______,_______
 )
   ,
 
 [LAYER_EMOJI] = LAYOUT_ergodox(
   
-/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-1 */ _______,X(EMOJI_1F60A) /*😊*/,X(EMOJI_1F602) /*😂*/,X(EMOJI_1F914) /*🤔*/,X(EMOJI_1F44D) /*👍*/,X(EMOJI_1F4AA) /*💪*/,_______,
-/* left-2 */ _______,X(EMOJI_1F60F) /*😏*/,X(EMOJI_1F525) /*🔥*/,X(EMOJI_1F496) /*💖*/,X(EMOJI_1F622) /*😢*/,X(EMOJI_1F62D) /*😭*/,
-/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-4 */ _______,_______,_______,_______,_______,
-/* left-thumb-0 */ _______,_______,
-/* left-thumb-1 */ _______,
-/* left-thumb-2 */ _______,_______,_______,
-/* right-0 */ KC_RESET,DYN_REC_START1,DYN_REC_START2,DYN_REC_STOP,DYN_MACRO_PLAY1,DYN_MACRO_PLAY2,_______,
-/* right-1 */ _______,_______,TD(DANCE_KC_F7DANCE),TD(DANCE_KC_F8DANCE),TD(DANCE_KC_F9DANCE),_______,_______,
-/* right-2 */ _______,TD(DANCE_KC_F4DANCE),TD(DANCE_KC_F5DANCE),TD(DANCE_KC_F6DANCE),_______,_______,
-/* right-3 */ _______,_______,TD(DANCE_KC_F1DANCE),TD(DANCE_KC_F2DANCE),TD(DANCE_KC_F3DANCE),_______,_______,
-/* right-4 */ _______,_______,TD(DANCE_KC_F10DANCE),_______,_______,
-/* right-thumb-0 */ _______,_______,
-/* right-thumb-1 */ _______,
-/* right-thumb-2 */ _______,_______,_______,
+/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-1 */ _______,X(EMOJI_1F60A) /*😊*/,X(EMOJI_1F602) /*😂*/,X(EMOJI_1F914) /*🤔*/,X(EMOJI_1F44D) /*👍*/,X(EMOJI_1F4AA) /*💪*/,_______,
+/* keys-left-2 */ _______,X(EMOJI_1F60F) /*😏*/,X(EMOJI_1F525) /*🔥*/,X(EMOJI_1F496) /*💖*/,X(EMOJI_1F622) /*😢*/,X(EMOJI_1F62D) /*😭*/,
+/* keys-left-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-4 */ _______,_______,_______,_______,_______,
+/* keys-left-thumb-0 */ _______,_______,
+/* keys-left-thumb-1 */ _______,
+/* keys-left-thumb-2 */ _______,_______,_______,
+/* keys-right-0 */ ZKC_BTL,DYN_REC_START1,DYN_REC_START2,DYN_REC_STOP,DYN_MACRO_PLAY1,DYN_MACRO_PLAY2,_______,
+/* keys-right-1 */ _______,_______,TD(DANCE_KC_F7DANCE),TD(DANCE_KC_F8DANCE),TD(DANCE_KC_F9DANCE),_______,_______,
+/* keys-right-2 */ _______,TD(DANCE_KC_F4DANCE),TD(DANCE_KC_F5DANCE),TD(DANCE_KC_F6DANCE),_______,_______,
+/* keys-right-3 */ _______,_______,TD(DANCE_KC_F1DANCE),TD(DANCE_KC_F2DANCE),TD(DANCE_KC_F3DANCE),_______,_______,
+/* keys-right-4 */ _______,_______,TD(DANCE_KC_F10DANCE),_______,_______,
+/* keys-right-thumb-0 */ _______,_______,
+/* keys-right-thumb-1 */ _______,
+/* keys-right-thumb-2 */ _______,_______,_______
+)
+  ,
+
+[LAYER_PLOVER] = LAYOUT_ergodox(
+  
+/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-1 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-2 */ _______,_______,_______,_______,_______,_______,
+/* keys-left-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-left-4 */ _______,_______,_______,_______,_______,
+/* keys-left-thumb-0 */ _______,_______,
+/* keys-left-thumb-1 */ _______,
+/* keys-left-thumb-2 */ _______,_______,_______,
+/* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-right-1 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-right-2 */ _______,_______,_______,_______,_______,_______,
+/* keys-right-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-right-4 */ _______,_______,_______,_______,_______,
+/* keys-right-thumb-0 */ _______,_______,
+/* keys-right-thumb-1 */ _______,
+/* keys-right-thumb-2 */ _______,_______,_______
 )
   
 };
@@ -1314,20 +1233,25 @@ uint32_t layer_state_set_user(uint32_t state) {
 
   ergodox_led_all_set(LED_BRIGHTNESS_LO);
   switch (biton32(state)) {
-    case L_NAV:
-      ergodox_right_led_on(1);
-      break;
-    case L_SYM:
+    
+    case LAYER_SYMBOL:
       ergodox_right_led_on(2);
       break;
-    case L_PLO:
-      ergodox_right_led_on(3);
-      break;
-    case L_EMO:
+  
+    case LAYER_NAVIGATION:
       ergodox_right_led_on(1);
+      break;
+  
+    case LAYER_EMOJI:
+      ergodox_right_led_on(1); ergodox_right_led_on(3);
+      break;
+  
+    case LAYER_PLOVER:
       ergodox_right_led_on(3);
       break;
+  
   }
 
   return state;
 };
+

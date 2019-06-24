@@ -2,89 +2,120 @@ keyboards:
   ergodox:
     layers:
       default:
-        left:
-          - [esc, 1, 2, 3, 4, 5, ~]
-          - [tab, q, w, e, r, t, ~]
-          - [capsDance, a, s, d, f, g]
-          - ["shift(", zDance, x, c, v, b, ~]
-          - [~, ~, ~, left, right]
-        left-thumb:
-          - [esc, ~]
-          - [home]
-          - [space, backspace, end]
-        right:
-          - [~, 6, 7, 8, 9, 0, ~]
-          - [~, y, u, i, o, p, \]
-          - [   h, j, k, l, semicolonDance, "'"]
-          - [~, n, m, ",", ".", "/", "shift)"]
-          - ["[", "]", \, "`", togglePlover]
-        right-thumb:
-          - [esc, ~]
-          - [pageUp]
-          - [pageDown, tab, enter]
+        lights: []
+        keys:
+          left:
+            - [esc, 1, 2, 3, 4, 5, ~]
+            - [tab, q, w, e, r, t, ~]
+            - [capsDance, a, s, d, f, g]
+            - ["shift(", zDance, x, c, v, b, ~]
+            - [~, ~, ~, left, right]
+          left-thumb:
+            - [esc, ~]
+            - [home]
+            - [space, backspace, end]
+          right:
+            - [~, 6, 7, 8, 9, 0, ~]
+            - [~, y, u, i, o, p, \]
+            - [   h, j, k, l, semicolonDance, "'"]
+            - [~, n, m, ",", ".", "/", "shift)"]
+            - ["[", "]", \, "`", togglePlover]
+          right-thumb:
+            - [esc, ~]
+            - [pageUp]
+            - [pageDown, tab, enter]
       symbol:
-        left:
-          - [~, ~, ~, ~, ~, ~, ~]
-          - [~, "!", "@", {, }, \, "|"]
-          - [~, "#", $, (, ), "`"]
-          - [~, "%", ^, "[", "]", "~", ~]
-          - [~, ~, ~, ~, ~]
-        left-thumb:
-          - [~, ~]
-          - [~]
-          - [~, delete, ~]
-        right:
-          - [~, ~, ~, ~, ~, ~, ~]
-          - [~, +, 7, 8, 9, ~, ~]
-          - [   =, 4, 5, 6, "*", ~]
-          - [~, "-", 1, 2, 3, "&", ~, ~]
-          - [~, =, 0, ".", ~]
-        right-thumb:
-          - [~, ~]
-          - [~]
-          - [~, ~, ~]
+        lights: [2]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, "!", "@", {, }, \, "|"]
+            - [~, "#", $, (, ), "`"]
+            - [~, "%", ^, "[", "]", "~", ~]
+            - [~, ~, ~, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, delete, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, +, 7, 8, 9, ~, ~]
+            - [   =, 4, 5, 6, "*", ~]
+            - [~, "-", 1, 2, 3, "&", ~, ~]
+            - [~, =, 0, ".", ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
       navigation:
-        left:
-          - [~, ~, ~, ~, ~, ~, ~]
-          - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~]
-          - [~, ~, mouseLeft, mouseDown, mouseRight, ~]
-          - [~, ~, ~, ~, ~, ~, ~]
-          - [~, ~, ~, ~, ~]
-        left-thumb:
-          - [~, ~]
-          - [~]
-          - [~, ~, ~]
-        right:
-          - [~, shutdown, sleep, windowsMode, macosMode, ~, ~]
-          - [~, ~, brightnessDown, brightnessUp, ~, ~, ~]
-          - [   left, down, up, right, ~, ~]
-          - [~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
-          - [      volumeDown, volumeUp, volumeToggle, ~, ~]
-        right-thumb:
-          - [~, ~]
-          - [~]
-          - [~, ~, ~]
+        lights: [1]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~]
+            - [~, ~, mouseLeft, mouseDown, mouseRight, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, shutdown, sleep, windowsMode, macosMode, ~, ~]
+            - [~, ~, brightnessDown, brightnessUp, ~, ~, ~]
+            - [   left, down, up, right, ~, ~]
+            - [~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
+            - [      volumeDown, volumeUp, volumeToggle, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
       emoji:
-        left:
-          - [~, ~, ~, ~, ~, ~, ~]
-          - [~, 😊, 😂, 🤔, 👍, 💪, ~]
-          - [~, 😏, 🔥, 💖, 😢, 😭]
-          - [~, ~, ~, ~, ~, ~, ~]
-          - [~, ~, ~, ~, ~]
-        left-thumb:
-          - [~, ~]
-          - [~]
-          - [~, ~, ~]
-        right:
-          - [reset, recordMacro1, recordMacro2, stopRecordMacro, playMacro1, playMacro2, ~]
-          - [~, ~, F7Dance, F8Dance, F9Dance, ~, ~]
-          - [   ~, F4Dance, F5Dance, F6Dance, ~, ~]
-          - [~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
-          - [~, ~, F10Dance, ~, ~]
-        right-thumb:
-          - [~, ~]
-          - [~]
-          - [~, ~, ~]
+        lights: [1,3]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, 😊, 😂, 🤔, 👍, 💪, ~]
+            - [~, 😏, 🔥, 💖, 😢, 😭]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [enterBootloader, recordMacro1, recordMacro2, stopRecordMacro, playMacro1, playMacro2, ~]
+            - [~, ~, F7Dance, F8Dance, F9Dance, ~, ~]
+            - [   ~, F4Dance, F5Dance, F6Dance, ~, ~]
+            - [~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
+            - [~, ~, F10Dance, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+      plover:
+        lights: [3]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [   ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
 #      template:
 #        left:
 #          - [~, ~, ~, ~, ~, ~, ~]
@@ -115,16 +146,16 @@ keys:
     - [toggleSymbol]
     hold:
     - [holdSymbol]
-    - [holdSymbol, ctrl]
-    - [holdSymbol, alt]
+    - [holdSymbol, lctrl]
+    - [holdSymbol, lalt]
   zDance:
     type: dance
     tap: 
     - [z]
     hold:
-    - [ctrl]
-    - [ctrl, shift]
-    - [ctrl, shift, alt]
+    - [lctrl]
+    - [lctrl, lshift]
+    - [lctrl, lshift, lalt]
   F1Dance: { type: dance, tap: [['f1'], ['f11']]}
   F2Dance: { type: dance, tap: [['f2'], ['f12']]}
   F3Dance: { type: dance, tap: [['f3'], ['f13']]}
@@ -138,13 +169,13 @@ keys:
   semicolonDance:
     type: dance
     tap:
-    - [semicolon]
+    - [";"]
     hold:
     - [holdNavigation]
     - [holdSymbol]
 map:
     "shift(": LSPO
-    "shift)": RSPO
+    "shift)": RSPC
     pageUp: PGUP
     pageDown: PGDN
     space: SPC
@@ -175,6 +206,7 @@ map:
     "=": EQL
     "&": AMPR
     "|": PIPE
+    ";": SCOLON
     mouseLeftButton: BTN1
     mouseRightButton: BTN2
     mouseLeft: MS_L
@@ -203,3 +235,4 @@ map:
     recordMacro1: DYN_REC_START1
     recordMacro2: DYN_REC_START2
     stopRecordMacro: DYN_REC_STOP
+    enterBootloader: ZKC_BTL
