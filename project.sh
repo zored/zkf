@@ -27,7 +27,7 @@ case $1 in
 
  sync|s)
   echo 'Updating QMK library'
-  rm q.mk
+  rm -f q.mk
   make $_
  ;;
 
@@ -45,7 +45,7 @@ case $1 in
   hex=$(ls *${2}*.hex)
   count=$(echo $hex | wc --lines)
   if [[ $count != '1' ]]; then
-    echo "Found $count HEX files. Specify version."
+    echo "Found $count HEX files. Specify version. $hex"
   fi
 
   mcu='atmega32u4'

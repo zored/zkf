@@ -11,6 +11,6 @@ UNICODE_ENABLE = no
 UNICODEMAP_ENABLE = yes
 
 # C++ rules:
-CPPFLAGS += -std=c++17 -fno-exceptions -Isrc -Ivendor
+#CPPFLAGS += -std=c++17 -fno-exceptions -Isrc -Ivendor
 #SRC += \
 #	src/main.cpp

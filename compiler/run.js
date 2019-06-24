@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict"
 
 const fs = require('fs')
@@ -6,15 +7,15 @@ const INDENT = '  '
 const _ = require('lodash')
 
 function main() {
+  const [,,keyboard = 'ergodox'] = process.argv
   const config = getConfig()
-  const defaultLayer = config.keyboards.ergodox.layers.default.keys
-  const layerStructure = flatternStructure(defaultLayer)
+  const layersConfig = config.keyboards[keyboard].layers
+  const layerStructure = flatternStructure(layersConfig.default)
   const keyFactory = new KeyFactory(config.keys, config.map)
-  const layerKeys = flattern(defaultLayer)
-    .map(key => keyFactory.create(key))
-
-  compileTemplate(layerKeys, layerStructure)
-
+  const layers = new LayerCollection(
+    _.map(layersConfig, (keys, name) => new Layer(name, keyFactory.createFromObject(keys), layerStructure))
+  )
+  compileTemplate(layers)
   console.log('Done!')
 }
 
@@ -22,12 +23,17 @@ function main() {
 class Key {
   constructor(name){
     this.name = name
+
+    if (name !== null && name.match(/^(UC|DYN)_/)) {
+      this.noPrefix = true
+    }
   }
   get codeName() {
     if (this.name == null) {
       return '_______'
     }
-    return 'KC_' + this.name.toUpperCase()
+
+    return (this.noPrefix ? '' : 'KC_') + this.name.toUpperCase()
   }
   get tapCode() {
     return `register_win_code(${this.codeName});`
@@ -37,6 +43,39 @@ class Key {
   }
   get layerCodeName() {
     return this.codeName
+  }
+}
+
+class EmojiKey extends Key {
+  constructor (emoji) {
+    super(emoji.codePointAt(0).toString(16).toUpperCase())
+    this.emoji = emoji
+  }
+
+  get hex () {
+    return this.name
+  }
+
+  get codeName() {
+    return 'EMOJI_' + this.name
+  }
+
+  get layerCodeName () {
+    return `X(${this.codeName}) /*${this.emoji}*/`
+  }
+}
+
+class LayerCollection {
+  constructor (layers) {
+    this.layers = layers
+  }
+
+  get all () {
+    return this.layers
+  }
+
+  get allKeys () {
+    return this.layers.flatMap(layer => layer.keys)
   }
 }
 
@@ -62,7 +101,7 @@ class Layer {
     }).join('')
 
     if (i !== this.keys.length) {
-      throw new Exception(`Layer ${this.name} doesn't suit default layer structure.`)
+      throw new Error(`Layer '${this.name}' doesn't suit default layer structure: ${JSON.stringify(this.structure)}`)
     }
 
     return keyCodesString
@@ -218,7 +257,7 @@ class TapDanceAction extends Action {
 
           default:
             ${this.manyDancesCode}
-            return
+            return;
         }
     `
   }
@@ -233,14 +272,21 @@ class TapDanceAction extends Action {
     let action
     switch (this.manyDancesType) {
       case 'startLast':
-        action = this.actions[this.actions.length - 1]
+        action = _.last(this.actions)
+        if (!action) {
+          return ''
+        }
 
         return `
           ${action.onDanceCode}
         `
 
       case 'repeatFirst':
-        action = this.actions[0]
+        action = _.first(this.actions)
+        if (!action) {
+          return ''
+        }
+
         return `
           for (int i=0; i < state->count; i++) {
             ${action.onDanceCode}
@@ -249,7 +295,7 @@ class TapDanceAction extends Action {
         `
     }
 
-    throw new Exception(`Unknown tap dance action on many taps / holds: ${this.manyDancesType}`)
+    throw new Error(`Unknown tap dance action on many taps / holds: ${this.manyDancesType}`)
   }
   get childActions () {
     return this.actions
@@ -275,8 +321,8 @@ function ltrim (value) {
   return value.replace(/^\s+/, '')
 }
 
-function getDanceTemplateData (layerKeys) {
-  const keys = layerKeys.filter(key => key instanceof DanceKey)
+function getDanceTemplateData (layers) {
+  const keys = layers.allKeys.filter(key => key instanceof DanceKey)
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
   const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).join(''))
@@ -297,26 +343,38 @@ function getDanceTemplateData (layerKeys) {
   }
 }
 
+function getUnicodeTemplateData (layers) {
+  const keys = layers.allKeys.filter(key => key instanceof EmojiKey)
+  const names = glueEnum(keys.map(key => key.codeName), 0)
+  const map = keys.map(key => `[${key.codeName}] 0x${key.hex}, // ${key.emoji}`).join('\n')
+
+  return {
+    names,
+    map,
+  }
+}
+
 function getLayersTemplateData(layers) {
-  const keys = layers.map(layer => `
+  const keys = layers.all.map(layer => `
 [${layer.codeName}] = LAYOUT_ergodox(
   ${layer.keyCodesString}
 )
   `).join(ARRAY_GLUE)
 
-  const names = glueEnum(layers.map(layer => layer.codeName), 0)
+  const names = glueEnum(layers.all.map(layer => layer.codeName), 0)
 
   return {keys, names}
 }
 
-function compileTemplate (layerKeys, layerStructure) {
+function compileTemplate (layers) {
   const Mustache = require('Mustache')
 
   const result = Mustache.render(fs.readFileSync('keymap.c.mustache', 'utf8'), {
-    dance: getDanceTemplateData(layerKeys),
-    layers: getLayersTemplateData([new Layer('default', layerKeys, layerStructure)]),
+    dance: getDanceTemplateData(layers),
+    unicode: getUnicodeTemplateData(layers),
+    layers: getLayersTemplateData(layers),
   })
-  fs.writeFileSync('keymap.new.c', result)
+  fs.writeFileSync('keymap.c', result)
 }
 
 // general
@@ -367,6 +425,10 @@ class KeyFactory {
     return this._createKeysFromConfig(key) || this._createKeyByName(key) || key
   }
 
+  createFromObject(keys) {
+    return flattern(keys).map(key => this.create(key))
+  }
+
   _createFromScalar(value) {
     if (value === null) {
       return new NullKey()
@@ -382,7 +444,7 @@ class KeyFactory {
       return new Key(value)
     }
 
-    throw new Exception(`Undefined key value type: ${value}.`)
+    throw new Error(`Undefined key value type: ${value}.`)
   }
 
   _createKeyByName(key) {
@@ -391,6 +453,23 @@ class KeyFactory {
       return null
     }
 
+    return this._createLayerKey(name) || this._createEmojiKey(name) || null
+  }
+
+  _createEmojiKey (name) {
+    const emojiPattern = /[\u{1f300}-\u{1f5ff}\u{1f900}-\u{1f9ff}\u{1f600}-\u{1f64f}\u{1f680}-\u{1f6ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}\u{1f1e6}-\u{1f1ff}\u{1f191}-\u{1f251}\u{1f004}\u{1f0cf}\u{1f170}-\u{1f171}\u{1f17e}-\u{1f17f}\u{1f18e}\u{3030}\u{2b50}\u{2b55}\u{2934}-\u{2935}\u{2b05}-\u{2b07}\u{2b1b}-\u{2b1c}\u{3297}\u{3299}\u{303d}\u{00a9}\u{00ae}\u{2122}\u{23f3}\u{24c2}\u{23e9}-\u{23ef}\u{25b6}\u{23f8}-\u{23fa}]/ug
+    if (name.length !== 2) {
+      return null
+    }
+
+    if (!emojiPattern.test(name)) {
+      return null
+    }
+
+    return new EmojiKey(name)
+  }
+
+  _createLayerKey(name) {
     const match = name.match(/^(?<type>toggle|hold)(?<layer>[A-Z0-9].+)$/)
     if (match == null) {
       return null
@@ -420,12 +499,11 @@ class KeyFactory {
 
     switch (config.type) {
       case 'dance':
-        const {tap, hold} = config
+        const {tap = [], hold = []} = config
         const createActions = (stepsActions, manyDancesType) => new TapDanceAction(
           stepsActions.map(stepActions => this._createTapStepAction(stepActions)),
           manyDancesType
         )
-
 
         return new DanceKey(
           key.name,
@@ -434,7 +512,7 @@ class KeyFactory {
         )
     }
 
-    throw new Exception(`Undefined .keys.${key.name} config type: ${config.type}`)
+    throw new Error(`Undefined .keys.${key.name} config type: ${config.type}`)
   }
   _createTapStepAction (stepActions) {
     const keys = stepActions.map(item => this.create(item))

@@ -9,3 +9,4 @@ tests/parser-test
 vendor/teensy/
 *.hex
 node_modules/
+keymap.c

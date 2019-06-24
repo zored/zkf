@@ -1,4 +1,4 @@
-#include "ergodox_ez.h"
+fu#include "ergodox_ez.h"
 #include "debug.h"
 #include "action_layer.h"
 #include "version.h"
@@ -57,34 +57,12 @@ void unregister_win_code(uint8_t code) {
 }
 
 enum unicode_names {
-  E_LOL = 0,
-  E_JOY,
-  E_THI,
-  E_THU,
-  E_BIC,
-  E_SMI,
-  E_FIR,
-  E_HEA,
-  E_CRY,
-  E_SOB,
-  E_DNC,
-  RU_Q,
+  {{{unicode.names}}}
 };
 
 const uint32_t PROGMEM
 unicode_map[] = {
-  [E_LOL] 0x1F60A, // 😊
-  [E_JOY] 0x1F602, // 😂
-  [E_THI] 0x1F914, // 🤔
-  [E_THU] 0x1F44D, // 👍
-  [E_BIC] 0x1F4AA, // 💪
-  [E_SMI] 0x1F60F, // 😏
-  [E_FIR] 0x1F525, // 🔥
-  [E_HEA] 0x1F496, // 💖
-  [E_CRY] 0x1F622, // 😢
-  [E_SOB] 0x1F62D, // 😭
-  [E_DNC] 0x1F57A, // 🕺
-  [RU_Q] 0x430, // а
+  {{{unicode.map}}}
 };
 
 // Combos:
