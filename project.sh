@@ -32,6 +32,9 @@ case $1 in
  ;;
 
  sync|s)
+  cd compiler
+  yarn install
+  cd -
   echo 'Updating QMK library'
   rm -f $SYNC_FILE
   make $_
