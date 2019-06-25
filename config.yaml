@@ -40,7 +40,7 @@ keyboards:
           right:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, +, 7, 8, 9, ~, ~]
-            - [   =, 4, 5, 6, "*", ~]
+            - [   =, 4, 5, 6, "starDance", ~]
             - [~, "-", 1, 2, 3, "&", ~, ~]
             - [~, =, 0, ".", ~]
           right-thumb:
@@ -212,7 +212,12 @@ keys:
     - [";"]
     hold:
     - [holdNavigation]
-    - [holdSymbol]
+  starDance:
+    type: dance
+    tap:
+    - ["*"]
+    hold:
+    - [holdNavigation]
   quoteDance:
     type: dance
     tap:

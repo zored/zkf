@@ -7,9 +7,6 @@ init-docker () {
   eval $(docker-machine env $machine) || true
 }
 
-export KEYMAP_VERSION=$(git describe --abbrev=6 --always --tags 2>/dev/null)
-export TARGET=ergodox_ez_zored_${KEYMAP_VERSION}
-
 NODE_IMAGE=node:12.4.0-alpine
 QMK_IMAGE=qmkfm/qmk_firmware
 # QMK_IMAGE=zored/alebastr-qmk-whitefox-keymap
@@ -20,12 +17,9 @@ case $1 in
   if [[ ! -e $SYNC_FILE ]]; then
     $0 sync
   fi
-  required_files='visualizer.c'
-  touch $required_files
   init-docker
   docker run --rm -v "/$PWD:/build" --workdir=//build $NODE_IMAGE compiler/run.js
   docker run --rm -v "/$PWD:/build" --workdir=//build $QMK_IMAGE make
-  rm -f $required_files
  ;;
 
  docker-build|d)
