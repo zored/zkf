@@ -12,7 +12,7 @@ TOP_DIR := vendor/qmk_firmware
 all: $(TOP_DIR)/quantum/version.h
 
 # Generate the version.h file
-KEYMAP_VERSION := $(shell git describe --abbrev=6 --always --tags 2>/dev/null)
+KEYMAP_VERSION ?= $(shell git describe --abbrev=6 --always --tags 2>/dev/null)
 QMK_VERSION := $(shell git -C $(TOP_DIR) describe --abbrev=6 --always --tags  2>/dev/null)
 BUILD_DATE := $(shell date +"%Y-%m-%d-%H:%M:%S")
 

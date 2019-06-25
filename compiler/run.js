@@ -99,20 +99,20 @@ class Layer {
   get keyCodesString () {
     let i = 0
 
-    const keyCodesString = _.trim(_.map(this.structure, (count, name) => {
+    return _.trim(_.map(this.structure, (count, name) => {
       const keyCodes = this.keys.slice(i, i + count).map(key => key.layerCodeName)
+
+      const actualCount = keyCodes.length
+      const expectedCount = this.structure[name]
+      if (actualCount !== expectedCount) {
+        throw new Error(`Layer ${this.name} config ${name} has ${actualCount} items instead of ${expectedCount}.`)
+      }
       i += count
 
       return rtrim(`
 /* ${name} */ ${keyCodes},
     `)
     }).join(''), ',')
-
-    if (i !== this.keys.length) {
-      throw new Error(`Layer '${this.name}' doesn't suit default layer structure: ${JSON.stringify(this.structure)}`)
-    }
-
-    return keyCodesString
   }
   toString () {
     return this.codeName
@@ -195,17 +195,18 @@ class NullKey extends Key {
   }
 }
 
-let lastActionId = 0
+let lastActionNumber = 0
 
 class Action {
   constructor (id) {
-    this.id = id + '_' + (++lastActionId)
+    this.id = id
+    this.number = ++lastActionNumber
   }
   get codeName () {
     if (this.id === null) {
       return null
     }
-    return 'ACTION_' + this.id.toUpperCase()
+    return 'ACTION_' + this.id.toUpperCase() + '_' + this.number
   }
   get childActions () {
     return []

@@ -8,7 +8,7 @@ keyboards:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [tab, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
-            - ["shift(", zDance, x, c, v, b, ~]
+            - ["shift(", zDance, xDance, cDance, v, b, ~]
             - [~, ~, ~, left, right]
           left-thumb:
             - [esc, ~]
@@ -17,8 +17,8 @@ keyboards:
           right:
             - [~, 6, 7, 8, 9, 0, ~]
             - [~, y, u, i, o, p, \]
-            - [   h, j, k, l, semicolonDance, "'"]
-            - [~, n, m, ",", ".", "/", "shift)"]
+            - [   h, j, k, l, semicolonDance, "quoteDance"]
+            - [~, n, m, commaDance, dotDance, slashDance, "shift)"]
             - ["[", "]", \, "`", togglePlover]
           right-thumb:
             - [esc, ~]
@@ -29,8 +29,8 @@ keyboards:
         keys:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, "!", "@", {, }, \, "|"]
-            - [~, "#", $, (, ), "`"]
+            - [~, "!", "@", "{", "}", "\\", "|"]
+            - [~, "#", $, "(", ")", "`"]
             - [~, "%", ^, "[", "]", "~", ~]
             - [~, ~, ~, ~, ~]
           left-thumb:
@@ -156,6 +156,46 @@ keys:
     - [lctrl]
     - [lctrl, lshift]
     - [lctrl, lshift, lalt]
+  xDance:
+    type: dance
+    tap: 
+    - [x]
+    hold:
+    - [lalt]
+    - [lalt, lshift]
+    - [lalt, lshift, lctrl]
+  cDance:
+    type: dance
+    tap: 
+    - [c]
+    hold:
+    - [lgui]
+    - [lgui, lshift]
+    - [lgui, lshift, lctrl]
+  slashDance:
+    type: dance
+    tap: 
+    - ["/"]
+    hold:
+    - [rctrl]
+    - [rctrl, rshift]
+    - [rctrl, rshift, ralt]
+  dotDance:
+    type: dance
+    tap: 
+    - ["."]
+    hold:
+    - [ralt]
+    - [ralt, rshift]
+    - [ralt, rshift, rctrl]
+  commaDance:
+    type: dance
+    tap: 
+    - [","]
+    hold:
+    - [rgui]
+    - [rgui, rshift]
+    - [rgui, rshift, rctrl]
   F1Dance: { type: dance, tap: [['f1'], ['f11']]}
   F2Dance: { type: dance, tap: [['f2'], ['f12']]}
   F3Dance: { type: dance, tap: [['f3'], ['f13']]}
@@ -173,6 +213,13 @@ keys:
     hold:
     - [holdNavigation]
     - [holdSymbol]
+  quoteDance:
+    type: dance
+    tap:
+    - ["'"]
+    hold:
+    - [holdEmoji]
+    - [holdNavigation]
 map:
     "shift(": LSPO
     "shift)": RSPC
@@ -191,7 +238,7 @@ map:
     ",": COMM
     "`": GRV
     .: DOT
-    \: BSLS
+    "\\": BSLS
     /: SLSH
     "!": EXLM
     "@": AT

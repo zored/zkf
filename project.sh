@@ -7,6 +7,9 @@ init-docker () {
   eval $(docker-machine env $machine) || true
 }
 
+export KEYMAP_VERSION=$(git describe --abbrev=6 --always --tags 2>/dev/null)
+export TARGET=ergodox_ez_zored_${KEYMAP_VERSION}
+
 NODE_IMAGE=node:12.4.0-alpine
 SYNC_FILE=q.mk
 
@@ -21,7 +24,6 @@ case $1 in
   docker run --rm -v "/$PWD:/build" --workdir=//build $NODE_IMAGE compiler/run.js
   docker run --rm -v "/$PWD:/build" --workdir=//build zored/zkf make
   rm -f $required_files
-  ## mv ergodox_ez_zored.hex $hex
  ;;
 
  docker-build|d)
@@ -58,9 +60,9 @@ case $1 in
  flash|f)
   echo 'Retrieving HEX file.'
   hex=$(ls *${2}*.hex)
-  count=$(echo $hex | wc --lines)
+  count=$(echo $hex | wc -l)
   if [[ $count != '1' ]]; then
-    echo "Found $count HEX files. Specify version. $hex"
+    echo "Found $count HEX files. Specify version: $hex"
   fi
 
   mcu='atmega32u4'
@@ -89,7 +91,7 @@ TEXT
 
  build-and-flash|bf)
   $0 build
-  $0 flash
+  $0 flash $2
  ;;
 
  *)

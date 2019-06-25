@@ -5,8 +5,7 @@
 .build/
 q.mk
 tests/parser-test
-/*.c
 vendor/teensy/
 *.hex
 node_modules/
-keymap.c
+keymap.c;
