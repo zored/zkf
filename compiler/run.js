@@ -145,7 +145,9 @@ class LayerHoldKey extends Key {
   }
 
   get tapCode () {
-    return `layer_on(${this.layer.codeName});`
+    return `
+      layer_on(${this.layer.codeName});
+    `
   }
   get releaseCode () {
     return `layer_off(${this.layer.codeName});`

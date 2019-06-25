@@ -11,6 +11,8 @@ export KEYMAP_VERSION=$(git describe --abbrev=6 --always --tags 2>/dev/null)
 export TARGET=ergodox_ez_zored_${KEYMAP_VERSION}
 
 NODE_IMAGE=node:12.4.0-alpine
+QMK_IMAGE=qmkfm/qmk_firmware
+# QMK_IMAGE=zored/alebastr-qmk-whitefox-keymap
 SYNC_FILE=q.mk
 
 case $1 in
@@ -22,7 +24,7 @@ case $1 in
   touch $required_files
   init-docker
   docker run --rm -v "/$PWD:/build" --workdir=//build $NODE_IMAGE compiler/run.js
-  docker run --rm -v "/$PWD:/build" --workdir=//build zored/zkf make
+  docker run --rm -v "/$PWD:/build" --workdir=//build $QMK_IMAGE make
   rm -f $required_files
  ;;
 
@@ -37,8 +39,7 @@ case $1 in
  sync|s)
   init-docker
   docker run --rm -v "/$PWD:/build" --workdir=//build/compiler $NODE_IMAGE yarn install
-  docker pull zored/alebastr-qmk-whitefox-keymap
-  docker tag $_ zored/zkf
+  docker pull $QMK_IMAGE
 
   cd compiler
   yarn install

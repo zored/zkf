@@ -219,7 +219,8 @@ keys:
     - ["'"]
     hold:
     - [holdEmoji]
-    - [holdNavigation]
+    - [holdEmoji, lctrl]
+    - [holdEmoji, lctrl, lalt]
 map:
     "shift(": LSPO
     "shift)": RSPC

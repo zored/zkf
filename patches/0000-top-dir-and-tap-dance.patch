@@ -1,0 +1,226 @@
+diff --git a/build_keyboard.mk b/build_keyboard.mk
+index 213cb4445..6c6d601f5 100644
+--- a/build_keyboard.mk
++++ b/build_keyboard.mk
+@@ -4,13 +4,17 @@
+ # responsible for determining which folder is being used and doing the
+ # corresponding environment setup.
+ 
++SILENT ?= false
++
+ ifndef VERBOSE
+ .SILENT:
+ endif
+ 
+ .DEFAULT_GOAL := all
+ 
+-include common.mk
++TOP_DIR ?= .
++
++include $(TOP_DIR)/common.mk
+ 
+ # Set the filename for the final firmware binary
+ KEYBOARD_FILESAFE := $(subst /,_,$(KEYBOARD))
+@@ -51,11 +55,11 @@ KEYBOARD_FOLDER_3 := $(notdir $(KEYBOARD_FOLDER_PATH_3))
+ KEYBOARD_FOLDER_4 := $(notdir $(KEYBOARD_FOLDER_PATH_4))
+ KEYBOARD_FOLDER_5 := $(notdir $(KEYBOARD_FOLDER_PATH_5))
+ KEYBOARD_PATHS :=
+-KEYBOARD_PATH_1 := keyboards/$(KEYBOARD_FOLDER_PATH_1)
+-KEYBOARD_PATH_2 := keyboards/$(KEYBOARD_FOLDER_PATH_2)
+-KEYBOARD_PATH_3 := keyboards/$(KEYBOARD_FOLDER_PATH_3)
+-KEYBOARD_PATH_4 := keyboards/$(KEYBOARD_FOLDER_PATH_4)
+-KEYBOARD_PATH_5 := keyboards/$(KEYBOARD_FOLDER_PATH_5)
++KEYBOARD_PATH_1 := $(TOP_DIR)/keyboards/$(KEYBOARD_FOLDER_PATH_1)
++KEYBOARD_PATH_2 := $(TOP_DIR)/keyboards/$(KEYBOARD_FOLDER_PATH_2)
++KEYBOARD_PATH_3 := $(TOP_DIR)/keyboards/$(KEYBOARD_FOLDER_PATH_3)
++KEYBOARD_PATH_4 := $(TOP_DIR)/keyboards/$(KEYBOARD_FOLDER_PATH_4)
++KEYBOARD_PATH_5 := $(TOP_DIR)/keyboards/$(KEYBOARD_FOLDER_PATH_5)
+ 
+ ifneq ("$(wildcard $(KEYBOARD_PATH_5)/)","")
+     KEYBOARD_PATHS += $(KEYBOARD_PATH_5)
+@@ -118,8 +122,12 @@ else ifneq ("$(wildcard $(MAIN_KEYMAP_PATH_1)/keymap.c)","")
+     -include $(MAIN_KEYMAP_PATH_1)/rules.mk
+     KEYMAP_C := $(MAIN_KEYMAP_PATH_1)/keymap.c
+     KEYMAP_PATH := $(MAIN_KEYMAP_PATH_1)
++else ifneq ("$(wildcard keymap.c)","")
++    -include rules.mk
++    KEYMAP_C := keymap.c
++    KEYMAP_PATH := .
+ else ifneq ($(LAYOUTS),)
+-    include build_layout.mk
++    include $(TOP_DIR)/build_layout.mk
+ else
+     $(error Could not find keymap)
+     # this state should never be reached
+@@ -135,11 +143,7 @@ ifeq ($(strip $(CONVERT_TO_PROTON_C)), yes)
+     OPT_DEFS += -DCONVERT_TO_PROTON_C
+ endif
+ 
+-ifneq ($(FORCE_LAYOUT),)
+-    TARGET := $(TARGET)_$(FORCE_LAYOUT)
+-endif
+-
+-include quantum/mcu_selection.mk
++include $(TOP_DIR)/quantum/mcu_selection.mk
+ 
+ ifdef MCU_FAMILY
+     OPT_DEFS += -DQMK_STM32
+@@ -306,7 +310,7 @@ PROJECT_CONFIG := $(CONFIG_H)
+ ifeq ("$(USER_NAME)","")
+     USER_NAME := $(KEYMAP)
+ endif
+-USER_PATH := users/$(USER_NAME)
++USER_PATH := $(TOP_DIR)/users/$(USER_NAME)
+ 
+ -include $(USER_PATH)/rules.mk
+ ifneq ("$(wildcard $(USER_PATH)/config.h)","")
+@@ -337,10 +341,10 @@ VPATH += $(USER_PATH)
+ VPATH += $(KEYBOARD_PATHS)
+ VPATH += $(COMMON_VPATH)
+ 
+-include common_features.mk
++include $(TOP_DIR)/common_features.mk
+ include $(TMK_PATH)/protocol.mk
+ include $(TMK_PATH)/common.mk
+-include bootloader.mk
++include $(TOP_DIR)/bootloader.mk
+ 
+ SRC += $(patsubst %.c,%.clib,$(LIB_SRC))
+ SRC += $(patsubst %.c,%.clib,$(QUANTUM_LIB_SRC))
+@@ -393,5 +397,5 @@ all: build check-size
+ build: elf cpfirmware
+ check-size: build
+ 
+-include show_options.mk
++include $(TOP_DIR)/show_options.mk
+ include $(TMK_PATH)/rules.mk
+diff --git a/build_test.mk b/build_test.mk
+index cac2cba50..1ee6fd270 100644
+--- a/build_test.mk
++++ b/build_test.mk
+@@ -4,7 +4,9 @@ endif
+ 
+ .DEFAULT_GOAL := all
+ 
+-include common.mk
++TOP_DIR ?= .
++
++include $(TOP_DIR)/common.mk
+ 
+ TARGET=test/$(TEST)
+ 
+@@ -17,7 +19,7 @@ OUTPUTS := $(TEST_OBJ)/$(TEST) $(GTEST_OUTPUT)
+ GTEST_INC := \
+ 	$(LIB_PATH)/googletest/googletest/include\
+ 	$(LIB_PATH)/googletest/googlemock/include\
+-	
++
+ GTEST_INTERNAL_INC :=\
+ 	$(LIB_PATH)/googletest/googletest\
+ 	$(LIB_PATH)/googletest/googlemock
+@@ -27,7 +29,7 @@ $(GTEST_OUTPUT)_SRC :=\
+ 	googletest/src/gtest_main.cc\
+ 	googlemock/src/gmock-all.cc
+ 
+-$(GTEST_OUTPUT)_DEFS := 
++$(GTEST_OUTPUT)_DEFS :=
+ $(GTEST_OUTPUT)_INC := $(GTEST_INC) $(GTEST_INTERNAL_INC)
+ 
+ LDFLAGS += -lstdc++ -lpthread -shared-libgcc
+@@ -43,14 +45,14 @@ VPATH += $(COMMON_VPATH)
+ PLATFORM:=TEST
+ 
+ ifneq ($(filter $(FULL_TESTS),$(TEST)),)
+-include tests/$(TEST)/rules.mk
++include $(TOP_DIR)/tests/$(TEST)/rules.mk
+ endif
+ 
+-include common_features.mk
++include $(TOP_DIR)/common_features.mk
+ include $(TMK_PATH)/common.mk
+ include $(QUANTUM_PATH)/serial_link/tests/rules.mk
+ ifneq ($(filter $(FULL_TESTS),$(TEST)),)
+-include build_full_test.mk
++include $(TOP_DIR)/build_full_test.mk
+ endif
+ 
+ $(TEST_OBJ)/$(TEST)_SRC := $($(TEST)_SRC)
+diff --git a/common.mk b/common.mk
+index aea29a7a2..c22337bef 100644
+--- a/common.mk
++++ b/common.mk
+@@ -1,20 +1,20 @@
+-include message.mk
+-
+ # Directory common source files exist
+-TOP_DIR = .
++include $(TOP_DIR)/message.mk
++
+ TMK_DIR = tmk_core
+-TMK_PATH = $(TMK_DIR)
+-LIB_PATH = lib
++TMK_PATH = $(TOP_DIR)/$(TMK_DIR)
++LIB_PATH = $(TOP_DIR)/lib
+ 
+ QUANTUM_DIR = quantum
+-QUANTUM_PATH = $(QUANTUM_DIR)
++QUANTUM_PATH = $(TOP_DIR)/$(QUANTUM_DIR)
+ 
+ DRIVER_DIR = drivers
+-DRIVER_PATH = $(DRIVER_DIR)
++DRIVER_PATH = $(TOP_DIR)/$(DRIVER_DIR)
+ 
+ BUILD_DIR := .build
+ 
+-COMMON_VPATH := $(TOP_DIR)
++COMMON_VPATH := .
++COMMON_VPATH += $(TOP_DIR)
+ COMMON_VPATH += $(TMK_PATH)
+ COMMON_VPATH += $(QUANTUM_PATH)
+ COMMON_VPATH += $(QUANTUM_PATH)/keymap_extras
+diff --git a/quantum/process_keycode/process_tap_dance.h b/quantum/process_keycode/process_tap_dance.h
+index ca12f4746..15188c842 100644
+--- a/quantum/process_keycode/process_tap_dance.h
++++ b/quantum/process_keycode/process_tap_dance.h
+@@ -67,6 +67,12 @@ typedef struct
+     .user_data = (void *)&((qk_tap_dance_pair_t) { kc1, kc2 }),  \
+   }
+ 
++#define ACTION_TAP_DANCE_DOUBLE_TIME(kc1, kc2, tap_specific_tapping_term) { \
++    .fn = { qk_tap_dance_pair_on_each_tap, qk_tap_dance_pair_finished, qk_tap_dance_pair_reset }, \
++    .user_data = (void *)&((qk_tap_dance_pair_t) { kc1, kc2 }),  \
++    .custom_tapping_term = tap_specific_tapping_term, \
++  }
++
+ #define ACTION_TAP_DANCE_DUAL_ROLE(kc, layer) { \
+     .fn = { qk_tap_dance_dual_role_on_each_tap, qk_tap_dance_dual_role_finished, qk_tap_dance_dual_role_reset }, \
+     .user_data = (void *)&((qk_tap_dance_dual_role_t) { kc, layer }), \
+diff --git a/quantum/visualizer/visualizer.mk b/quantum/visualizer/visualizer.mk
+index 3bf3f7de6..afdc5551e 100644
+--- a/quantum/visualizer/visualizer.mk
++++ b/quantum/visualizer/visualizer.mk
+@@ -76,7 +76,7 @@ SRC += $(VISUALIZER_DIR)/default_animations.c
+ 
+ include $(GFXLIB)/gfx.mk
+ # For the common_gfxconf.h
+-GFXINC += quantum/visualizer
++GFXINC += $(TOP_DIR)/quantum/visualizer
+ 
+ GFXSRC := $(patsubst $(TOP_DIR)/%,%,$(GFXSRC))
+ GFXDEFS := $(patsubst %,-D%,$(patsubst -D%,%,$(GFXDEFS)))
+diff --git a/tmk_core/protocol.mk b/tmk_core/protocol.mk
+index 78b9deb29..5cef29e9c 100644
+--- a/tmk_core/protocol.mk
++++ b/tmk_core/protocol.mk
+@@ -1,4 +1,4 @@
+-PROTOCOL_DIR = protocol
++PROTOCOL_DIR = $(TOP_DIR)/protocol
+ 
+ 
+ ifdef PS2_MOUSE_ENABLE
+@@ -56,4 +56,4 @@ ifdef XT_ENABLE
+ endif
+ 
+ # Search Path
+-VPATH += $(TMK_DIR)/protocol
++VPATH += $(TMK_PATH)/protocol

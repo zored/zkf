@@ -1,5 +1,6 @@
+{{#ergodox}}
 #include "ergodox_ez.h"
-#include "debug.h"
+{{/ergodox}}
 #include "action_layer.h"
 #include "version.h"
 #include "keymap_steno.h"
@@ -208,13 +209,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 void matrix_init_user(void) {
   steno_set_mode(STENO_MODE_GEMINI);
-}
-
-void dim_leds(void) {
-  ergodox_board_led_off();
-  ergodox_right_led_1_off();
-  ergodox_right_led_2_off();
-  ergodox_right_led_3_off();
+  {{#ergodox}}
+  ergodox_led_all_set(LED_BRIGHTNESS_LO);
+  {{/ergodox}}
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -239,14 +236,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 {{#ergodox}}
 uint32_t layer_state_set_user(uint32_t state) {
-  dim_leds();
+  ergodox_led_all_off();
 
-  ergodox_led_all_set(LED_BRIGHTNESS_LO);
   switch (biton32(state)) {
     {{{ergodox.lights}}}
   }
 
   return state;
 };
-
 {{/ergodox}}
