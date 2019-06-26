@@ -1,6 +1,13 @@
 {{#ergodox}}
 #include "ergodox_ez.h"
 {{/ergodox}}
+
+{{#planck}}
+#include QMK_KEYBOARD_H
+#include "muse.h"
+#include "eeprom.h"
+{{/planck}}
+
 #include "action_layer.h"
 #include "version.h"
 #include "keymap_steno.h"
@@ -234,14 +241,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return !complete;
 };
 
-{{#ergodox}}
 uint32_t layer_state_set_user(uint32_t state) {
+{{#ergodox}}
   ergodox_led_all_off();
 
   switch (biton32(state)) {
     {{{ergodox.lights}}}
   }
+{{/ergodox}}
+
+{{#planck}}
+  palClearPad(GPIOB, 8);
+  palClearPad(GPIOB, 9);
+  uint8_t layer = biton32(state);
+  switch (layer) {
+    {{{planck.lights}}}
+  }
+{{/planck}}
 
   return state;
 };
-{{/ergodox}}

@@ -7,9 +7,10 @@ const INDENT = '  '
 const _ = require('lodash')
 
 function main () {
-  const [,, keyboard = 'ergodox'] = process.argv
+  const [,, keyboardQmkName = 'ergodox_ez'] = process.argv
+  const keyboard = (new KeyboardFactory()).create(keyboardQmkName)
   const config = getConfig()
-  const layersConfig = config.keyboards[keyboard].layers
+  const layersConfig = config.keyboards[keyboard.configName].layers
   const layerStructure = flatternStructure(layersConfig.default)
   const keyFactory = new KeyFactory(config.keys, config.map)
   const layers = new LayerCollection(
@@ -370,9 +371,9 @@ function getUnicodeTemplateData (layers) {
   }
 }
 
-function getLayersTemplateData (layers) {
+function getLayersTemplateData (layers, keyboard) {
   const keys = layers.all.map(layer => `
-[${layer.codeName}] = LAYOUT_ergodox(
+[${layer.codeName}] = ${keyboard.layoutCodeName}(
   ${layer.keyCodesString}
 )
   `).join(ARRAY_GLUE)
@@ -382,27 +383,14 @@ function getLayersTemplateData (layers) {
   return { keys, names }
 }
 
-function getErgodoxTemplateData (layers, keyboard) {
-  const lights = layers.allWithLights.map(layer => `
-    case ${layer.codeName}:
-      ` + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
-      break;
-  `).join('')
-
-  return {
-    lights
-  }
-}
-
 function compileTemplate (layers, keyboard) {
   const Mustache = require('Mustache')
 
-  const result = Mustache.render(fs.readFileSync('keymap.c.mustache', 'utf8'), {
+  const result = Mustache.render(fs.readFileSync('keymap.c.mustache', 'utf8'), _.merge({
     dance: getDanceTemplateData(layers),
     unicode: getUnicodeTemplateData(layers),
-    layers: getLayersTemplateData(layers),
-    ergodox: getErgodoxTemplateData(layers, keyboard)
-  })
+    layers: getLayersTemplateData(layers, keyboard),
+  }, keyboard.getTemplateData(layers)))
   fs.writeFileSync('keymap.c', result)
 }
 
@@ -440,6 +428,74 @@ function flatternStructure (item, structureKey, nextKey) {
 }
 
 // key
+
+class Keyboard {
+  get configName () {
+    throw `No keyboard config defined`
+  }
+  get layoutCodeName () {
+    throw `No keyboard layout code name defined`
+  }
+  getTemplateData(layers) {
+    return {}
+  }
+}
+class ErgodoxEz extends Keyboard {
+  get configName () {
+    return 'ergodox'
+  }
+  get layoutCodeName () {
+    return 'LAYOUT_ergodox'
+  }
+  getTemplateData(layers) {
+    const lights = layers.allWithLights.map(layer => `
+      case ${layer.codeName}:
+        ` + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
+        break;
+    `).join('')
+
+    return {ergodox: {lights}}
+  }
+}
+class PlanckEz extends Keyboard {
+  get configName () {
+    return 'planck'
+  }
+  get layoutCodeName () {
+    return 'LAYOUT_planck_grid'
+  }
+  getTemplateData(layers) {
+    const lights = layers.allWithLights.map(layer => `
+      case ${layer.codeName}:
+        ` + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
+        break;
+    `).join('')
+
+    return {planck: {lights}}
+  }
+  _getLightCode(light) {
+    switch(light) {
+      case 1:
+        return `palSetPad(GPIOB, 9);`
+      case 2:
+        return `palSetPad(GPIOB, 8);`
+    }
+    throw `Unknow Planck light #${light}`
+  }
+}
+
+class KeyboardFactory {
+  create(qmkName) {
+    switch (qmkName) {
+      case 'ergodox_ez':
+        return new ErgodoxEz()
+      case 'planck/ez':
+        return new PlanckEz()
+    }
+
+    throw new Error(`Unknown QMK keyboard ${qmkName}.`)
+  }
+}
 
 class KeyFactory {
   constructor (perKeyConfig, nameMap) {

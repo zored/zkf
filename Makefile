@@ -1,9 +1,11 @@
 # based on:
 # https://github.com/jackhumbert/qmk_firmware_embeded
 
-KEYBOARD := ergodox_ez
+KEYBOARD ?= planck/ez
+TARGET ?= $(KEYBODARD)_zored_$(KEYMAP_VERSION)
+
+# Has no meaning with QMK as dependency:
 KEYMAP :=
-TARGET ?= ergodox_ez_zored_$(KEYMAP_VERSION)
 
 TOP_DIR := vendor/qmk_firmware
 
@@ -25,6 +27,7 @@ q.mk:
 	git -C $(TOP_DIR) reset --hard >&2
 	$(foreach patch, $(shell ls $(CURDIR)/patches/), $(call apply-patch,$(patch));)
 	echo "include $(TOP_DIR)/build_keyboard.mk" > $@
+	cd $(TOP_DIR) && make git-submodule
 
 # The dark magic of GNU make.
 # Presence of q.mk means that the target was executed and patches were applied

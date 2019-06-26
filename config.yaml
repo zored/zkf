@@ -8,7 +8,7 @@ keyboards:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [tab, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
-            - ["shift(", zDance, xDance, cDance, v, b, ~]
+            - ['lShift', zDance, xDance, cDance, v, b, ~]
             - [~, ~, ~, left, right]
           left-thumb:
             - [esc, ~]
@@ -17,9 +17,9 @@ keyboards:
           right:
             - [~, 6, 7, 8, 9, 0, ~]
             - [~, y, u, i, o, p, \]
-            - [   h, j, k, l, semicolonDance, "quoteDance"]
-            - [~, n, m, commaDance, dotDance, slashDance, "shift)"]
-            - ["[", "]", \, "`", togglePlover]
+            - [   h, j, k, l, semicolonDance, quoteDance]
+            - [~, n, m, commaDance, dotDance, slashDance, rShift]
+            - ['[', ']', ~, ~, togglePlover]
           right-thumb:
             - [esc, ~]
             - [pageUp]
@@ -29,9 +29,9 @@ keyboards:
         keys:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, "!", "@", "{", "}", "\\", "|"]
-            - [~, "#", $, "(", ")", "`"]
-            - [~, "%", ^, "[", "]", "~", ~]
+            - [~, '!', '@', '{', '}', '/', ~]
+            - [~, '#', '$', '(', ')', '`']
+            - [~, '%', '^', '[', ']', '~', ~]
             - [~, ~, ~, ~, ~]
           left-thumb:
             - [~, ~]
@@ -39,10 +39,10 @@ keyboards:
             - [~, delete, ~]
           right:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, +, 7, 8, 9, ~, ~]
-            - [   =, 4, 5, 6, "starDance", ~]
-            - [~, "-", 1, 2, 3, "&", ~, ~]
-            - [~, =, 0, ".", ~]
+            - [~, '=', 7, 8, 9, '&', '|']
+            - [   '+', 4, 5, 6, '*', ~]
+            - [~, '-', 1, 2, 3, '/', ~, ~]
+            - [~, ~, 0, '.', ~]
           right-thumb:
             - [~, ~]
             - [~]
@@ -116,27 +116,43 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
-#      template:
-#        left:
-#          - [~, ~, ~, ~, ~, ~, ~]
-#          - [~, ~, ~, ~, ~, ~, ~]
-#          - [~, ~, ~, ~, ~, ~]
-#          - [~, ~, ~, ~, ~, ~, ~]
-#          - [~, ~, ~, ~, ~]
-#        left-thumb:
-#          - [~, ~]
-#          - [~]
-#          - [~, ~, ~]
-#        right:
-#          - [~, ~, ~, ~, ~, ~, ~]
-#          - [~, ~, ~, ~, ~, ~, ~]
-#          - [   ~, ~, ~, ~, ~, ~]
-#          - [~, ~, ~, ~, ~, ~, ~]
-#          - [~, ~, ~, ~, ~]
-#        right-thumb:
-#          - [~, ~]
-#          - [~]
-#          - [~, ~, ~]
+  planck:
+    layers:
+      default:
+        lights: []
+        keys:
+            - [tab, q, w, e, r, t, y, u, i, o, p, \]
+            - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
+            - [lShift, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShift]
+            - [~, ~, ~, space, backspace, space, tab, enter, '[', ']', togglePlover]
+      symbol:
+        lights: [1]
+        keys:
+            - [~, '!', '@', '{', '}','/', '=', 7, 8, 9, '&', '|']
+            - [~, '#', '$', '(', ')', '`', '+', 4, 5, 6, '*', ~]
+            - [~, '%', '^', '[', ']', '~', '-', 1, 2, 3, '/', ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+      navigation:
+        lights: [2]
+        keys:
+            - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
+            - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~]
+            - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
+            - [~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
+      emoji:
+        lights: [1,2]
+        keys:
+            - [~, 😊, 😂, 🤔, 👍, 💪, ~, F7Dance, F8Dance, F9Dance, ~, ~]
+            - [~, 😏, 🔥, 💖, 😢, 😭, ~, F4Dance, F5Dance, F6Dance, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~]
+      plover:
+        lights: [2]
+        keys:
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
 
 keys:
   capsDance:
@@ -154,48 +170,48 @@ keys:
     - [z]
     hold:
     - [lctrl]
-    - [lctrl, lshift]
-    - [lctrl, lshift, lalt]
+    - [lctrl, lShift]
+    - [lctrl, lShift, lalt]
   xDance:
     type: dance
     tap: 
     - [x]
     hold:
     - [lalt]
-    - [lalt, lshift]
-    - [lalt, lshift, lctrl]
+    - [lalt, lShift]
+    - [lalt, lShift, lctrl]
   cDance:
     type: dance
     tap: 
     - [c]
     hold:
     - [lgui]
-    - [lgui, lshift]
-    - [lgui, lshift, lctrl]
+    - [lgui, lShift]
+    - [lgui, lShift, lctrl]
   slashDance:
     type: dance
     tap: 
-    - ["/"]
+    - ['/']
     hold:
     - [rctrl]
-    - [rctrl, rshift]
-    - [rctrl, rshift, ralt]
+    - [rctrl, rShift]
+    - [rctrl, rShift, ralt]
   dotDance:
     type: dance
     tap: 
-    - ["."]
+    - ['.']
     hold:
     - [ralt]
-    - [ralt, rshift]
-    - [ralt, rshift, rctrl]
+    - [ralt, rShift]
+    - [ralt, rShift, rctrl]
   commaDance:
     type: dance
     tap: 
-    - [","]
+    - [',']
     hold:
     - [rgui]
-    - [rgui, rshift]
-    - [rgui, rshift, rctrl]
+    - [rgui, rShift]
+    - [rgui, rShift, rctrl]
   F1Dance: { type: dance, tap: [['f1'], ['f11']]}
   F2Dance: { type: dance, tap: [['f2'], ['f12']]}
   F3Dance: { type: dance, tap: [['f3'], ['f13']]}
@@ -209,13 +225,7 @@ keys:
   semicolonDance:
     type: dance
     tap:
-    - [";"]
-    hold:
-    - [holdNavigation]
-  starDance:
-    type: dance
-    tap:
-    - ["*"]
+    - [';']
     hold:
     - [holdNavigation]
   quoteDance:
@@ -227,39 +237,39 @@ keys:
     - [holdEmoji, lctrl]
     - [holdEmoji, lctrl, lalt]
 map:
-    "shift(": LSPO
-    "shift)": RSPC
+    'shift(': LSPO
+    'shift)': RSPC
     pageUp: PGUP
     pageDown: PGDN
     space: SPC
     backspace: BSPC
     enter: ENT
-    "[": LBRC 
-    "]": RBRC 
-    "(": LPRN
-    ")": RPRN
-    "{": LCBR
-    "}": RCBR
+    '[': LBRC 
+    ']': RBRC 
+    '(': LPRN
+    ')': RPRN
+    '{': LCBR
+    '}': RCBR
     "'": QUOT
-    ",": COMM
-    "`": GRV
+    ',': COMM
+    '`': GRV
     .: DOT
-    "\\": BSLS
+    '\': BSLS
     /: SLSH
-    "!": EXLM
-    "@": AT
-    "#": HASH
-    "$": DLR
-    "%": PERC
-    "~": TILD
-    "^": CIRC
-    "+": PPLS
-    "-": MINS
-    "*": PAST
-    "=": EQL
-    "&": AMPR
-    "|": PIPE
-    ";": SCOLON
+    '!': EXLM
+    '@': AT
+    '#': HASH
+    '$': DLR
+    '%': PERC
+    '~': TILD
+    '^': CIRC
+    '+': PPLS
+    '-': MINS
+    '*': PAST
+    '=': EQL
+    '&': AMPR
+    '|': PIPE
+    ';': SCOLON
     mouseLeftButton: BTN1
     mouseRightButton: BTN2
     mouseLeft: MS_L

@@ -1,25 +1,34 @@
 #/usr/bin/env bash
 set -ex
 
+keyboard=ergodox_ez
+case $2 in
+  planck|p|2)
+    keyboard=planck/ez
+    ;;
+esac
+
 init-docker () {
   local machine=${DOCKER_MACHINE:-default}
   docker-machine start $machine || true
   eval $(docker-machine env $machine) || true
 }
 
-NODE_IMAGE=node:12.4.0-alpine
-QMK_IMAGE=qmkfm/qmk_firmware
-# QMK_IMAGE=zored/alebastr-qmk-whitefox-keymap
-SYNC_FILE=q.mk
+
+node_image=node:12.4.0-alpine
+qmk_image=qmkfm/qmk_firmware
+#qmk_image=zored/alebastr-qmk-whitefox-keymap
+sync_file=q.mk
 
 case $1 in
  build|b)
-  if [[ ! -e $SYNC_FILE ]]; then
+  if [[ ! -e $sync_file ]]; then
     $0 sync
   fi
   init-docker
-  docker run --rm -v "/$PWD:/build" --workdir=//build $NODE_IMAGE compiler/run.js
-  docker run --rm -v "/$PWD:/build" --workdir=//build $QMK_IMAGE make
+  docker run --rm -v "/$PWD:/build" --workdir=//build $node_image compiler/run.js $keyboard
+  export KEYBOARD=$keyboard
+  docker run --rm -v "/$PWD:/build" --workdir=//build $qmk_image make
  ;;
 
  docker-build|d)
@@ -32,14 +41,11 @@ case $1 in
 
  sync|s)
   init-docker
-  docker run --rm -v "/$PWD:/build" --workdir=//build/compiler $NODE_IMAGE yarn install
-  docker pull $QMK_IMAGE
+  docker run --rm -v "/$PWD:/build" --workdir=//build/compiler $node_image yarn install --no-bin-links
+  docker pull $qmk_image
 
-  cd compiler
-  yarn install
-  cd -
   echo 'Updating QMK library'
-  rm -f $SYNC_FILE
+  rm -f $sync_file
   make $_
  ;;
 
@@ -85,8 +91,8 @@ TEXT
  ;;
 
  build-and-flash|bf)
-  $0 build
-  $0 flash $2
+  $0 build $2
+  $0 flash $3
  ;;
 
  *)
