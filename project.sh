@@ -67,19 +67,16 @@ case $1 in
   echo "Install keymap compiler."
   run $node_image "\
     cd compiler/ &&\
-    yarn install --no-bin-links &&\
+    yarn install &&\
     yarn run eslint --fix run.js \
   "
 
   echo "Get and patch QMK."
   git submodule update --init --recursive
-  for patch in ./patches/*; do
-    patch -d $QMK_DIR --forward --no-backup-if-mismatch -r- -p1 -i ./patches/$(1)
+  for patch in patches/*; do
+    patch -d $QMK_DIR --forward --no-backup-if-mismatch -r- -p1 -i $PWD/$patch || true
   done
   run $qmk_image "cd $QMK_DIR && make git-submodule"
-
-  echo "Pull latest QMK builder."
-  docker pull $qmk_image
 
   rm -rf $teensy_rel
   mkdir -p $_
