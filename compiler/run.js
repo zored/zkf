@@ -11,7 +11,7 @@ function main () {
   const keyboard = (new KeyboardFactory()).create(keyboardQmkName)
   const config = getConfig()
   const layersConfig = config.keyboards[keyboard.configName].layers
-  const layerStructure = flatternStructure(layersConfig.default)
+  const layerStructure = new LayerStructure(flatternStructure(layersConfig.default))
   const keyFactory = new KeyFactory(config.keys, config.map)
   const layers = new LayerCollection(
     _.map(layersConfig, ({ keys, lights }, name) => new Layer(name, keyFactory.createFromObject(keys), layerStructure, lights))
@@ -84,6 +84,30 @@ class LayerCollection {
   }
 }
 
+class LayerStructure {
+  constructor (keyCountByLineName) {
+    this.keyCountByLineName = keyCountByLineName
+    this.totalCount = _.sum(_.map(keyCountByLineName, v => v))
+  }
+
+  formatLayer(layer) {
+    const keys = layer.keys
+    if (keys.length !== this.totalCount) {
+      throw `Not enough keys to fill layer ${layer.codeName}`
+    }
+    let i = 0
+
+    return _.trim(_.map(this.keyCountByLineName, (count, name) => {
+      const keyCodes = keys.slice(i, i + count).map(key => key.layerCodeName)
+      i += count
+
+      return rtrim(`
+/* ${name} */ ${keyCodes},
+    `)
+    }).join(''), ',')
+  }
+}
+
 class Layer {
   constructor (name, keys, structure, lights) {
     this.name = name
@@ -98,22 +122,7 @@ class Layer {
     return this._lights
   }
   get keyCodesString () {
-    let i = 0
-
-    return _.trim(_.map(this.structure, (count, name) => {
-      const keyCodes = this.keys.slice(i, i + count).map(key => key.layerCodeName)
-
-      const actualCount = keyCodes.length
-      const expectedCount = this.structure[name]
-      if (actualCount !== expectedCount) {
-        throw new Error(`Layer ${this.name} config ${name} has ${actualCount} items instead of ${expectedCount}.`)
-      }
-      i += count
-
-      return rtrim(`
-/* ${name} */ ${keyCodes},
-    `)
-    }).join(''), ',')
+    return this.structure.formatLayer(this)
   }
   toString () {
     return this.codeName

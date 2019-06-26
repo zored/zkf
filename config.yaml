@@ -8,7 +8,7 @@ keyboards:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [tab, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
-            - ['lShift', zDance, xDance, cDance, v, b, ~]
+            - [lShiftDance, zDance, xDance, cDance, v, b, ~]
             - [~, ~, ~, left, right]
           left-thumb:
             - [esc, ~]
@@ -18,7 +18,7 @@ keyboards:
             - [~, 6, 7, 8, 9, 0, ~]
             - [~, y, u, i, o, p, \]
             - [   h, j, k, l, semicolonDance, quoteDance]
-            - [~, n, m, commaDance, dotDance, slashDance, rShift]
+            - [~, n, m, commaDance, dotDance, slashDance, rShiftDance]
             - ['[', ']', ~, ~, togglePlover]
           right-thumb:
             - [esc, ~]
@@ -41,8 +41,8 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, '=', 7, 8, 9, '&', '|']
             - [   '+', 4, 5, 6, '*', ~]
-            - [~, '-', 1, 2, 3, '/', ~, ~]
-            - [~, ~, 0, '.', ~]
+            - [~, '-', 1, 2, 3, '/', ~]
+            - [~, '0', '.', ~, ~]
           right-thumb:
             - [~, ~]
             - [~]
@@ -123,7 +123,7 @@ keyboards:
         keys:
             - [tab, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
-            - [lShift, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShift]
+            - [lShiftDance, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShiftDance]
             - [~, ~, ~, space, backspace, space, tab, enter, '[', ']', togglePlover]
       symbol:
         lights: [1]
@@ -162,24 +162,40 @@ keys:
     - [toggleSymbol]
     hold:
     - [holdSymbol]
-    - [holdSymbol, lctrl]
-    - [holdSymbol, lalt]
+    - [holdSymbol, lCtrl]
+    - [holdSymbol, lAlt]
   zDance:
     type: dance
     tap: 
     - [z]
     hold:
-    - [lctrl]
-    - [lctrl, lShift]
-    - [lctrl, lShift, lalt]
+    - [lCtrl]
+    - [lCtrl, lShift]
+    - [lCtrl, lShift, lAlt]
+  lShiftDance:
+    type: dance
+    tap: 
+    - [lShift, 9] # (
+    hold:
+    - [lShift]
+    - [lShift, lAlt]
+    - [lShift, lAlt, lgui]
+  rShiftDance:
+    type: dance
+    tap: 
+    - [lShift, 0] # )
+    hold:
+    - [rShift]
+    - [rShift, rAlt]
+    - [rShift, rAlt, rgui]
   xDance:
     type: dance
     tap: 
     - [x]
     hold:
-    - [lalt]
-    - [lalt, lShift]
-    - [lalt, lShift, lctrl]
+    - [lAlt]
+    - [lAlt, lShift]
+    - [lAlt, lShift, lCtrl]
   cDance:
     type: dance
     tap: 
@@ -187,23 +203,23 @@ keys:
     hold:
     - [lgui]
     - [lgui, lShift]
-    - [lgui, lShift, lctrl]
+    - [lgui, lShift, lCtrl]
   slashDance:
     type: dance
     tap: 
     - ['/']
     hold:
-    - [rctrl]
-    - [rctrl, rShift]
-    - [rctrl, rShift, ralt]
+    - [rCtrl]
+    - [rCtrl, rShift]
+    - [rCtrl, rShift, rAlt]
   dotDance:
     type: dance
     tap: 
     - ['.']
     hold:
-    - [ralt]
-    - [ralt, rShift]
-    - [ralt, rShift, rctrl]
+    - [rAlt]
+    - [rAlt, rShift]
+    - [rAlt, rShift, rCtrl]
   commaDance:
     type: dance
     tap: 
@@ -211,7 +227,7 @@ keys:
     hold:
     - [rgui]
     - [rgui, rShift]
-    - [rgui, rShift, rctrl]
+    - [rgui, rShift, rCtrl]
   F1Dance: { type: dance, tap: [['f1'], ['f11']]}
   F2Dance: { type: dance, tap: [['f2'], ['f12']]}
   F3Dance: { type: dance, tap: [['f3'], ['f13']]}
@@ -234,8 +250,8 @@ keys:
     - ["'"]
     hold:
     - [holdEmoji]
-    - [holdEmoji, lctrl]
-    - [holdEmoji, lctrl, lalt]
+    - [holdEmoji, lCtrl]
+    - [holdEmoji, lCtrl, lAlt]
 map:
     'shift(': LSPO
     'shift)': RSPC
