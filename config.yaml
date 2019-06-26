@@ -93,6 +93,29 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
+      navigationExtend:
+        lights: [3]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [   ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
       plover:
         lights: [3]
         keys:
@@ -124,7 +147,10 @@ keyboards:
         FORCE_NKRO: ''
         INTERRUPTION_TIMEOUT: 20
         LEADER_TIMEOUT: 300
+        MOUSEKEY_DELAY: 0
+        MOUSEKEY_INTERVAL: 20
         MOUSEKEY_MAX_SPEED: 10
+        MOUSEKEY_WHEEL_DELAY: 0
         MOUSEKEY_WHEEL_MAX_SPEED: 4
         MOUSEKEY_WHEEL_TIME_TO_MAX: 150
         TAPPING_TERM: 130
@@ -168,6 +194,13 @@ keyboards:
             - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~]
             - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
+      navigationExtend:
+        lights: [2]
+        keys:
+            - *empty12
+            - [~, ~, ~, ~, ~, ~, home, pageUp, pageDown, end, ~, ~]
+            - *empty12
+            - [~, ~, ~, ~, ~, ~, ~, rgbHueDown, rgbHueUp, rgbToggle, rgbNext, ~]
       emoji:
         lights: [1,2]
         keys:
@@ -273,6 +306,7 @@ keys:
     - [';']
     hold:
     - [holdNavigation]
+    - [holdNavigationExtend]
   quoteDance:
     type: dance
     tap:
@@ -334,6 +368,10 @@ map:
     volumeUp: VOLU
     volumeDown: VOLD
     volumeToggle: MUTE
+    rgbHueDown: RGB_HUD
+    rgbHueUp: RGB_HUI
+    rgbToggle: RGB_TOG
+    rgbNext: RGB_MOD
     shutdown: PWR
     sleep: SLEP
     windowsMode: UC_M_WC

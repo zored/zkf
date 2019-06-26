@@ -33,7 +33,7 @@ class Key {
   constructor (name) {
     this.name = name
 
-    if (name !== null && name.match(/^(UC|DYN|ZKC)_/)) {
+    if (name !== null && name.match(/^(UC|DYN|ZKC|RGB)_/)) {
       this.noPrefix = true
     }
   }

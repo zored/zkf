@@ -126,7 +126,7 @@ TEXT
 
  build-and-flash|bf)
   $0 b $2
-  $0 f $3
+  $0 f $2
  ;;
 
  build-all|ba)
