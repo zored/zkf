@@ -91,8 +91,11 @@ TEXT
  ;;
 
  build-and-flash|bf)
+  rm -f .build/*.hex
   $0 build $2
-  $0 flash $3
+  rm *.hex
+  cp .build/*.hex build.hex
+  $0 flash
  ;;
 
  *)
