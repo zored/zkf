@@ -16,5 +16,5 @@ To build and flash Planck use this code:
 - Teensy flashes firmware into keyboard.
 
 ## TODO
-- Guess OS in `project.sh`.
-- Compile `teensy` on Windows.
+- Compile combos with JS.
+- Replace teensy with [wally](https://ergodox-ez.com/pages/wally).

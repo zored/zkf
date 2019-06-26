@@ -61,7 +61,7 @@ keyboards:
             - [~]
             - [~, ~, ~]
           right:
-            - [~, shutdown, sleep, windowsMode, macosMode, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, brightnessDown, brightnessUp, ~, ~, ~]
             - [   left, down, up, right, ~, ~]
             - [~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
@@ -78,13 +78,13 @@ keyboards:
             - [~, 😊, 😂, 🤔, 👍, 💪, ~]
             - [~, 😏, 🔥, 💖, 😢, 😭]
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~]
+            - [enterBootloader, ~, ~, ~, ~]
           left-thumb:
             - [~, ~]
             - [~]
             - [~, ~, ~]
           right:
-            - [enterBootloader, recordMacro1, recordMacro2, stopRecordMacro, playMacro1, playMacro2, ~]
+            - [~, recordMacro1, recordMacro2, stopRecordMacro, playMacro1, playMacro2, ~]
             - [~, ~, F7Dance, F8Dance, F9Dance, ~, ~]
             - [   ~, F4Dance, F5Dance, F6Dance, ~, ~]
             - [~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
@@ -108,8 +108,8 @@ keyboards:
             - [~, ~, ~]
           right:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [   ~, ~, ~, ~, ~, ~]
+            - [~, shutdown, sleep, windowsMode, macosMode, ~, ~]
+            - [   home, pageDown, pageUp, end, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, ~, ~, ~]
           right-thumb:
@@ -121,24 +121,24 @@ keyboards:
         keys:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~]
+            - [~, sN1, sN2, sN3, sN4, sN5, ~]
+            - [~, sS1, sTL, sPL, sHL, sST1]
+            - [~, sS2, sKL, sWL, sRL, sST2, ~]
+            - [~, ~, ~, sA, sO]
           left-thumb:
             - [~, ~]
             - [~]
-            - [~, ~, ~]
+            - [sA, sO, ~]
           right:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [   ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~]
+            - [~, sN6, sN7, sN8, sN9, sNA, sNB]
+            - [   sST3, sFR, sPR, sLR, sTR, sDR]
+            - [~, sST4, sRR, sBR, sGR, sSR, sZR]
+            - [sE, sU, ~, ~, ~]
           right-thumb:
             - [~, ~]
             - [~]
-            - [~, ~, ~]
+            - [~, sE, sU]
     settings: &settings
       # https://docs.qmk.fm/#/config_options?id=the-configh-file
       config:
@@ -162,6 +162,7 @@ keyboards:
         BOOTMAGIC_ENABLE: 'full'
         COMBO_ENABLE: 'yes'
         COMMAND_ENABLE: 'no'
+        NKRO_ENABLE: 'yes'
         KEY_LOCK_ENABLE: 'yes'
         LEADER_ENABLE: 'yes'
         LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
@@ -186,20 +187,20 @@ keyboards:
             - [~, '!', '@', '{', '}','/', '=', 7, 8, 9, '&', '|']
             - [~, '#', '$', '(', ')', '`', '+', 4, 5, 6, '*', ~]
             - [~, '%', '^', '[', ']', '~', '-', 1, 2, 3, '/', ~]
-            - &empty12 [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, 0, '.', ~, ~]
       navigation:
         lights: [2]
         keys:
-            - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
+            - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~, brightnessDown, brightnessUp, ~, ~, ~]
             - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~]
             - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
       navigationExtend:
         lights: [2]
         keys:
-            - *empty12
+            - [~, ~, ~, ~, ~, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
             - [~, ~, ~, ~, ~, ~, home, pageUp, pageDown, end, ~, ~]
-            - *empty12
+            - [~, ~, ~, ~, ~, ~, ~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~]
             - [~, ~, ~, ~, ~, ~, ~, rgbHueDown, rgbHueUp, rgbToggle, rgbNext, ~]
       emoji:
         lights: [1,2]
@@ -207,14 +208,14 @@ keyboards:
             - [~, 😊, 😂, 🤔, 👍, 💪, ~, F7Dance, F8Dance, F9Dance, ~, ~]
             - [~, 😏, 🔥, 💖, 😢, 😭, ~, F4Dance, F5Dance, F6Dance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~]
+            - [enterBootloader, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~] 
       plover:
         lights: [2]
         keys:
-            - *empty12
-            - *empty12
-            - *empty12
-            - *empty12
+            - [~, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
+            - [~, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
+            - [~, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
+            - [~, ~, ~, sA, sO, ~, ~, sE, sU, ~, ~, ~]
 
 keys:
   capsDance:
@@ -306,7 +307,7 @@ keys:
     - [';']
     hold:
     - [holdNavigation]
-    - [holdNavigationExtend]
+    - [holdNavigation,holdNavigationExtend]
   quoteDance:
     type: dance
     tap:
@@ -316,69 +317,118 @@ keys:
     - [holdEmoji, lCtrl]
     - [holdEmoji, lCtrl, lAlt]
 map:
-    'shift(': LSPO
-    'shift)': RSPC
-    pageUp: PGUP
-    pageDown: PGDN
-    space: SPC
-    backspace: BSPC
-    enter: ENT
-    '[': LBRC 
-    ']': RBRC 
-    '(': LPRN
-    ')': RPRN
-    '{': LCBR
-    '}': RCBR
+  keys:
     "'": QUOT
-    ',': COMM
-    '`': GRV
-    .: DOT
-    '\': BSLS
-    /: SLSH
     '!': EXLM
-    '@': AT
     '#': HASH
     '$': DLR
     '%': PERC
-    '~': TILD
-    '^': CIRC
-    '+': PPLS
-    '-': MINS
-    '*': PAST
-    '=': EQL
     '&': AMPR
-    '|': PIPE
+    '(': LPRN
+    ')': RPRN
+    '*': PAST
+    '+': PPLS
+    ',': COMM
+    '-': MINS
     ';': SCOLON
-    mouseLeftButton: BTN1
-    mouseRightButton: BTN2
-    mouseLeft: MS_L
-    mouseRight: MS_R
-    mouseUp: MS_U
-    mouseDown: MS_D
-    wheelLeft: WH_L
-    wheelRight: WH_R
-    wheelUp: WH_U
-    wheelDown: WH_D
-    left: LEFT
-    right: RGHT
-    up: UP
-    down: DOWN
-    brightnessUp: BRIU
+    '=': EQL
+    '@': AT
+    '[': LBRC 
+    '\': BSLS
+    ']': RBRC 
+    '^': CIRC
+    '`': GRV
+    'shift(': LSPO
+    'shift)': RSPC
+    '{': LCBR
+    '|': PIPE
+    '}': RCBR
+    '~': TILD
+    .: DOT
+    /: SLSH
+    backspace: BSPC
     brightnessDown: BRID
-    volumeUp: VOLU
-    volumeDown: VOLD
-    volumeToggle: MUTE
-    rgbHueDown: RGB_HUD
-    rgbHueUp: RGB_HUI
-    rgbToggle: RGB_TOG
-    rgbNext: RGB_MOD
-    shutdown: PWR
-    sleep: SLEP
-    windowsMode: UC_M_WC
+    brightnessUp: BRIU
+    down: DOWN
+    enter: ENT
+    enterBootloader: ZKC_BTL
+    left: LEFT
     macosMode: UC_M_OS
+    mouseDown: MS_D
+    mouseLeft: MS_L
+    mouseLeftButton: BTN1
+    mouseRight: MS_R
+    mouseRightButton: BTN2
+    mouseUp: MS_U
+    pageDown: PGDN
+    pageUp: PGUP
     playMacro1: DYN_MACRO_PLAY1
     playMacro2: DYN_MACRO_PLAY2
     recordMacro1: DYN_REC_START1
     recordMacro2: DYN_REC_START2
+    rgbBriDown: RGB_VAD
+    rgbBriUp: RGB_VAI
+    rgbHueDown: RGB_HUD
+    rgbHueUp: RGB_HUI
+    rgbNext: RGB_MOD
+    rgbSatDown: RGB_SAD
+    rgbSatUp: RGB_SAI
+    rgbToggle: RGB_TOG
+    right: RGHT
+    sA: STN_A
+    sBR: STN_BR
+    sDR: STN_DR
+    sE: STN_E
+    sFR: STN_FR
+    sGR: STN_GR
+    sHL: STN_HL
+    shutdown: PWR
+    sKL: STN_KL
+    sleep: SLEP
+    sLR: STN_LR
+    sN1: STN_N1
+    sN2: STN_N2
+    sN3: STN_N3
+    sN4: STN_N4
+    sN5: STN_N5
+    sN6: STN_N6
+    sN7: STN_N7
+    sN8: STN_N8
+    sN9: STN_N9
+    sNA: STN_NA
+    sNB: STN_NB
+    sO: STN_O
+    space: SPC
+    sPL: STN_PL
+    sPR: STN_PR
+    sRL: STN_RL
+    sRR: STN_RR
+    sS1: STN_S1
+    sS2: STN_S2
+    sSR: STN_SR
+    sST1: STN_ST1
+    sST2: STN_ST2
+    sST3: STN_ST3
+    sST4: STN_ST4
+    sTL: STN_TL
     stopRecordMacro: DYN_REC_STOP
-    enterBootloader: ZKC_BTL
+    sTR: STN_TR
+    sU: STN_U
+    sWL: STN_WL
+    sZR: STN_ZR
+    up: UP
+    volumeDown: VOLD
+    volumeToggle: MUTE
+    volumeUp: VOLU
+    wheelDown: WH_D
+    wheelLeft: WH_L
+    wheelRight: WH_R
+    wheelUp: WH_U
+    windowsMode: UC_M_WC
+  prefixes:
+    - UC
+    - DYN
+    - ZKC
+    - RGB
+    - STN
+    - MAGIC

@@ -13,7 +13,7 @@ function main () {
   const keyboard = (new KeyboardFactory(config.keyboards)).create(keyboardQmkName)
   const layersConfig = keyboard.layers
   const layerStructure = new LayerStructure(flatternStructure(layersConfig.default))
-  const keyFactory = new KeyFactory(config.keys, config.map)
+  const keyFactory = new KeyFactory(config.keys, config.map.keys, config.map.prefixes)
   const layers = new LayerCollection(
     _.map(layersConfig, ({ keys, lights }, name) => new Layer(name, keyFactory.createFromObject(keys), layerStructure, lights))
   )
@@ -30,12 +30,9 @@ ${files.list.join('\n')}
 
 // Classes
 class Key {
-  constructor (name) {
+  constructor (name, noPrefix) {
     this.name = name
-
-    if (name !== null && name.match(/^(UC|DYN|ZKC|RGB)_/)) {
-      this.noPrefix = true
-    }
+    this.noPrefix = noPrefix
   }
   get codeName () {
     if (this.name == null) {
@@ -563,9 +560,10 @@ class KeyboardFactory {
 }
 
 class KeyFactory {
-  constructor (perKeyConfig, nameMap) {
+  constructor (perKeyConfig, nameMap, prefixes) {
     this.perKeyConfig = perKeyConfig
     this.nameMap = nameMap || {}
+    this.noPrefixPattern = new RegExp(`^(${prefixes.join('|')})_`)
   }
 
   create (value) {
@@ -589,8 +587,9 @@ class KeyFactory {
 
     if (_.isString(value)) {
       value = this.nameMap[value] || value
+      const noPrefix = value.match(this.noPrefixPattern)
 
-      return new Key(value)
+      return new Key(value, noPrefix)
     }
 
     throw new Error(`Undefined key value type: ${value}.`)
