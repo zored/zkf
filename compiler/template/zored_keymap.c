@@ -1,3 +1,5 @@
+{{! Keymap template for all of my keymaps. Has a lot of common code. }}
+
 {{#ergodox}}
 #include "ergodox_ez.h"
 {{/ergodox}}
@@ -193,6 +195,12 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
   }
 }
 
+
+#define ACTION_TAP_DANCE_DOUBLE_TIME(kc1, kc2, tap_specific_tapping_term) { \
+    .fn = { qk_tap_dance_pair_on_each_tap, qk_tap_dance_pair_finished, qk_tap_dance_pair_reset }, \
+    .user_data = (void *)&((qk_tap_dance_pair_t) { kc1, kc2 }),  \
+    .custom_tapping_term = tap_specific_tapping_term, \
+  }
 #define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE)
 #define DANCE_TWO(k1,k11) ACTION_TAP_DANCE_DOUBLE_TIME(k1, k11, TAPPING_TERM_TAP_DANCE)
 

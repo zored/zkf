@@ -1,5 +1,5 @@
 keyboards:
-  ergodox:
+  ergodox_ez:
     layers:
       default:
         lights: []
@@ -116,7 +116,36 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
+    settings: &settings
+      # https://docs.qmk.fm/#/config_options?id=the-configh-file
+      config:
+        COMBO_COUNT: 6
+        COMBO_TERM: 130
+        FORCE_NKRO: ''
+        INTERRUPTION_TIMEOUT: 20
+        LEADER_TIMEOUT: 300
+        MOUSEKEY_MAX_SPEED: 10
+        MOUSEKEY_WHEEL_MAX_SPEED: 4
+        MOUSEKEY_WHEEL_TIME_TO_MAX: 150
+        TAPPING_TERM: 130
+        TAPPING_TERM_TAP_DANCE: 270
+        UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
+
+      # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
+      rules:
+        BOOTMAGIC_ENABLE: 'full'
+        COMBO_ENABLE: 'yes'
+        COMMAND_ENABLE: 'no'
+        KEY_LOCK_ENABLE: 'yes'
+        LEADER_ENABLE: 'yes'
+        LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
+        RGBLIGHT_ENABLE: 'no'
+        STENO_ENABLE: 'yes'
+        TAP_DANCE_ENABLE: 'yes'
+        UNICODE_ENABLE: 'no'
+        UNICODEMAP_ENABLE: 'yes'
   planck:
+    settings: *settings
     layers:
       default:
         lights: []
@@ -124,35 +153,35 @@ keyboards:
             - [tab, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
             - [lShiftDance, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShiftDance]
-            - [~, ~, ~, space, backspace, space, tab, enter, '[', ']', togglePlover]
+            - [~, ~, ~, space, backspace, space, ~, tab, enter, '[', ']', togglePlover]
       symbol:
         lights: [1]
         keys:
             - [~, '!', '@', '{', '}','/', '=', 7, 8, 9, '&', '|']
             - [~, '#', '$', '(', ')', '`', '+', 4, 5, 6, '*', ~]
             - [~, '%', '^', '[', ']', '~', '-', 1, 2, 3, '/', ~]
-            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - &empty12 [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
       navigation:
         lights: [2]
         keys:
             - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
             - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~]
             - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
-            - [~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
       emoji:
         lights: [1,2]
         keys:
             - [~, 😊, 😂, 🤔, 👍, 💪, ~, F7Dance, F8Dance, F9Dance, ~, ~]
             - [~, 😏, 🔥, 💖, 😢, 😭, ~, F4Dance, F5Dance, F6Dance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~]
       plover:
         lights: [2]
         keys:
-            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - *empty12
+            - *empty12
+            - *empty12
+            - *empty12
 
 keys:
   capsDance:

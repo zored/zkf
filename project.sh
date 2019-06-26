@@ -1,5 +1,6 @@
 #/usr/bin/env bash
-set -ex
+# Contains helper code for easy work.
+set -e
 
 keyboard=ergodox_ez
 case $2 in
@@ -8,74 +9,97 @@ case $2 in
     ;;
 esac
 
-init-docker () {
+pre-run () {
   local machine=${DOCKER_MACHINE:-default}
-  docker-machine start $machine || true
+  docker-machine start $machine &> /dev/null || true
   eval $(docker-machine env $machine) || true
 }
 
+run () {
+  pre-run
+  image=$1
+  shift
+  docker run --rm \
+    -v "/$PWD:/build" \
+    --workdir=//build \
+    $image \
+    //bin/sh -c "$*"
+}
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export OS=MACOSX
+elif [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
+  export OS=WINDOWS
+else
+  echo 'Could not guess your OS.'
+  exit 1
+fi
+
+export QMK_DIR=vendor/qmk_firmware
+teensy_rel=vendor/teensy_${OS}
 node_image=node:12.4.0-alpine
 qmk_image=qmkfm/qmk_firmware
+
+
+case $keyboard in
+  planck/ez)
+    firmware_source=$QMK_DIR/planck_ez_zored.bin
+    firmware=firmwares/planck.bin
+    ;;
+  ergodox_ez)
+    firmware_source=$QMK_DIR/ergodox_ez_zored.hex
+    firmware=firmwares/ergodox_ez.hex
+    ;;
+esac
 #qmk_image=zored/alebastr-qmk-whitefox-keymap
-sync_file=q.mk
 
 case $1 in
  build|b)
-  if [[ ! -e $sync_file ]]; then
-    $0 sync
-  fi
-  init-docker
-  docker run --rm -v "/$PWD:/build" --workdir=//build $node_image compiler/run.js $keyboard
-  export KEYBOARD=$keyboard
-  docker run --rm -v "/$PWD:/build" --workdir=//build $qmk_image make
- ;;
+  [[ -e $QMK_DIR ]] || $0 sync
+  run $node_image compiler/run.js $keyboard
 
- docker-build|d)
-  init-docker
-  docker build \
-    --tag zored/zkf:latest \
-    --file ./docker/Dockerfile \
-    ./docker
+  echo "Syncing QMK and building firmware..."
+  run $qmk_image "cd $QMK_DIR && make $keyboard:zored"
+  mv $firmware_source $firmware
  ;;
 
  sync|s)
-  init-docker
-  docker run --rm -v "/$PWD:/build" --workdir=//build/compiler $node_image yarn install --no-bin-links
+  echo "Install keymap compiler."
+  run $node_image "\
+    cd compiler/ &&\
+    yarn install --no-bin-links &&\
+    yarn run eslint --fix run.js \
+  "
+
+  echo "Get and patch QMK."
+  git submodule update --init --recursive
+  for patch in ./patches/*; do
+    patch -d $QMK_DIR --forward --no-backup-if-mismatch -r- -p1 -i ./patches/$(1)
+  done
+  run $qmk_image "cd $QMK_DIR && make git-submodule"
+
+  echo "Pull latest QMK builder."
   docker pull $qmk_image
 
-  echo 'Updating QMK library'
-  rm -f $sync_file
-  make $_
- ;;
-
- teensy|t)
-  mkdir -p vendor/teensy
+  rm -rf $teensy_rel
+  mkdir -p $_
   pushd $_
-  git clone https://github.com/zored/teensy_loader_cli . || true
-  git checkout zored || true
-  OS=${2:-WINDOWS} make # MACOSX
+  case $OS in
+    WINDOWS)
+      wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
+      unzip $_
+      rm $_
+      ;;
+    MACOSX)
+      git clone https://github.com/zored/teensy_loader_cli . || true
+      git checkout zored || true
+      make
+      ;;
+  esac
   popd
  ;;
 
  flash|f)
-  echo 'Retrieving HEX file.'
-  hex=$(ls *${2}*.hex)
-  count=$(echo $hex | wc -l)
-  if [[ $count != '1' ]]; then
-    echo "Found $count HEX files. Specify version: $hex"
-  fi
-
-  mcu='atmega32u4'
-  teensy_vendor=./vendor/teensy/teensy_loader_cli
-  if [[ -e $teensy_vendor ]]; then
-    teensy="$teensy_vendor --mcu=$mcu -v"
-  else
-    # wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
-    # unzip $_ -d .
-    teensy="/d/zored/downloads/teensy_loader_cli.exe -mmcu=$mcu"
-  fi
-
   cat <<'TEXT'
 
 ===========
@@ -87,16 +111,29 @@ ENTER BOOTLOADER ON YOUR ERGODOX
 
 TEXT
 
-  $teensy -w $hex
+  case $OS in
+    WINDOWS)
+      # flasher="$teensy_rel/teensy_loader_cli.exe -mmcu=$mcu -w"
+      flasher="'/c/Program Files (x86)/Wally/wally-cli.exe'"
+      ;;
+    MACOSX)
+      flasher="$teensy_rel/teensy_loader_cli --mcu=atmega32u4 -v -w"
+      ;;
+  esac
+
+  eval $flasher $firmware
  ;;
 
  build-and-flash|bf)
-  rm -f .build/*.hex
-  $0 build $2
-  rm *.hex
-  cp .build/*.hex build.hex
-  $0 flash
+  $0 b $2
+  $0 f $3
  ;;
+
+ build-all|ba)
+  for keyboard in ergodox planck; do
+    $0 b $keyboard
+  done
+  ;;
 
  *)
   echo Unknown parameters.

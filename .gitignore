@@ -1,11 +1,3 @@
-*.bin
-*.o
-*.swo
-*.swp
-.build/
-q.mk
-tests/parser-test
 vendor/teensy/
-*.hex
+firmware.hex
 node_modules/
-keymap.c

@@ -8,16 +8,24 @@ const _ = require('lodash')
 
 function main () {
   const [,, keyboardQmkName = 'ergodox_ez'] = process.argv
-  const keyboard = (new KeyboardFactory()).create(keyboardQmkName)
+  console.log(`Compiling keymap for ${keyboardQmkName}...`)
   const config = getConfig()
-  const layersConfig = config.keyboards[keyboard.configName].layers
+  const keyboard = (new KeyboardFactory(config.keyboards)).create(keyboardQmkName)
+  const layersConfig = keyboard.layers
   const layerStructure = new LayerStructure(flatternStructure(layersConfig.default))
   const keyFactory = new KeyFactory(config.keys, config.map)
   const layers = new LayerCollection(
     _.map(layersConfig, ({ keys, lights }, name) => new Layer(name, keyFactory.createFromObject(keys), layerStructure, lights))
   )
-  compileTemplate(layers, keyboard)
-  console.log('Done!')
+  const files = new KeymapFiles(keyboard)
+
+  compileKeymap(layers, keyboard, files)
+  compileSettings(keyboard, files)
+
+  console.log(`
+Keymap compiled. Files created.
+${files.list.join('\n')}
+  `)
 }
 
 // Classes
@@ -392,15 +400,28 @@ function getLayersTemplateData (layers, keyboard) {
   return { keys, names }
 }
 
-function compileTemplate (layers, keyboard) {
+function compileKeymap (layers, keyboard, files) {
   const Mustache = require('Mustache')
 
-  const result = Mustache.render(fs.readFileSync('keymap.c.mustache', 'utf8'), _.merge({
+  const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
     dance: getDanceTemplateData(layers),
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers, keyboard),
   }, keyboard.getTemplateData(layers)))
-  fs.writeFileSync('keymap.c', result)
+  files.add('keymap.c', result)
+}
+
+function compileSettings(keyboard, files) {
+  const {config, rules} = keyboard.settings
+
+  files.add('config.h', _.map(config, (value, name) => `
+#undef ${name}
+#define ${name} ${value}
+`).join(''))
+
+  files.add('rules.mk', _.map(rules, (value, name) => `
+${name} = ${value}
+`).join(''))
 }
 
 // general
@@ -437,8 +458,31 @@ function flatternStructure (item, structureKey, nextKey) {
 }
 
 // key
+class KeymapFiles {
+  constructor(keyboard){
+    this.keyboard = keyboard
+    this.first = true
+    this._list = []
+  }
+  add(fileName, content){
+    const path = this.directory + fileName
+    this._list.push(path)
+    fs.writeFileSync(path, content)
+  }
+  get list () {
+    return this._list
+  }
+  get directory (){
+    const {keymapPath} = this.keyboard
+    fs.existsSync(keymapPath) || fs.mkdirSync(keymapPath)
 
+    return keymapPath
+  }
+}
 class Keyboard {
+  constructor(keyboardsConfig) {
+    this.config = keyboardsConfig[this.configName]
+  }
   get configName () {
     throw `No keyboard config defined`
   }
@@ -448,10 +492,19 @@ class Keyboard {
   getTemplateData(layers) {
     return {}
   }
+  get layers () {
+    return this.config.layers
+  }
+  get settings () {
+    return this.config.settings
+  }
+  get keymapPath () {
+    return 'vendor/qmk_firmware/keyboards/' + this.configName + '/keymaps/zored/'
+  }
 }
 class ErgodoxEz extends Keyboard {
   get configName () {
-    return 'ergodox'
+    return 'ergodox_ez'
   }
   get layoutCodeName () {
     return 'LAYOUT_ergodox'
@@ -494,12 +547,15 @@ class PlanckEz extends Keyboard {
 }
 
 class KeyboardFactory {
+  constructor(config) {
+    this.config = config
+  }
   create(qmkName) {
     switch (qmkName) {
       case 'ergodox_ez':
-        return new ErgodoxEz()
+        return new ErgodoxEz(this.config)
       case 'planck/ez':
-        return new PlanckEz()
+        return new PlanckEz(this.config)
     }
 
     throw new Error(`Unknown QMK keyboard ${qmkName}.`)
