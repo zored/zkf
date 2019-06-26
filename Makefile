@@ -1,8 +1,7 @@
-# based on:
 # https://github.com/jackhumbert/qmk_firmware_embeded
 
-KEYBOARD ?= planck/ez
-TARGET ?= $(KEYBODARD)_zored_$(KEYMAP_VERSION)
+KEYBOARD ?= "planck/ez"
+TARGET ?= zored_$(KEYMAP_VERSION)
 
 # Has no meaning with QMK as dependency:
 KEYMAP :=
