@@ -490,18 +490,30 @@ class KeymapFiles {
     this._list = []
   }
   add(fileName, content){
-    const path = this.directory + fileName
-    this._list.push(path)
-    fs.writeFileSync(path, content)
+    const dirs = [
+      this.keyboard.keymapPath,
+      `example/${this.keyboard.configName}/`,
+    ]
+    const paths = dirs
+      .map(dir => this._checkDir(dir))
+      .map(dir => dir + fileName)
+      .forEach(path => {
+        fs.writeFileSync(path, content)
+        this._list.push(path)
+      })
   }
   get list () {
     return this._list
   }
   get directory (){
-    const {keymapPath} = this.keyboard
-    fs.existsSync(keymapPath) || fs.mkdirSync(keymapPath)
+    const {keymapPath} = 
+    this._checkDir(keymapPath)
 
     return keymapPath
+  }
+  _checkDir(dir){
+    fs.existsSync(dir) || fs.mkdirSync(dir)
+    return dir
   }
 }
 class Keyboard {
