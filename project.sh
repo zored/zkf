@@ -68,7 +68,7 @@ case $1 in
   run $node_image "\
     cd compiler/ &&\
     yarn install &&\
-    yarn run eslint --fix run.js \
+    ./node_modules/eslint/bin/eslint.js --fix run.js \
   "
 
   echo "Get and patch QMK."

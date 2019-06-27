@@ -6,7 +6,7 @@ keyboards:
         keys:
           left:
             - [esc, 1, 2, 3, 4, 5, ~]
-            - [tab, q, w, e, r, t, ~]
+            - [esc, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
             - [lShiftDance, zDance, xDance, cDance, v, b, ~]
             - [~, ~, ~, left, right]
@@ -192,10 +192,10 @@ keyboards:
       default:
         lights: []
         keys:
-            - [tab, q, w, e, r, t, y, u, i, o, p, \]
+            - [esc, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
             - [lShiftDance, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShiftDance]
-            - [~, ~, ~, space, backspace, space, ~, tab, enter, '[', ']', togglePlover]
+            - [~, ~, ~, delete, backspace, space, ~, tab, enter, '[', ']', togglePlover]
       symbol:
         lights: [1]
         keys:

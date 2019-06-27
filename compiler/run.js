@@ -105,10 +105,10 @@ class LayerStructure {
     this.totalCount = _.sum(_.map(keyCountByLineName, v => v))
   }
 
-  formatLayer(layer) {
+  formatLayer (layer) {
     const keys = layer.keys
     if (keys.length !== this.totalCount) {
-      throw `Not enough keys to fill layer ${layer.codeName}`
+      throw new Error(`Not enough keys to fill layer ${layer.codeName}`)
     }
     let i = 0
 
@@ -431,13 +431,13 @@ function compileKeymap (layers, keyboard, files) {
   const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
     dance: getDanceTemplateData(layers),
     unicode: getUnicodeTemplateData(layers),
-    layers: getLayersTemplateData(layers, keyboard),
+    layers: getLayersTemplateData(layers, keyboard)
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 }
 
-function compileSettings(keyboard, files) {
-  const {config, rules} = keyboard.settings
+function compileSettings (keyboard, files) {
+  const { config, rules } = keyboard.settings
 
   files.add('config.h', _.map(config, (value, name) => `
 #undef ${name}
@@ -484,17 +484,16 @@ function flatternStructure (item, structureKey, nextKey) {
 
 // key
 class KeymapFiles {
-  constructor(keyboard){
+  constructor (keyboard) {
     this.keyboard = keyboard
     this.first = true
     this._list = []
   }
-  add(fileName, content){
-    const dirs = [
+  add (fileName, content) {
+    [
       this.keyboard.keymapPath,
-      `example/${this.keyboard.configName}/`,
+      `example/${this.keyboard.configName}/`
     ]
-    const paths = dirs
       .map(dir => this._checkDir(dir))
       .map(dir => dir + fileName)
       .forEach(path => {
@@ -505,28 +504,22 @@ class KeymapFiles {
   get list () {
     return this._list
   }
-  get directory (){
-    const {keymapPath} = 
-    this._checkDir(keymapPath)
-
-    return keymapPath
-  }
-  _checkDir(dir){
+  _checkDir (dir) {
     fs.existsSync(dir) || fs.mkdirSync(dir)
     return dir
   }
 }
 class Keyboard {
-  constructor(keyboardsConfig) {
+  constructor (keyboardsConfig) {
     this.config = keyboardsConfig[this.configName]
   }
   get configName () {
-    throw `No keyboard config defined`
+    throw new Error(`No keyboard config defined`)
   }
   get layoutCodeName () {
-    throw `No keyboard layout code name defined`
+    throw new Error(`No keyboard layout code name defined`)
   }
-  getTemplateData(layers) {
+  getTemplateData (layers) {
     return {}
   }
   get layers () {
@@ -546,14 +539,14 @@ class ErgodoxEz extends Keyboard {
   get layoutCodeName () {
     return 'LAYOUT_ergodox'
   }
-  getTemplateData(layers) {
+  getTemplateData (layers) {
     const lights = layers.allWithLights.map(layer => `
       case ${layer.codeName}:
         ` + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
         break;
     `).join('')
 
-    return {ergodox: {lights}}
+    return { ergodox: { lights } }
   }
 }
 class PlanckEz extends Keyboard {
@@ -563,31 +556,31 @@ class PlanckEz extends Keyboard {
   get layoutCodeName () {
     return 'LAYOUT_planck_grid'
   }
-  getTemplateData(layers) {
+  getTemplateData (layers) {
     const lights = layers.allWithLights.map(layer => `
       case ${layer.codeName}:
         ` + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
         break;
     `).join('')
 
-    return {planck: {lights}}
+    return { planck: { lights } }
   }
-  _getLightCode(light) {
-    switch(light) {
+  _getLightCode (light) {
+    switch (light) {
       case 1:
         return `palSetPad(GPIOB, 9);`
       case 2:
         return `palSetPad(GPIOB, 8);`
     }
-    throw `Unknow Planck light #${light}`
+    throw new Error(`Unknow Planck light #${light}`)
   }
 }
 
 class KeyboardFactory {
-  constructor(config) {
+  constructor (config) {
     this.config = config
   }
-  create(qmkName) {
+  create (qmkName) {
     switch (qmkName) {
       case 'ergodox_ez':
         return new ErgodoxEz(this.config)
