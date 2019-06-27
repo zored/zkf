@@ -2597,7 +2597,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_DEFAULT] = LAYOUT_ergodox(
   
 /* keys-left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
-/* keys-left-1 */ KC_TAB,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
+/* keys-left-1 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
 /* keys-left-2 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,
 /* keys-left-3 */ TD(DANCE_KC_LSHIFTDANCE),TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,_______,
 /* keys-left-4 */ _______,_______,_______,KC_LEFT,KC_RGHT,

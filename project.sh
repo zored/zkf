@@ -28,8 +28,10 @@ run () {
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export OS=MACOSX
+  wally="wally-cli"
 elif [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
   export OS=WINDOWS
+  wally="'/c/Program Files (x86)/Wally/wally-cli.exe'"
 else
   echo 'Could not guess your OS.'
   exit 1
@@ -86,6 +88,7 @@ case $1 in
       wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
       unzip $_
       rm $_
+
       ;;
     MACOSX)
       git clone https://github.com/zored/teensy_loader_cli . || true
@@ -94,6 +97,11 @@ case $1 in
       ;;
   esac
   popd
+
+  if [[ ! -e $wally ]]; then
+    echo "Install Wally: https://ergodox-ez.com/pages/wally"
+    exit 1
+  fi
  ;;
 
  flash|f)
@@ -111,12 +119,12 @@ TEXT
   case $OS in
     WINDOWS)
       # flasher="$teensy_rel/teensy_loader_cli.exe -mmcu=$mcu -w"
-      flasher="'/c/Program Files (x86)/Wally/wally-cli.exe'"
       ;;
     MACOSX)
-      flasher="$teensy_rel/teensy_loader_cli --mcu=atmega32u4 -v -w"
+      # flasher="$teensy_rel/teensy_loader_cli --mcu=atmega32u4 -v -w"
       ;;
   esac
+  flasher=$wally
 
   eval $flasher $firmware
  ;;

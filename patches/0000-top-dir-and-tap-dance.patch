@@ -1,3 +1,5 @@
+After this fix you can toggle layers in tap dance without dalay.
+
 diff --git a/quantum/quantum.c b/quantum/quantum.c
 index 6530738b7..2b19c74c7 100644
 --- a/quantum/quantum.c
