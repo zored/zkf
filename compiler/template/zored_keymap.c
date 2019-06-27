@@ -40,24 +40,6 @@ uint8_t get_os (void) {
   return OS_WINDOWS;
 }
 
-void close_app(void) {
-  switch (get_os()) {
-    case OS_WINDOWS:
-      // alt+f4
-      register_win_code(KC_LALT);
-      tap_code(KC_F4);
-      unregister_win_code(KC_LALT);
-      break;
-
-    case OS_MACOS:
-      // cmd+q
-      register_code(KC_LCMD);
-      tap_code(KC_Q);
-      unregister_code(KC_LCMD);
-      break;
-  }
-}
-
 uint8_t map_windows_keycode (uint8_t windowsKeycode) {
   switch (get_os()) {
     case OS_MACOS:
@@ -82,6 +64,24 @@ void register_win_code(uint8_t code) {
 
 void unregister_win_code(uint8_t code) {
   unregister_code(map_windows_keycode(code));
+}
+
+void close_app(void) {
+  switch (get_os()) {
+    case OS_WINDOWS:
+      // alt+f4
+      register_win_code(KC_LALT);
+      tap_code(KC_F4);
+      unregister_win_code(KC_LALT);
+      break;
+
+    case OS_MACOS:
+      // cmd+q
+      register_code(KC_LCMD);
+      tap_code(KC_Q);
+      unregister_code(KC_LCMD);
+      break;
+  }
 }
 
 enum unicode_names {
