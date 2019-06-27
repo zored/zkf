@@ -75,8 +75,8 @@ keyboards:
         keys:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, 😊, 😂, 🤔, 👍, 💪, ~]
-            - [~, 😏, 🔥, 💖, 😢, 😭]
+            - [~, happyDance, sadDance, strangeDance, ~, ~]
+            - [~, coolDance, okDance, loveDance, ~, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~]
             - [enterBootloader, ~, ~, ~, ~]
           left-thumb:
@@ -233,7 +233,6 @@ keyboards:
 
 keys:
   capsDance:
-    type: dance
     tap:
     - [capsLock]
     - [toggleSymbol]
@@ -242,96 +241,76 @@ keys:
     - [holdSymbol, lCtrl]
     - [holdSymbol, lAlt]
   zDance:
-    type: dance
-    tap: 
-    - [z]
+    tap: [[z]]
     hold:
     - [lCtrl]
     - [lCtrl, lShift]
     - [lCtrl, lShift, lAlt]
   lShiftDance:
-    type: dance
-    tap: 
-    - [lShift, 9] # (
+    tap: [[lShift, 9]] # (
     hold:
     - [lShift]
     - [lShift, lAlt]
     - [lShift, lAlt, lgui]
   rShiftDance:
-    type: dance
-    tap: 
-    - [lShift, 0] # )
+    tap: [[lShift, 0]] # )
     hold:
     - [rShift]
     - [rShift, rAlt]
     - [rShift, rAlt, rgui]
   xDance:
-    type: dance
-    tap: 
-    - [x]
+    tap: [[x]]
     hold:
     - [lAlt]
     - [lAlt, lShift]
     - [lAlt, lShift, lCtrl]
   cDance:
-    type: dance
-    tap: 
-    - [c]
+    tap: [[c]]
     hold:
     - [lgui]
     - [lgui, lShift]
     - [lgui, lShift, lCtrl]
   slashDance:
-    type: dance
-    tap: 
-    - ['/']
+    tap: [['/']]
     hold:
     - [rCtrl]
     - [rCtrl, rShift]
     - [rCtrl, rShift, rAlt]
   dotDance:
-    type: dance
-    tap: 
-    - ['.']
+    tap: [['.']]
     hold:
     - [rAlt]
     - [rAlt, rShift]
     - [rAlt, rShift, rCtrl]
   commaDance:
-    type: dance
-    tap: 
-    - [',']
+    tap: [[',']]
     hold:
     - [rgui]
     - [rgui, rShift]
     - [rgui, rShift, rCtrl]
-  happyDance: { type: dance, tap: [[😊], [😁], [😄], [😂]]}
-  sadDance: { type: dance, tap: [[😞], [😢], [😭]]}
-  coolDance: { type: dance, tap: [[😏], [😎], [💪], [🔥]]}
-  loveDance: { type: dance, tap: [[😚], [😍], [😘], [💖]]}
-  strangeDance: { type: dance, tap: [[🤔], [🤨], [😱]]}
-  okDance: { type: dance, tap: [[👍], [👌], [🆗]]}
-  F1Dance: { type: dance, tap: [['f1'], ['f11']]}
-  F2Dance: { type: dance, tap: [['f2'], ['f12']]}
-  F3Dance: { type: dance, tap: [['f3'], ['f13']]}
-  F4Dance: { type: dance, tap: [['f4'], ['f14']]}
-  F5Dance: { type: dance, tap: [['f5'], ['f15']]}
-  F6Dance: { type: dance, tap: [['f6'], ['f16']]}
-  F7Dance: { type: dance, tap: [['f7'], ['f17']]}
-  F8Dance: { type: dance, tap: [['f8'], ['f18']]}
-  F9Dance: { type: dance, tap: [['f9'], ['f19']]}
-  F10Dance: { type: dance, tap: [['f10'], ['f20']]}
+  happyDance: {tap: [[😊], [😁], [😄], [😂]]}
+  sadDance: {tap: [[😞], [😢], [😭]]}
+  coolDance: {tap: [[😏], [😎], [💪], [🔥]]}
+  loveDance: {tap: [[😚], [😍], [😘], [💖]]}
+  strangeDance: {tap: [[🤔], [🤨], [😱]]}
+  okDance: {tap: [[👍], [👌], [🆗]]}
+  F1Dance: {tap: [['f1'], ['f11']]}
+  F2Dance: {tap: [['f2'], ['f12']]}
+  F3Dance: {tap: [['f3'], ['f13']]}
+  F4Dance: {tap: [['f4'], ['f14']]}
+  F5Dance: {tap: [['f5'], ['f15']]}
+  F6Dance: {tap: [['f6'], ['f16']]}
+  F7Dance: {tap: [['f7'], ['f17']]}
+  F8Dance: {tap: [['f8'], ['f18']]}
+  F9Dance: {tap: [['f9'], ['f19']]}
+  F10Dance: {tap: [['f10'], ['f20']]}
   semicolonDance:
-    type: dance
-    tap:
-    - [';']
+    tap: [[';']]
     hold:
     - [holdNavigation]
     - [holdNavigation,holdNavigationExtend]
   quoteDance:
-    type: dance
-    tap:
-    - ["'"]
+    tap: [["'"]]
     hold:
     - [holdEmoji]
     - [holdEmoji, lCtrl]

@@ -673,19 +673,18 @@ class KeyFactory {
       return null
     }
 
-    switch (config.type) {
-      case 'dance':
-        const { tap = [], hold = [] } = config
-        const createActions = (stepsActions, manyDancesType) => new TapDanceAction(
-          stepsActions.map(stepActions => this._createTapStepAction(stepActions)),
-          manyDancesType
-        )
+    if (key.name.match(/Dance$/)) {
+      const { tap = [], hold = [] } = config
+      const createActions = (stepsActions, manyDancesType) => new TapDanceAction(
+        stepsActions.map(stepActions => this._createTapStepAction(stepActions)),
+        manyDancesType
+      )
 
-        return new DanceKey(
-          key.name,
-          createActions(tap, 'repeatFirst'),
-          createActions(hold, 'startLast')
-        )
+      return new DanceKey(
+        key.name,
+        createActions(tap, 'repeatFirst'),
+        createActions(hold, 'startLast')
+      )
     }
 
     throw new Error(`Undefined .keys.${key.name} config type: ${config.type}`)
