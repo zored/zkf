@@ -24,24 +24,10 @@
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
-};
-
-// Get operating system. Windows is default.
-uint8_t get_os (void) {
-  switch (get_unicode_input_mode()) {
-    case UC_OSX:
-      return OS_MACOS;
-
-    case UC_WIN:
-    case UC_WINC:
-      return OS_WINDOWS;
-  }
-
-  return OS_WINDOWS;
-}
+} zored_os = OS_WINDOWS;
 
 uint8_t map_windows_keycode (uint8_t windowsKeycode) {
-  switch (get_os()) {
+  switch (zored_os) {
     case OS_MACOS:
       switch (windowsKeycode) {
         case KC_LCTRL:
@@ -53,26 +39,28 @@ uint8_t map_windows_keycode (uint8_t windowsKeycode) {
         case KC_RGUI:
           return KC_RCTRL;
       }
+    case OS_WINDOWS:
+      break;
   }
 
   return windowsKeycode;
 }
 
-void register_win_code(uint8_t code) {
+void code_down(uint8_t code) {
   register_code(map_windows_keycode(code));
 }
 
-void unregister_win_code(uint8_t code) {
+void code_up(uint8_t code) {
   unregister_code(map_windows_keycode(code));
 }
 
 void close_app(void) {
-  switch (get_os()) {
+  switch (zored_os) {
     case OS_WINDOWS:
       // alt+f4
-      register_win_code(KC_LALT);
+      code_down(KC_LALT);
       tap_code(KC_F4);
-      unregister_win_code(KC_LALT);
+      code_up(KC_LALT);
       break;
 
     case OS_MACOS:
@@ -141,25 +129,25 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       tap_code(KC_EQL);
 
       // >
-      register_win_code(KC_LSHIFT);
+      code_down(KC_LSHIFT);
       tap_code(KC_DOT);
-      unregister_win_code(KC_LSHIFT);
+      code_up(KC_LSHIFT);
       break;
 
     case CMB_RAR:
       tap_code(KC_MINUS);
 
       // >
-      register_win_code(KC_LSHIFT);
+      code_down(KC_LSHIFT);
       tap_code(KC_DOT);
-      unregister_win_code(KC_LSHIFT);
+      code_up(KC_LSHIFT);
       break;
 
     case CMB_UND:
       // _
-      register_win_code(KC_LSHIFT);
+      code_down(KC_LSHIFT);
       tap_code(KC_MINUS);
-      unregister_win_code(KC_LSHIFT);
+      code_up(KC_LSHIFT);
       break;
 
     case CMB_QUI:
@@ -237,6 +225,12 @@ void matrix_init_user(void) {
   {{#ergodox}}
   ergodox_led_all_set(LED_BRIGHTNESS_LO);
   {{/ergodox}}
+  switch (get_unicode_input_mode()) {
+    case UC_OSX:
+      zored_os = OS_MACOS;
+    default:
+      zored_os = OS_WINDOWS;
+  }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -253,6 +247,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         bootloader_jump();
         complete = true;
       }
+      break;
+
+    case UC_M_OS:
+      zored_os = OS_MACOS;
+      break;
+
+    case UC_M_WC:
+      zored_os = OS_WINDOWS;
       break;
   }
 

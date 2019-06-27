@@ -40,11 +40,11 @@ class Key {
 
     return (this.noPrefix ? '' : 'KC_') + this.name.toUpperCase()
   }
-  get tapCode () {
-    return `register_win_code(${this.codeName});`
+  get downCode () {
+    return `code_down(${this.codeName});`
   }
-  get releaseCode () {
-    return `unregister_win_code(${this.codeName});`
+  get upCode () {
+    return `code_up(${this.codeName});`
   }
   get layerCodeName () {
     return this.codeName
@@ -71,12 +71,12 @@ class EmojiKey extends Key {
   get layerCodeName () {
     return `X(${this.codeName}) /*${this.emoji}*/`
   }
-  get tapCode () {
+  get downCode () {
     return `
 tap_unicode(${this.codeName});
     `
   }
-  get releaseCode () {
+  get upCode () {
     return ``
   }
 }
@@ -155,10 +155,10 @@ class LayerToggleKey extends Key {
   get codeName () {
     return `TG(${this.layer.codeName})`
   }
-  get tapCode () {
+  get downCode () {
     return `layer_invert(${this.layer.codeName});`
   }
-  get releaseCode () {
+  get upCode () {
     return ``
   }
 }
@@ -172,12 +172,12 @@ class LayerHoldKey extends Key {
     return `MO(${this.layer.codeName})`
   }
 
-  get tapCode () {
+  get downCode () {
     return `
       layer_on(${this.layer.codeName});
     `
   }
-  get releaseCode () {
+  get upCode () {
     return `layer_off(${this.layer.codeName});`
   }
 }
@@ -272,12 +272,12 @@ class KeySequence extends Action {
   }
   get onDanceCode () {
     return ltrim(this.keys.map(key => rtrim(`
-            ${key.tapCode}
+            ${key.downCode}
     `)).join('')) + this.onDanceStateCode(true)
   }
   get onDanceResetCode () {
     return ltrim(this.keys.map(key => rtrim(`
-            ${key.releaseCode}
+            ${key.upCode}
     `)).join('')) + this.onDanceStateCode(false)
   }
   onDanceStateCode (active) {
