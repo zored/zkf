@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 'use strict'
 
 const fs = require('fs')
@@ -50,6 +49,9 @@ class Key {
   get layerCodeName () {
     return this.codeName
   }
+  get selfWithChilds () {
+    return [this]
+  }
 }
 
 class EmojiKey extends Key {
@@ -69,6 +71,14 @@ class EmojiKey extends Key {
   get layerCodeName () {
     return `X(${this.codeName}) /*${this.emoji}*/`
   }
+  get tapCode () {
+    return `
+tap_unicode(${this.codeName});
+    `
+  }
+  get releaseCode () {
+    return ``
+  }
 }
 
 class LayerCollection {
@@ -85,7 +95,7 @@ class LayerCollection {
   }
 
   get allKeys () {
-    return this.layers.flatMap(layer => layer.keys)
+    return this.layers.flatMap(layer => layer.allKeys)
   }
 }
 
@@ -128,6 +138,9 @@ class Layer {
   }
   get keyCodesString () {
     return this.structure.formatLayer(this)
+  }
+  get allKeys () {
+    return this.keys.flatMap(key => key.selfWithChilds)
   }
   toString () {
     return this.codeName
@@ -201,6 +214,12 @@ class DanceKey extends Key {
         ${this.tapAction.onDanceResetCode}
     `
   }
+
+  get selfWithChilds () {
+    return super.selfWithChilds
+      .concat(this.tapAction.allKeysRecursive)
+      .concat(this.holdAction.allKeysRecursive)
+  }
   get layerCodeName () {
     return `TD(${super.layerCodeName})`
   }
@@ -231,6 +250,12 @@ class Action {
   get allActionsRecursive () {
     return [this].concat(this.childActions.flatMap(child => child.allActionsRecursive))
   }
+  get allKeys () {
+    return []
+  }
+  get allKeysRecursive () {
+    return this.allActionsRecursive.flatMap(action => action.allKeys)
+  }
 }
 
 class KeySequence extends Action {
@@ -241,6 +266,9 @@ class KeySequence extends Action {
       const glue = '__'
       this.id = 'SEQ' + glue + this.keys.map(key => key.name).join(glue)
     }
+  }
+  get allKeys () {
+    return this.keys
   }
   get onDanceCode () {
     return ltrim(this.keys.map(key => rtrim(`

@@ -40,6 +40,24 @@ uint8_t get_os (void) {
   return OS_WINDOWS;
 }
 
+void close_app(void) {
+  switch (get_os()) {
+    case OS_WINDOWS:
+      // alt+f4
+      register_win_code(KC_LALT);
+      tap_code(KC_F4);
+      unregister_win_code(KC_LALT);
+      break;
+
+    case OS_MACOS:
+      // cmd+q
+      register_code(KC_LCMD);
+      tap_code(KC_Q);
+      unregister_code(KC_LCMD);
+      break;
+  }
+}
+
 uint8_t map_windows_keycode (uint8_t windowsKeycode) {
   switch (get_os()) {
     case OS_MACOS:
@@ -69,6 +87,12 @@ void unregister_win_code(uint8_t code) {
 enum unicode_names {
   {{{unicode.names}}}
 };
+
+void tap_unicode(enum unicode_names name) {
+  unicode_input_start();
+  register_hex32(pgm_read_dword(&unicode_map[name]));
+  unicode_input_finish();
+}
 
 const uint32_t PROGMEM
 unicode_map[] = {
@@ -139,21 +163,7 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       break;
 
     case CMB_QUI:
-      switch (get_os()) {
-        case OS_WINDOWS:
-          // alt+f4
-          register_win_code(KC_LALT);
-          tap_code(KC_F4);
-          unregister_win_code(KC_LALT);
-          break;
-
-        case OS_MACOS:
-          // cmd+q
-          register_code(KC_LCMD);
-          tap_code(KC_Q);
-          unregister_code(KC_LCMD);
-          break;
-      }
+      close_app();
       break;
 
     case CMB_BSLS:

@@ -17,7 +17,7 @@ pre-run () {
 
 run () {
   pre-run
-  image=$1
+  local image=$1
   shift
   docker run --rm \
     -v "/$PWD:/build" \
@@ -56,9 +56,9 @@ esac
 case $1 in
  build|b)
   [[ -e $QMK_DIR ]] || $0 sync
-  run $node_image compiler/run.js $keyboard
+  run $node_image node compiler/run.js $keyboard
 
-  echo "Syncing QMK and building firmware..."
+  echo "Building firmware..."
   run $qmk_image "cd $QMK_DIR && make $keyboard:zored"
   mv $firmware_source $firmware
  ;;

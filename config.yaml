@@ -156,6 +156,8 @@ keyboards:
         TAPPING_TERM: 130
         TAPPING_TERM_TAP_DANCE: 270
         UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
+        UNICODE_SONG_OSX: SONG(COIN_SOUND)
+        UNICODE_SONG_WINC: SONG(MARIO_GAMEOVER)
 
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
       rules:
@@ -171,8 +173,20 @@ keyboards:
         TAP_DANCE_ENABLE: 'yes'
         UNICODE_ENABLE: 'no'
         UNICODEMAP_ENABLE: 'yes'
+    combos: &combos
+      - combo: [f, g]
+        result: ["=", ">"]
+      - combo: [y, u]
+        result: [esc]
+      - combo: [h, j]
+        result: ["-", ">"]
+      - combo: [n, m]
+        result: ["_"]
+      - combo: [i, o]
+        result: [closeApp]
   planck:
     settings: *settings
+    combos: *combos
     layers:
       default:
         lights: []
@@ -205,8 +219,8 @@ keyboards:
       emoji:
         lights: [1,2]
         keys:
-            - [~, 😊, 😂, 🤔, 👍, 💪, ~, F7Dance, F8Dance, F9Dance, ~, ~]
-            - [~, 😏, 🔥, 💖, 😢, 😭, ~, F4Dance, F5Dance, F6Dance, ~, ~]
+            - [~, happyDance, sadDance, strangeDance, ~, ~, ~, F7Dance, F8Dance, F9Dance, ~, ~]
+            - [~, coolDance, okDance, loveDance, ~, ~, ~, F4Dance, F5Dance, F6Dance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
             - [enterBootloader, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~] 
       plover:
@@ -291,6 +305,12 @@ keys:
     - [rgui]
     - [rgui, rShift]
     - [rgui, rShift, rCtrl]
+  happyDance: { type: dance, tap: [[😊], [😁], [😄], [😂]]}
+  sadDance: { type: dance, tap: [[😞], [😢], [😭]]}
+  coolDance: { type: dance, tap: [[😏], [😎], [💪], [🔥]]}
+  loveDance: { type: dance, tap: [[😚], [😍], [😘], [💖]]}
+  strangeDance: { type: dance, tap: [[🤔], [🤨], [😱]]}
+  okDance: { type: dance, tap: [[👍], [👌], [🆗]]}
   F1Dance: { type: dance, tap: [['f1'], ['f11']]}
   F2Dance: { type: dance, tap: [['f2'], ['f12']]}
   F3Dance: { type: dance, tap: [['f3'], ['f13']]}
