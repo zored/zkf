@@ -38,7 +38,6 @@ else
 fi
 
 export QMK_DIR=vendor/qmk_firmware
-teensy_rel=vendor/teensy_${OS}
 node_image=node:12.4.0-alpine
 qmk_image=qmkfm/qmk_firmware
 
@@ -80,26 +79,10 @@ case $1 in
   done
   run $qmk_image "cd $QMK_DIR && make git-submodule"
 
-  rm -rf $teensy_rel
-  mkdir -p $_
-  pushd $_
-  case $OS in
-    WINDOWS)
-      wget https://www.pjrc.com/teensy/teensy_loader_cli_windows.zip -O teensy.zip
-      unzip $_
-      rm $_
-
-      ;;
-    MACOSX)
-      git clone https://github.com/zored/teensy_loader_cli . || true
-      git checkout zored || true
-      make
-      ;;
-  esac
-  popd
-
+  echo "Checking firmware flasher presence..."
   if [[ ! -e $wally ]]; then
-    echo "Install Wally: https://ergodox-ez.com/pages/wally"
+    echo "Install Wally ($wally):"
+    echo "https://ergodox-ez.com/pages/wally"
     exit 1
   fi
  ;;

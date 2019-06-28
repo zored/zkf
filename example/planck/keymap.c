@@ -217,7 +217,7 @@ enum layers {
 LAYER_DEFAULT = 0,
   LAYER_SYMBOL,
   LAYER_NAVIGATION,
-  LAYER_NAVIGATIONEXTEND,
+  LAYER_NAVIGATION2,
   LAYER_EMOJI,
   LAYER_PLOVER
 };
@@ -259,7 +259,7 @@ enum dance_action_names {
   ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT_6,
   ACTION_SEQ__SCOLON_8,
   ACTION_SEQ__HOLD_LAYER_NAVIGATION_10,
-  ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_11,
+  ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_11,
   ACTION_SEQ__QUOT_13,
   ACTION_SEQ__HOLD_LAYER_EMOJI_15,
   ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_16,
@@ -438,8 +438,8 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           case 2:
             layer_on(LAYER_NAVIGATION);
             
-      layer_on(LAYER_NAVIGATIONEXTEND);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_11;
+      layer_on(LAYER_NAVIGATION2);
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_11;
     
             return;
       
@@ -448,8 +448,8 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
             
           layer_on(LAYER_NAVIGATION);
             
-      layer_on(LAYER_NAVIGATIONEXTEND);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_11;
+      layer_on(LAYER_NAVIGATION2);
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_11;
     
         
             return;
@@ -1981,9 +1981,9 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
     
             break;
     
-          case ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_11:
+          case ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_11:
             layer_off(LAYER_NAVIGATION);
-            layer_off(LAYER_NAVIGATIONEXTEND);
+            layer_off(LAYER_NAVIGATION2);
             dance_key_states[dance_key] = 0;
     
             break;
@@ -2642,10 +2642,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
   ,
 
-[LAYER_NAVIGATIONEXTEND] = LAYOUT_planck_grid(
+[LAYER_NAVIGATION2] = LAYOUT_planck_grid(
   
-/* keys-0 */ _______,_______,_______,_______,_______,_______,KC_PWR,KC_SLEP,UC_M_WC,UC_M_OS,_______,_______,
-/* keys-1 */ _______,AU_TOG,CK_TOGG,CK_UP,CK_DOWN,_______,KC_HOME,KC_PGUP,KC_PGDN,KC_END,_______,_______,
+/* keys-0 */ _______,_______,_______,_______,_______,_______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_M_WC,UC_M_OS,_______,_______,
+/* keys-1 */ _______,CK_TOGG,CK_UP,CK_DOWN,_______,_______,KC_HOME,KC_PGUP,KC_PGDN,KC_END,_______,_______,
 /* keys-2 */ _______,MU_TOG,MU_MOD,_______,_______,_______,_______,RGB_VAD,RGB_VAI,RGB_SAD,RGB_SAI,_______,
 /* keys-3 */ _______,_______,_______,_______,_______,_______,_______,RGB_HUD,RGB_HUI,RGB_TOG,RGB_MOD,_______
 )
@@ -2723,7 +2723,7 @@ uint32_t layer_state_set_user(uint32_t state) {
         palSetPad(GPIOB, 8);
         break;
     
-      case LAYER_NAVIGATIONEXTEND:
+      case LAYER_NAVIGATION2:
         palSetPad(GPIOB, 8);
         break;
     

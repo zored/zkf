@@ -222,7 +222,7 @@ keyboards:
         lights: [2]
         keys:
             - [~, ~, ~, ~, ~, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
-            - [~, audioToggle, audioClickToggle, audioClickUp, audioClickDown, ~, home, pageUp, pageDown, end, ~, ~]
+            - [~, audioClickToggle, audioClickUp, audioClickDown, ~, ~, home, pageUp, pageDown, end, ~, ~]
             - [~, musicToggle, musicMode, ~, ~, ~, ~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~]
             - [~, ~, ~, ~, ~, ~, ~, rgbHueDown, rgbHueUp, rgbToggle, rgbNext, ~]
       emoji:
@@ -390,9 +390,9 @@ map:
     sFR: STN_FR
     sGR: STN_GR
     sHL: STN_HL
-    shutdown: PWR
+    shutdown: SYSTEM_POWER
     sKL: STN_KL
-    sleep: SLEP
+    sleep: SYSTEM_SLEEP
     sLR: STN_LR
     sN1: STN_N1
     sN2: STN_N2
@@ -433,7 +433,6 @@ map:
     wheelRight: WH_R
     wheelUp: WH_U
     windowsMode: UC_M_WC
-    audioToggle: AU_TOG
     audioClickToggle: CK_TOGG
     audioClickUp: CK_UP
     audioClickDown: CK_DOWN
