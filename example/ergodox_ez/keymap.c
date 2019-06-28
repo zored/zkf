@@ -89,8 +89,27 @@ enum unicode_names {
 };
 
 void tap_unicode(enum unicode_names name) {
+  // Inspired by process_unicodemap().
   unicode_input_start();
-  register_hex32(pgm_read_dword(&unicode_map[name]));
+
+  uint32_t code = pgm_read_dword(&unicode_map[name]);
+  uint8_t input_mode = get_unicode_input_mode();
+
+  if (code > 0x10FFFF || (code > 0xFFFF && input_mode == UC_WIN)) {
+    unicode_input_cancel();
+    return;
+  }
+
+  if (code > 0xFFFF && input_mode == UC_OSX) {
+    code -= 0x10000;
+    uint32_t lo = code & 0x3FF, hi = (code & 0xFFC00) >> 10;
+    register_hex32(hi + 0xD800);
+    register_hex32(lo + 0xDC00);
+    unicode_input_finish();
+    return;
+  }
+
+  register_hex32(code);
   unicode_input_finish();
 }
 
@@ -197,7 +216,7 @@ LAYER_DEFAULT = 0,
   LAYER_SYMBOL,
   LAYER_NAVIGATION,
   LAYER_EMOJI,
-  LAYER_NAVIGATIONEXTEND,
+  LAYER_NAVIGATION2,
   LAYER_PLOVER
 };
 
@@ -254,7 +273,7 @@ enum dance_action_names {
   ACTION_SEQ__LGUI__LSHIFT__LCTRL_30,
   ACTION_SEQ__SCOLON_32,
   ACTION_SEQ__HOLD_LAYER_NAVIGATION_34,
-  ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_35,
+  ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_35,
   ACTION_SEQ__QUOT_37,
   ACTION_SEQ__HOLD_LAYER_EMOJI_39,
   ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_40,
@@ -696,8 +715,8 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
           case 2:
             layer_on(LAYER_NAVIGATION);
             
-      layer_on(LAYER_NAVIGATIONEXTEND);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_35;
+      layer_on(LAYER_NAVIGATION2);
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_35;
     
             return;
       
@@ -706,8 +725,8 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
             
           layer_on(LAYER_NAVIGATION);
             
-      layer_on(LAYER_NAVIGATIONEXTEND);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_35;
+      layer_on(LAYER_NAVIGATION2);
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_35;
     
         
             return;
@@ -2081,9 +2100,9 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
     
             break;
     
-          case ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATIONEXTEND_35:
+          case ACTION_SEQ__HOLD_LAYER_NAVIGATION__HOLD_LAYER_NAVIGATION2_35:
             layer_off(LAYER_NAVIGATION);
-            layer_off(LAYER_NAVIGATIONEXTEND);
+            layer_off(LAYER_NAVIGATION2);
             dance_key_states[dance_key] = 0;
     
             break;
@@ -2678,7 +2697,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
   ,
 
-[LAYER_NAVIGATIONEXTEND] = LAYOUT_ergodox(
+[LAYER_NAVIGATION2] = LAYOUT_ergodox(
   
 /* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* keys-left-1 */ _______,_______,_______,_______,_______,_______,_______,
@@ -2777,7 +2796,7 @@ uint32_t layer_state_set_user(uint32_t state) {
         ergodox_right_led_on(1); ergodox_right_led_on(3);
         break;
     
-      case LAYER_NAVIGATIONEXTEND:
+      case LAYER_NAVIGATION2:
         ergodox_right_led_on(3);
         break;
     

@@ -91,8 +91,27 @@ enum unicode_names {
 };
 
 void tap_unicode(enum unicode_names name) {
+  // Inspired by process_unicodemap().
   unicode_input_start();
-  register_hex32(pgm_read_dword(&unicode_map[name]));
+
+  uint32_t code = pgm_read_dword(&unicode_map[name]);
+  uint8_t input_mode = get_unicode_input_mode();
+
+  if (code > 0x10FFFF || (code > 0xFFFF && input_mode == UC_WIN)) {
+    unicode_input_cancel();
+    return;
+  }
+
+  if (code > 0xFFFF && input_mode == UC_OSX) {
+    code -= 0x10000;
+    uint32_t lo = code & 0x3FF, hi = (code & 0xFFC00) >> 10;
+    register_hex32(hi + 0xD800);
+    register_hex32(lo + 0xDC00);
+    unicode_input_finish();
+    return;
+  }
+
+  register_hex32(code);
   unicode_input_finish();
 }
 

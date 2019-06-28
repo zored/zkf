@@ -93,7 +93,7 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
-      navigationExtend:
+      navigation2:
         lights: [3]
         keys:
           left:
@@ -218,7 +218,7 @@ keyboards:
             - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~]
             - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
-      navigationExtend:
+      navigation2:
         lights: [2]
         keys:
             - [~, ~, ~, ~, ~, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
@@ -317,7 +317,7 @@ keys:
     tap: [[';']]
     hold:
     - [holdNavigation]
-    - [holdNavigation,holdNavigationExtend]
+    - [holdNavigation,holdNavigation2]
   quoteDance:
     tap: [["'"]]
     hold:
