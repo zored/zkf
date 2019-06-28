@@ -497,7 +497,10 @@ class KeymapFiles {
       .map(dir => this._checkDir(dir))
       .map(dir => dir + fileName)
       .forEach(path => {
-        fs.writeFileSync(path, content)
+        const isChanged = !fs.existsSync(path) || fs.readFileSync(path) !== content
+        if (isChanged) {
+          fs.writeFileSync(path, content)
+        }
         this._list.push(path)
       })
   }

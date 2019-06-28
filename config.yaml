@@ -139,17 +139,18 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, sE, sU]
-    settings: &settings
+    settings:
       # https://docs.qmk.fm/#/config_options?id=the-configh-file
-      config:
+      config: &config
         COMBO_COUNT: 6
         COMBO_TERM: 130
+        ENCODER_RESOLUTION: 4
         FORCE_NKRO: ''
-        INTERRUPTION_TIMEOUT: 20
         LEADER_TIMEOUT: 300
         MOUSEKEY_DELAY: 0
         MOUSEKEY_INTERVAL: 20
-        MOUSEKEY_MAX_SPEED: 10
+        MOUSEKEY_MAX_SPEED: 11
+        MOUSEKEY_TIME_TO_MAX: 60
         MOUSEKEY_WHEEL_DELAY: 0
         MOUSEKEY_WHEEL_MAX_SPEED: 4
         MOUSEKEY_WHEEL_TIME_TO_MAX: 150
@@ -160,14 +161,15 @@ keyboards:
         UNICODE_SONG_WINC: SONG(MARIO_GAMEOVER)
 
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
-      rules:
-        BOOTMAGIC_ENABLE: 'full'
+      rules: &rules
+        AUDIO_ENABLE: 'no'
+        BOOTMAGIC_ENABLE: 'no'
         COMBO_ENABLE: 'yes'
         COMMAND_ENABLE: 'no'
         EXTRAKEY_ENABLE: 'yes'
         NKRO_ENABLE: 'yes'
-        KEY_LOCK_ENABLE: 'yes'
-        LEADER_ENABLE: 'yes'
+        KEY_LOCK_ENABLE: 'no'
+        LEADER_ENABLE: 'no'
         LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
         RGBLIGHT_ENABLE: 'no'
         STENO_ENABLE: 'yes'
@@ -186,7 +188,13 @@ keyboards:
       - combo: [i, o]
         result: [closeApp]
   planck:
-    settings: *settings
+    settings:
+      rules:
+        <<: *rules
+        AUDIO_ENABLE: 'yes'
+      config:
+        <<: *config
+        STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
     layers:
       default:
@@ -214,8 +222,8 @@ keyboards:
         lights: [2]
         keys:
             - [~, ~, ~, ~, ~, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
-            - [~, ~, ~, ~, ~, ~, home, pageUp, pageDown, end, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~]
+            - [~, audioToggle, audioClickToggle, audioClickUp, audioClickDown, ~, home, pageUp, pageDown, end, ~, ~]
+            - [~, musicToggle, musicMode, ~, ~, ~, ~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~]
             - [~, ~, ~, ~, ~, ~, ~, rgbHueDown, rgbHueUp, rgbToggle, rgbNext, ~]
       emoji:
         lights: [1,2]
@@ -425,10 +433,19 @@ map:
     wheelRight: WH_R
     wheelUp: WH_U
     windowsMode: UC_M_WC
+    audioToggle: AU_TOG
+    audioClickToggle: CK_TOGG
+    audioClickUp: CK_UP
+    audioClickDown: CK_DOWN
+    musicToggle: MU_TOG
+    musicMode: MU_MOD
   prefixes:
-    - UC
+    - AU
+    - CK
     - DYN
-    - ZKC
+    - MAGIC
+    - MU
     - RGB
     - STN
-    - MAGIC
+    - UC
+    - ZKC

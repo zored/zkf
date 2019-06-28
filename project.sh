@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 # Contains helper code for easy work.
 set -e
 
@@ -28,7 +28,7 @@ run () {
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export OS=MACOSX
-  wally="wally-cli"
+  wally="/usr/local/bin/wally-cli"
 elif [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
   export OS=WINDOWS
   wally="'/c/Program Files (x86)/Wally/wally-cli.exe'"

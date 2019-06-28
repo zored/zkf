@@ -2626,8 +2626,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_NAVIGATIONEXTEND] = LAYOUT_planck_grid(
   
 /* keys-0 */ _______,_______,_______,_______,_______,_______,KC_PWR,KC_SLEP,UC_M_WC,UC_M_OS,_______,_______,
-/* keys-1 */ _______,_______,_______,_______,_______,_______,KC_HOME,KC_PGUP,KC_PGDN,KC_END,_______,_______,
-/* keys-2 */ _______,_______,_______,_______,_______,_______,_______,RGB_VAD,RGB_VAI,RGB_SAD,RGB_SAI,_______,
+/* keys-1 */ _______,AU_TOG,CK_TOGG,CK_UP,CK_DOWN,_______,KC_HOME,KC_PGUP,KC_PGDN,KC_END,_______,_______,
+/* keys-2 */ _______,MU_TOG,MU_MOD,_______,_______,_______,_______,RGB_VAD,RGB_VAI,RGB_SAD,RGB_SAI,_______,
 /* keys-3 */ _______,_______,_______,_______,_______,_______,_______,RGB_HUD,RGB_HUI,RGB_TOG,RGB_MOD,_______
 )
   ,
