@@ -252,6 +252,43 @@ void matrix_init_user(void) {
   }
 }
 
+void spotlight_start(void) {
+  register_code(KC_LGUI);
+  switch (zored_os) {
+    case OS_WINDOWS:
+      tap_code(KC_R);
+      break;
+
+    case OS_MACOS:
+      tap_code(KC_SPC);
+      break;
+  }
+  unregister_code(KC_LGUI);
+}
+
+void spotlight_finish(void) {
+  tap_code(KC_ENTER);
+}
+
+LEADER_EXTERNS();
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+    SEQ_ONE_KEY(KC_U) {
+      SEND_STRING("zored");
+    }
+    SEQ_ONE_KEY(KC_E) {
+      SEND_STRING("zored.box@gmail.com");
+    }
+    SEQ_ONE_KEY(KC_P) {
+      spotlight_start();
+      SEND_STRING("enpass");
+      spotlight_finish();
+    }
+  }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (!process_record_dynamic_macro(keycode, record)) {
     return false;

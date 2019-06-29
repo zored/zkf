@@ -9,7 +9,7 @@ keyboards:
             - [esc, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
             - [lShiftDance, zDance, xDance, cDance, v, b, ~]
-            - [~, ~, ~, left, right]
+            - [leader, ~, ~, left, right]
           left-thumb:
             - [esc, ~]
             - [home]
@@ -169,7 +169,7 @@ keyboards:
         EXTRAKEY_ENABLE: 'yes'
         NKRO_ENABLE: 'yes'
         KEY_LOCK_ENABLE: 'no'
-        LEADER_ENABLE: 'no'
+        LEADER_ENABLE: 'yes'
         LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
         RGBLIGHT_ENABLE: 'no'
         STENO_ENABLE: 'yes'
@@ -203,7 +203,7 @@ keyboards:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
             - [lShiftDance, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShiftDance]
-            - [~, ~, ~, delete, backspace, space, ~, tab, enter, '[', ']', togglePlover]
+            - [leader, ~, ~, delete, backspace, space, ~, tab, enter, '[', ']', togglePlover]
       symbol:
         lights: [1]
         keys:
@@ -361,6 +361,7 @@ map:
     enter: ENT
     enterBootloader: ZKC_BTL
     left: LEFT
+    leader: LEAD
     macosMode: UC_M_OS
     mouseDown: MS_D
     mouseLeft: MS_L

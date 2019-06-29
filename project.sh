@@ -64,6 +64,11 @@ case $1 in
   mv $firmware_source $firmware
  ;;
 
+ upgrade|u)
+  git submodule update --remote
+  $0 s
+ ;;
+
  sync|s)
   echo "Install keymap compiler."
   run $node_image "\

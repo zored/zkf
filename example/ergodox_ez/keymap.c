@@ -2619,7 +2619,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* keys-left-1 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
 /* keys-left-2 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,
 /* keys-left-3 */ TD(DANCE_KC_LSHIFTDANCE),TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,_______,
-/* keys-left-4 */ _______,_______,_______,KC_LEFT,KC_RGHT,
+/* keys-left-4 */ KC_LEAD,_______,_______,KC_LEFT,KC_RGHT,
 /* keys-left-thumb-0 */ KC_ESC,_______,
 /* keys-left-thumb-1 */ KC_HOME,
 /* keys-left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
@@ -2708,7 +2708,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* keys-left-thumb-1 */ _______,
 /* keys-left-thumb-2 */ _______,_______,_______,
 /* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-right-1 */ _______,KC_PWR,KC_SLEP,UC_M_WC,UC_M_OS,_______,_______,
+/* keys-right-1 */ _______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_M_WC,UC_M_OS,_______,_______,
 /* keys-right-2 */ KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
 /* keys-right-3 */ _______,_______,_______,_______,_______,_______,_______,
 /* keys-right-4 */ _______,_______,_______,_______,_______,
@@ -2748,6 +2748,43 @@ void matrix_init_user(void) {
       zored_os = OS_MACOS;
     default:
       zored_os = OS_WINDOWS;
+  }
+}
+
+void spotlight_start(void) {
+  register_code(KC_LGUI);
+  switch (zored_os) {
+    case OS_WINDOWS:
+      tap_code(KC_R);
+      break;
+
+    case OS_MACOS:
+      tap_code(KC_SPC);
+      break;
+  }
+  unregister_code(KC_LGUI);
+}
+
+void spotlight_finish(void) {
+  tap_code(KC_ENTER);
+}
+
+LEADER_EXTERNS();
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+    SEQ_ONE_KEY(KC_U) {
+      SEND_STRING("zored");
+    }
+    SEQ_ONE_KEY(KC_E) {
+      SEND_STRING("zored.box@gmail.com");
+    }
+    SEQ_ONE_KEY(KC_P) {
+      spotlight_start();
+      SEND_STRING("enpass");
+      spotlight_finish();
+    }
   }
 }
 

@@ -2620,7 +2620,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* keys-0 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
 /* keys-1 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),TD(DANCE_KC_QUOTEDANCE),
 /* keys-2 */ TD(DANCE_KC_LSHIFTDANCE),TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),TD(DANCE_KC_RSHIFTDANCE),
-/* keys-3 */ _______,_______,_______,KC_DELETE,KC_BSPC,KC_SPC,_______,KC_TAB,KC_ENT,KC_LBRC,KC_RBRC,TG(LAYER_PLOVER)
+/* keys-3 */ KC_LEAD,_______,_______,KC_DELETE,KC_BSPC,KC_SPC,_______,KC_TAB,KC_ENT,KC_LBRC,KC_RBRC,TG(LAYER_PLOVER)
 )
   ,
 
@@ -2677,6 +2677,36 @@ void matrix_init_user(void) {
       zored_os = OS_MACOS;
     default:
       zored_os = OS_WINDOWS;
+  }
+}
+
+LEADER_EXTERNS();
+
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+    SEQ_ONE_KEY(KC_U) {
+      SEND_STRING("zored");
+    }
+    SEQ_ONE_KEY(KC_E) {
+      SEND_STRING("zored.box@gmail.com");
+    }
+    SEQ_ONE_KEY(KC_P) {
+      register_code(KC_LGUI);
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code(KC_R);
+          break;
+
+        case OS_MACOS:
+          tap_code(KC_SPC);
+          break;
+      }
+      unregister_code(KC_LGUI);
+      SEND_STRING("enpass");
+      tap_code(KC_ENTER);
+    }
   }
 }
 
