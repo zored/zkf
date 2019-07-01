@@ -23,15 +23,15 @@ keyboards:
           right-thumb:
             - [esc, ~]
             - [pageUp]
-            - [pageDown, tab, enter]
+            - [pageDown, tabDance, enter]
       symbol:
         lights: [2]
         keys:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, '!', '@', '{', '}', '/', ~]
-            - [~, '#', '$', '(', ')', '`']
-            - [~, '%', '^', '[', ']', '~', ~]
+            - [~, '!', '#', '{', '}', '/', ~]
+            - [~, '@', '$', '(', ')', '`']
+            - [~, percentDance, circumflexDance, leftSquareBracketDance, ']', '~', ~]
             - [~, ~, ~, ~, ~]
           left-thumb:
             - [~, ~]
@@ -154,11 +154,9 @@ keyboards:
         MOUSEKEY_WHEEL_DELAY: 0
         MOUSEKEY_WHEEL_MAX_SPEED: 4
         MOUSEKEY_WHEEL_TIME_TO_MAX: 150
-        TAPPING_TERM: 130
+        TAPPING_TERM: 110
         TAPPING_TERM_TAP_DANCE: 270
         UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
-        UNICODE_SONG_OSX: SONG(COIN_SOUND)
-        UNICODE_SONG_WINC: SONG(MARIO_GAMEOVER)
 
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
       rules: &rules
@@ -203,13 +201,13 @@ keyboards:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
             - [lShiftDance, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShiftDance]
-            - [leader, ~, ~, delete, backspace, space, ~, tab, enter, '[', ']', togglePlover]
+            - [leader, ~, ~, delete, backspace, space, ~, tabDance, enter, '[', ']', togglePlover]
       symbol:
         lights: [1]
         keys:
-            - [~, '!', '@', '{', '}','/', '=', 7, 8, 9, '&', '|']
-            - [~, '#', '$', '(', ')', '`', '+', 4, 5, 6, '*', ~]
-            - [~, '%', '^', '[', ']', '~', '-', 1, 2, 3, '/', ~]
+            - [~, '!', '#', '{', '}','/', '=', 7, 8, 9, '&', '|']
+            - [~, '@', '$', '(', ')', '`', '+', 4, 5, 6, '*', ~]
+            - [~, percentDance, circumflexDance, leftSquareBracketDance, ']', '~', '-', 1, 2, 3, '/', ~]
             - [~, ~, ~, ~, ~, ~, ~, ~, 0, '.', ~, ~]
       navigation:
         lights: [2]
@@ -241,6 +239,11 @@ keyboards:
             - [~, ~, ~, sA, sO, ~, ~, sE, sU, ~, ~, ~]
 
 keys:
+  tabDance:
+    tap:
+    - [tab]
+    hold:
+    - [holdSymbol]
   capsDance:
     tap:
     - [capsLock]
@@ -249,36 +252,51 @@ keys:
     - [holdSymbol]
     - [holdSymbol, lCtrl]
     - [holdSymbol, lAlt]
-  zDance:
-    tap: [[z]]
-    hold:
-    - [lCtrl]
-    - [lCtrl, lShift]
-    - [lCtrl, lShift, lAlt]
   lShiftDance:
-    tap: [[lShift, 9]] # (
+    tap:
+    - [lShift, 9] # (
+    - [lShift, '['] # {
+    - ['[']
     hold:
     - [lShift]
     - [lShift, lAlt]
     - [lShift, lAlt, lgui]
   rShiftDance:
-    tap: [[lShift, 0]] # )
+    tap:
+    - [lShift, 0] # )
+    - [lShift, ']'] # }
+    - [']']
     hold:
     - [rShift]
     - [rShift, rAlt]
     - [rShift, rAlt, rgui]
+  zDance:
+    tap: [[z]]
+    hold: &lCtrlDance
+    - [lCtrl]
+    - [lCtrl, lShift]
+    - [lCtrl, lShift, lAlt]
   xDance:
     tap: [[x]]
-    hold:
+    hold: &lAltDance
     - [lAlt]
     - [lAlt, lShift]
     - [lAlt, lShift, lCtrl]
   cDance:
     tap: [[c]]
-    hold:
+    hold: &lGuiDance
     - [lgui]
     - [lgui, lShift]
     - [lgui, lShift, lCtrl]
+  percentDance:
+    tap: [['lShift', 5]] # %
+    hold: *lCtrlDance
+  circumflexDance:
+    tap: [['lShift', 6]] # ^
+    hold: *lAltDance
+  leftSquareBracketDance:
+    tap: [['[']]
+    hold: *lGuiDance
   slashDance:
     tap: [['/']]
     hold:

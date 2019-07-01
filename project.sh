@@ -10,6 +10,9 @@ case $2 in
 esac
 
 pre-run () {
+  # Already running:
+  docker ps &> /dev/null && return
+
   local machine=${DOCKER_MACHINE:-default}
   docker-machine start $machine &> /dev/null || true
   eval $(docker-machine env $machine) || true

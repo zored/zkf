@@ -286,6 +286,25 @@ void matrix_scan_user(void) {
       SEND_STRING("enpass");
       spotlight_finish();
     }
+    SEQ_ONE_KEY(KC_S) {
+      // Make screenshot:
+      switch (zored_os) {
+        case OS_MACOS:
+          register_code(KC_LGUI);
+          register_code(KC_LCTRL);
+          register_code(KC_LSHIFT);
+          tap_code(4);
+          unregister_code(KC_LGUI);
+          unregister_code(KC_LCTRL);
+          unregister_code(KC_LSHIFT);
+          break;
+        case OS_WINDOWS:
+          register_code(KC_LGUI);
+          tap_code(KC_DOT);
+          unregister_code(KC_LGUI);
+          break;
+      }
+    }
   }
 }
 
