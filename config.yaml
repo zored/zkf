@@ -157,6 +157,11 @@ keyboards:
         TAPPING_TERM: 110
         TAPPING_TERM_TAP_DANCE: 270
         UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
+        NO_ACTION_MACRO: ''
+        NO_ACTION_FUNCTION: ''
+        NO_DEBUG: ''
+        NO_PRINT: ''
+        NO_ACTION_ONESHOT: ''
 
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
       rules: &rules
@@ -192,6 +197,7 @@ keyboards:
         AUDIO_ENABLE: 'yes'
       config:
         <<: *config
+        AUDIO_CLICKY: ''
         STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
     layers:

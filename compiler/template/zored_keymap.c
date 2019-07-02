@@ -293,15 +293,17 @@ void matrix_scan_user(void) {
           register_code(KC_LGUI);
           register_code(KC_LCTRL);
           register_code(KC_LSHIFT);
-          tap_code(4);
+          tap_code(KC_4);
           unregister_code(KC_LGUI);
           unregister_code(KC_LCTRL);
           unregister_code(KC_LSHIFT);
           break;
         case OS_WINDOWS:
           register_code(KC_LGUI);
-          tap_code(KC_DOT);
+          register_code(KC_LSHIFT);
+          tap_code(KC_S);
           unregister_code(KC_LGUI);
+          unregister_code(KC_LSHIFT);
           break;
       }
     }
