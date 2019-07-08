@@ -30,6 +30,10 @@ uint8_t map_windows_keycode (uint8_t windowsKeycode) {
           return KC_LCTRL;
         case KC_RGUI:
           return KC_RCTRL;
+        case KC_MEDIA_PREV_TRACK:
+          return KC_MEDIA_REWIND;
+        case KC_MEDIA_NEXT_TRACK:
+          return KC_MEDIA_FAST_FORWARD;
       }
     case OS_WINDOWS:
       break;
@@ -3130,7 +3134,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
 /* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* keys-left-1 */ _______,TD(DANCE_KC_HAPPYDANCE),TD(DANCE_KC_SADDANCE),TD(DANCE_KC_STRANGEDANCE),_______,_______,_______,
-/* keys-left-2 */ TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,_______,
+/* keys-left-2 */ _______,TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,
 /* keys-left-3 */ _______,_______,_______,_______,_______,_______,_______,
 /* keys-left-4 */ ZKC_BTL,_______,_______,_______,_______,
 /* keys-left-thumb-0 */ _______,_______,
@@ -3160,7 +3164,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* keys-right-1 */ _______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_M_WC,UC_M_OS,_______,_______,
 /* keys-right-2 */ KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
-/* keys-right-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* keys-right-3 */ _______,KC_MEDIA_PREV_TRACK,_______,KC_MEDIA_PLAY_PAUSE,KC_MEDIA_NEXT_TRACK,_______,_______,
 /* keys-right-4 */ _______,_______,_______,_______,_______,
 /* keys-right-thumb-0 */ _______,_______,
 /* keys-right-thumb-1 */ _______,

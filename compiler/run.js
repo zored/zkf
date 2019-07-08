@@ -108,7 +108,7 @@ class LayerStructure {
   formatLayer (layer) {
     const keys = layer.keys
     if (keys.length !== this.totalCount) {
-      throw new Error(`Not enough keys to fill layer ${layer.codeName}`)
+      throw new Error(`Can't fill layer '${layer.codeName}': expected ${this.totalCount}, got ${keys.length} keys.`)
     }
     let i = 0
 

@@ -8,7 +8,7 @@ keyboards:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [esc, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
-            - [lShiftDance, zDance, xDance, cDance, v, b, ~]
+            - ['shift(', zDance, xDance, cDance, v, b, ~]
             - [leader, ~, ~, left, right]
           left-thumb:
             - [esc, ~]
@@ -18,7 +18,7 @@ keyboards:
             - [~, 6, 7, 8, 9, 0, ~]
             - [~, y, u, i, o, p, \]
             - [   h, j, k, l, semicolonDance, quoteDance]
-            - [~, n, m, commaDance, dotDance, slashDance, rShiftDance]
+            - [~, n, m, commaDance, dotDance, slashDance, 'shift)']
             - ['[', ']', ~, ~, togglePlover]
           right-thumb:
             - [esc, ~]
@@ -75,8 +75,8 @@ keyboards:
         keys:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, happyDance, sadDance, strangeDance, ~, ~]
-            - [~, coolDance, okDance, loveDance, ~, ~, ~]
+            - [~, happyDance, sadDance, strangeDance, ~, ~, ~]
+            - [~, coolDance, okDance, loveDance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~]
             - [enterBootloader, ~, ~, ~, ~]
           left-thumb:
@@ -110,7 +110,7 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, shutdown, sleep, windowsMode, macosMode, ~, ~]
             - [   home, pageDown, pageUp, end, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, mediaPrev, ~, mediaToggle, mediaNext, ~, ~]
             - [~, ~, ~, ~, ~]
           right-thumb:
             - [~, ~]
@@ -206,7 +206,7 @@ keyboards:
         keys:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
-            - [lShiftDance, zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, rShiftDance]
+            - ['shift(', zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, 'shift)']
             - [leader, ~, ~, delete, backspace, space, ~, tabDance, enter, '[', ']', togglePlover]
       symbol:
         lights: [1]
@@ -225,9 +225,9 @@ keyboards:
       navigation2:
         lights: [2]
         keys:
-            - [~, ~, ~, ~, ~, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
+            - [~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
             - [~, audioClickToggle, audioClickUp, audioClickDown, ~, ~, home, pageUp, pageDown, end, ~, ~]
-            - [~, musicToggle, musicMode, ~, ~, ~, ~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~]
+            - [~, musicToggle, musicMode, ~, ~, ~, ~, mediaPrev, ~, mediaToggle, mediaNext, ~]
             - [~, ~, ~, ~, ~, ~, ~, rgbHueDown, rgbHueUp, rgbToggle, rgbNext, ~]
       emoji:
         lights: [1,2]
@@ -261,8 +261,8 @@ keys:
   lShiftDance:
     tap:
     - [lShift, 9] # (
-    - [lShift, '['] # {
-    - ['[']
+    #- [lShift, '['] # {
+    #- ['[']
     hold:
     - [lShift]
     - [lShift, lAlt]
@@ -270,8 +270,8 @@ keys:
   rShiftDance:
     tap:
     - [lShift, 0] # )
-    - [lShift, ']'] # }
-    - [']']
+    #- [lShift, ']'] # }
+    #- [']']
     hold:
     - [rShift]
     - [rShift, rAlt]
@@ -386,6 +386,9 @@ map:
     enterBootloader: ZKC_BTL
     left: LEFT
     leader: LEAD
+    mediaNext: MEDIA_NEXT_TRACK
+    mediaPrev: MEDIA_PREV_TRACK
+    mediaToggle: MEDIA_PLAY_PAUSE
     macosMode: UC_M_OS
     mouseDown: MS_D
     mouseLeft: MS_L

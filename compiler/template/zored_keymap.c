@@ -38,6 +38,10 @@ uint8_t map_windows_keycode (uint8_t windowsKeycode) {
           return KC_LCTRL;
         case KC_RGUI:
           return KC_RCTRL;
+        case KC_MEDIA_PREV_TRACK:
+          return KC_MEDIA_REWIND;
+        case KC_MEDIA_NEXT_TRACK:
+          return KC_MEDIA_FAST_FORWARD;
       }
     case OS_WINDOWS:
       break;
