@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Contains helper code for easy work.
-set -e
+set -ex
 
 keyboard=ergodox_ez
 case $2 in
