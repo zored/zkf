@@ -36,8 +36,7 @@ elif [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" ==
   export OS=WINDOWS
   wally="'/c/Program Files (x86)/Wally/wally-cli.exe'"
 else
-  echo 'Could not guess your OS.'
-  exit 1
+  wally=''
 fi
 
 export QMK_DIR=vendor/qmk_firmware
@@ -88,7 +87,7 @@ case $1 in
   run $qmk_image "cd $QMK_DIR && make git-submodule"
 
   echo "Checking firmware flasher presence..."
-  if [[ ! -e $wally ]]; then
+  if [[ $wally != '' ]] && [[ ! -e $wally ]]; then
     echo "Install Wally ($wally):"
     echo "https://ergodox-ez.com/pages/wally"
     exit 1
@@ -96,6 +95,10 @@ case $1 in
  ;;
 
  flash|f)
+  if [[ $wally = '' ]]; then
+    echo 'No wally defined (could not guess OS?).'
+    exit 1
+  fi
   cat <<'TEXT'
 
 ===========
