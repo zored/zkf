@@ -426,7 +426,7 @@ function getLayersTemplateData (layers, keyboard) {
 }
 
 function compileKeymap (layers, keyboard, files) {
-  const Mustache = require('Mustache')
+  const Mustache = require('mustache')
 
   const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
     dance: getDanceTemplateData(layers),

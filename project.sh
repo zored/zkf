@@ -59,6 +59,7 @@ esac
 case $1 in
  build|b)
   [[ -e $QMK_DIR ]] || $0 sync
+  ls compiler
   run $node_image node compiler/run.js $keyboard
 
   echo "Building firmware..."
