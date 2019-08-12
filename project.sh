@@ -43,14 +43,14 @@ export QMK_DIR=vendor/qmk_firmware
 node_image=node:12.4.0-alpine
 qmk_image=qmkfm/qmk_firmware
 
-BUILD_DIR=$QMK_DIR/.build
+
 case $keyboard in
   planck/ez)
-    firmware_source=$BUILD_DIR/planck_ez_zored.bin
+    firmware_source=$QMK_DIR/planck_ez_zored.bin
     firmware=firmwares/planck.bin
     ;;
   ergodox_ez)
-    firmware_source=$BUILD_DIR/ergodox_ez_zored.hex
+    firmware_source=$QMK_DIR/ergodox_ez_zored.hex
     firmware=firmwares/ergodox_ez.hex
     ;;
 esac
