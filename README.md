@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/zored/zkf.svg?branch=master)](https://travis-ci.org/zored/zkf)
+
 # ZKF
 Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmwares based on [QMK](https://github.com/qmk/qmk_firmware). I have:
 - [Ergodox](https://ergodox-ez.com).
@@ -6,9 +8,8 @@ Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmw
 Supports Windows and macOS.
 
 ## Example
-To build and flash Planck use this code:
 ```bash
-./project.sh bf p
+./project.sh build-and-flash planck
 ```
 
 ### How it works
