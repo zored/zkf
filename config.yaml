@@ -226,7 +226,7 @@ keyboards:
         lights: [2]
         keys:
             - [~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
-            - [~, audioClickToggle, audioClickUp, audioClickDown, ~, ~, home, pageUp, pageDown, end, ~, ~]
+            - [~, audioClickToggle, audioClickUp, audioClickDown, ~, ~, home, pageDown, pageUp, end, ~, ~]
             - [~, musicToggle, musicMode, ~, ~, ~, ~, mediaPrev, ~, mediaToggle, mediaNext, ~]
             - [~, ~, ~, ~, ~, ~, ~, rgbHueDown, rgbHueUp, rgbToggle, rgbNext, ~]
       emoji:
