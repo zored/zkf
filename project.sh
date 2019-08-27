@@ -47,13 +47,14 @@ qmk_image=qmkfm/qmk_firmware
 case $keyboard in
   planck/ez)
     firmware_source=$QMK_DIR/planck_ez_zored.bin
-    firmware=firmwares/planck.bin
+    firmware_filename=planck.bin
     ;;
   ergodox_ez)
     firmware_source=$QMK_DIR/ergodox_ez_zored.hex
-    firmware=firmwares/ergodox_ez.hex
+    firmware_filename=ergodox_ez.hex
     ;;
 esac
+firmware=firmwares/$firmware_filename
 #qmk_image=zored/alebastr-qmk-whitefox-keymap
 
 case $1 in
@@ -94,6 +95,23 @@ case $1 in
   fi
  ;;
 
+ download|d)
+  echo "Downloading latest release."
+  version=${version:-$(git describe --abbrev=0)}
+  link=https://github.com/zored/zkf/releases/download/${version}/${firmware_filename}
+  wget $link -O $firmware
+  ;;
+
+ wally-build|wb)
+   mkdir -p vendor/wally
+   cd $_
+   git pull || git clone git@github.com:zsa/wally.git .
+   if [[ "$OS" = 'MACOSX' ]]; then
+     brew install libusb
+   fi
+   go build -o wally-cli cli/main.go
+   ;;
+
  flash|f)
   if [[ $wally = '' ]]; then
     echo 'No wally defined (could not guess OS?).'
@@ -113,6 +131,11 @@ TEXT
   flasher=$wally
 
   eval $flasher $firmware
+ ;;
+
+ download-and-flash|df)
+  $0 d $2
+  $0 f $2
  ;;
 
  build-and-flash|bf)
