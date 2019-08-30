@@ -9,7 +9,7 @@ keyboards:
             - [esc, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
             - ['shift(', zDance, xDance, cDance, v, b, ~]
-            - [leader, ~, ~, left, right]
+            - [leader, toggleNavigation, ~, left, right]
           left-thumb:
             - [esc, ~]
             - [home]
@@ -207,7 +207,7 @@ keyboards:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
             - ['shift(', zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, 'shift)']
-            - [leader, ~, ~, delete, backspace, space, ~, tabDance, enter, '[', ']', togglePlover]
+            - [leader, toggleNavigation, ~, delete, backspace, space, ~, tabDance, enter, '[', ']', togglePlover]
       symbol:
         lights: [1]
         keys:
@@ -253,7 +253,6 @@ keys:
   capsDance:
     tap:
     - [capsLock]
-    - [toggleSymbol]
     hold:
     - [holdSymbol]
     - [holdSymbol, lCtrl]
