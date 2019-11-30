@@ -19,11 +19,34 @@ keyboards:
             - [~, y, u, i, o, p, \]
             - [   h, j, k, l, semicolonDance, quoteDance]
             - [~, n, m, commaDance, dotDance, slashDance, 'shift)']
-            - ['[', ']', ~, ~, togglePlover]
+            - ['[', ']', ~, ~, toggleGame]
           right-thumb:
             - [esc, ~]
             - [pageUp]
             - [pageDown, tabDance, enter]
+      game:
+        lights: []
+        keys:
+          left:
+            - [esc, 1, 2, 3, 4, 5, ~]
+            - [tab, ~, ~, ~, ~, ~, ~]
+            - [capsLock, ~, ~, ~, ~, ~]
+            - [lShift, z, x, c, ~, ~, ~]
+            - [lCtrl, lAlt, ~, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [   ~, ~, ~, ~, ';', "'"]
+            - [~, ~, ~, ',', '.', '/', rShift]
+            - [~, ~, ~, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, tab, ~]
       symbol:
         lights: [2]
         keys:
@@ -116,29 +139,29 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
-      plover:
-        lights: [3]
-        keys:
-          left:
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [~, sN1, sN2, sN3, sN4, sN5, ~]
-            - [~, sS1, sTL, sPL, sHL, sST1]
-            - [~, sS2, sKL, sWL, sRL, sST2, ~]
-            - [~, ~, ~, sA, sO]
-          left-thumb:
-            - [~, ~]
-            - [~]
-            - [sA, sO, ~]
-          right:
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [~, sN6, sN7, sN8, sN9, sNA, sNB]
-            - [   sST3, sFR, sPR, sLR, sTR, sDR]
-            - [~, sST4, sRR, sBR, sGR, sSR, sZR]
-            - [sE, sU, ~, ~, ~]
-          right-thumb:
-            - [~, ~]
-            - [~]
-            - [~, sE, sU]
+      # plover:
+      #   lights: [3]
+      #   keys:
+      #     left:
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [~, sN1, sN2, sN3, sN4, sN5, ~]
+      #       - [~, sS1, sTL, sPL, sHL, sST1]
+      #       - [~, sS2, sKL, sWL, sRL, sST2, ~]
+      #       - [~, ~, ~, sA, sO]
+      #     left-thumb:
+      #       - [~, ~]
+      #       - [~]
+      #       - [sA, sO, ~]
+      #     right:
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [~, sN6, sN7, sN8, sN9, sNA, sNB]
+      #       - [   sST3, sFR, sPR, sLR, sTR, sDR]
+      #       - [~, sST4, sRR, sBR, sGR, sSR, sZR]
+      #       - [sE, sU, ~, ~, ~]
+      #     right-thumb:
+      #       - [~, ~]
+      #       - [~]
+      #       - [~, sE, sU]
     settings:
       # https://docs.qmk.fm/#/config_options?id=the-configh-file
       config: &config
