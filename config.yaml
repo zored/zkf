@@ -25,7 +25,7 @@ keyboards:
             - [pageUp]
             - [pageDown, tabDance, enter]
       game:
-        lights: []
+        lights: [3]
         keys:
           left:
             - [esc, 1, 2, 3, 4, 5, ~]
