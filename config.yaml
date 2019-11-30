@@ -32,7 +32,7 @@ keyboards:
             - [tab, ~, ~, ~, ~, ~, ~]
             - [capsLock, ~, ~, ~, ~, ~]
             - [lShift, z, x, c, ~, ~, ~]
-            - [lCtrl, lAlt, ~, ~, ~]
+            - [lgui, lAlt, lCtrl, ~, ~]
           left-thumb:
             - [~, ~]
             - [~]
