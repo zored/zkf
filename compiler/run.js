@@ -420,7 +420,7 @@ function getDanceTemplateData (layers) {
   const keys = layers.allKeys.filter(key => key instanceof DanceKey)
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
-  const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).filter(s => s.trim() != '').join(''))
+  const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).filter(s => s.trim() !== '').join(''))
   const actionKeys = keys
     .flatMap(key => key.actions)
     .map(key => key.codeName)
