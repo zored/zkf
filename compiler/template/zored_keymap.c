@@ -68,6 +68,9 @@ void code_up(uint8_t code) {
   unregister_code(map_windows_keycode(code));
 }
 
+// Helper functions:
+{{functions}}
+
 void close_app(void) {
   switch (zored_os()) {
     case OS_WINDOWS:
@@ -224,6 +227,8 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
   switch (dance_key_states[dance_key]) {
     {{{dance.onDanceReset}}}
   }
+
+  dance_key_states[dance_key] = 0;
 }
 
 
@@ -379,3 +384,4 @@ uint32_t layer_state_set_user(uint32_t state) {
 
   return state;
 };
+

@@ -5,6 +5,8 @@ const ARRAY_GLUE = ',\n'
 const INDENT = '  '
 const _ = require('lodash')
 
+let MAX_CODES = 0;
+
 function main () {
   const [,, keyboardQmkName = 'ergodox_ez'] = process.argv
   console.log(`Compiling keymap for ${keyboardQmkName}...`)
@@ -199,19 +201,19 @@ class DanceKey extends Key {
     case ${this.codeName}:
       if (state->pressed) {
         // Hold actions:
-        ${this.holdAction.onDanceCode}
+        ${this.holdAction.onDanceCode.trim('\n')}
       }
       else {
         // Tap actions:
-        ${this.tapAction.onDanceCode}
+        ${this.tapAction.onDanceCode.trim('\n')}
       }
       break;
     `
   }
   get onDanceResetCode () {
     return `
-        ${this.holdAction.onDanceResetCode}
-        ${this.tapAction.onDanceResetCode}
+        ${this.holdAction.onDanceResetCode.trim()}
+        ${this.tapAction.onDanceResetCode.trim()}
     `
   }
 
@@ -271,20 +273,39 @@ class KeySequence extends Action {
     return this.keys
   }
   get onDanceCode () {
-    return ltrim(this.keys.map(key => rtrim(`
-            ${key.downCode}
-    `)).join('')) + this.onDanceStateCode(true)
+    return this.onDanceAny('downCode', 'code_down') + this.onDanceStateCode()
   }
   get onDanceResetCode () {
-    return ltrim(this.keys.map(key => rtrim(`
-            ${key.upCode}
-    `)).join('')) + this.onDanceStateCode(false)
+    return this.onDanceAny('upCode', 'code_up')
   }
-  onDanceStateCode (active) {
-    const state = active ? this.codeName : 0
+  onDanceAny(codeProp, prefix) {
+    return ltrim(this.keys.reduce((acc, key) => {
+      const code = key[codeProp]
+      if (code.indexOf(prefix) == -1) {
+        acc.codes.push(code)
+        acc.keyCodeNames = []
+        return acc
+      }
 
+      acc.keyCodeNames.push(key.codeName)
+      const total = acc.keyCodeNames.length
+      if (total <= 1) {
+        acc.codes.push(code)
+        return acc
+      }
+
+      const args = acc.keyCodeNames.join(', ')
+      acc.codes.pop()
+      acc.codes.push(`${prefix}_${total}(${args});`)
+      MAX_CODES = Math.max(MAX_CODES, total)
+
+      return acc
+    }, {codes: [], keyCodeNames: []}).codes.join(''))
+
+  }
+  onDanceStateCode () {
     return `
-            dance_key_states[dance_key] = ${state};
+            dance_key_states[dance_key] = ${this.codeName};
     `
   }
 }
@@ -296,33 +317,48 @@ class TapDanceAction extends Action {
     this.manyDancesType = manyDancesType
   }
   get onDanceCode () {
+    const 
+      defaultCode = this.manyDancesCode,
+      isEmptySwitch = this.actions.length == 0 && defaultCode == ''
+
+    if (isEmptySwitch) {
+      return `
+        return;
+      `
+    }
+
     let count = 0
     const actionsCode = this.actions.map(action => {
       count++
 
       return `
           case ${count}:
-            ${action.onDanceCode}
+            ${action.onDanceCode.trim()}
             return;
       `
-    }).join('')
+    }).join('').trimLeft('\n')
+
 
     return `
         switch (state->count) {
           ${actionsCode}
-
           default:
-            ${this.manyDancesCode}
+            ${this.manyDancesCode.trim()}
             return;
         }
     `
   }
   get onDanceResetCode () {
-    return this.uniqActions.map(action => `
-          case ${action.codeName}:
-            ${action.onDanceResetCode}
+    return this.uniqActions
+      .map(({onDanceResetCode, codeName}) => ({cond: codeName, body: onDanceResetCode}))
+      .filter(({body}) => body.trim() != '')
+      .map(({cond, body}) => `
+          case ${cond}:
+            ${body}
             break;
-    `).join('')
+    `)
+      .join('')
+      .trim()
   }
   get uniqActions () {
     return _.uniqBy(this.actions, action => action.id)
@@ -337,8 +373,8 @@ class TapDanceAction extends Action {
         }
 
         return `
-          ${action.onDanceCode}
-        `
+            ${action.onDanceCode}
+        `.trimRight('\n')
 
       case 'repeatFirst':
         action = _.first(this.actions)
@@ -347,11 +383,11 @@ class TapDanceAction extends Action {
         }
 
         return `
-          for (int i=0; i < state->count; i++) {
-            ${action.onDanceCode}
-            ${action.onDanceResetCode}
-          }
-        `
+            for (int i=0; i < state->count; i++) {
+              ${action.onDanceCode.trim()}
+              ${action.onDanceResetCode.trim()}
+            }
+        `.trim('\n')
     }
 
     throw new Error(`Unknown tap dance action on many taps / holds: ${this.manyDancesType}`)
@@ -384,7 +420,7 @@ function getDanceTemplateData (layers) {
   const keys = layers.allKeys.filter(key => key instanceof DanceKey)
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
-  const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).join(''))
+  const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).filter(s => s.trim() != '').join(''))
   const actionKeys = keys
     .flatMap(key => key.actions)
     .map(key => key.codeName)
@@ -431,9 +467,35 @@ function compileKeymap (layers, keyboard, files) {
   const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
     dance: getDanceTemplateData(layers),
     unicode: getUnicodeTemplateData(layers),
-    layers: getLayersTemplateData(layers, keyboard)
+    layers: getLayersTemplateData(layers, keyboard),
+    functions: getFunctions(),
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
+}
+
+function getFunctions () {
+  const rangeInclusive = (from, to) => [...Array(Math.max(to - from + 1, 0)).keys()]
+    .map(v => v + from)
+
+  const getArguments = aliasNumber => rangeInclusive(1, aliasNumber)
+    .map(p => `uint8_t code${p}, `)
+    .join('')
+    .replace(/[, ]+$/, '')
+
+  const getBody = (aliasNumber, func) => rangeInclusive(1,aliasNumber).map(n => `
+  ${func}(map_windows_keycode(code${n}));
+`.trimRight()).join('')
+
+  return rangeInclusive(2,MAX_CODES).flatMap(aliasNumber => 
+    [
+      ['code_down_','register_code'],
+      ['code_up_','unregister_code']
+    ]
+      .map(([aliasPrefix, func]) => `
+void ${aliasPrefix}${aliasNumber}(${getArguments(aliasNumber)}) {
+  ${getBody(aliasNumber, func).trimLeft()}
+}
+`)).join('')
 }
 
 function compileSettings (keyboard, files) {

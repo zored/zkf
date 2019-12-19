@@ -2,6 +2,7 @@
 # Contains helper code for easy work.
 set -ex
 
+keyboards="ergodox planck"
 keyboard=ergodox_ez
 case $2 in
   planck|p|2)
@@ -59,12 +60,17 @@ firmware=firmwares/$firmware_filename
 
 case $1 in
  build|b)
-  [[ -e $QMK_DIR ]] || $0 sync
-  run $node_image node compiler/run.js $keyboard
+  $0 transpile "$@"
 
   echo "Building firmware..."
   run $qmk_image "cd $QMK_DIR && make $keyboard:zored"
   mv $firmware_source $firmware
+ ;;
+
+ transpile|t)
+  [[ -e $QMK_DIR ]] || $0 sync
+  echo "Transpiling JS to C..."
+  run $node_image node compiler/run.js $keyboard
  ;;
 
  upgrade|u)
@@ -144,8 +150,14 @@ TEXT
  ;;
 
  build-all|ba)
-  for keyboard in ergodox planck; do
+  for keyboard in $keyboards; do
     $0 b $keyboard
+  done
+  ;;
+
+ transpile-all|ta)
+  for keyboard in $keyboards; do
+    $0 transpile $keyboard
   done
   ;;
 
