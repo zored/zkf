@@ -363,7 +363,8 @@ keys:
     tap: [[';']]
     hold:
     - [holdNavigation]
-    - [holdNavigation,holdNavigation2]
+    - [holdNavigation2]
+    - [toggleNavigation]
   quoteDance:
     tap: [["'"]]
     hold:

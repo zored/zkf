@@ -571,9 +571,9 @@ class PlanckEz extends Keyboard {
   _getLightCode (light) {
     switch (light) {
       case 1:
-        return `palSetPad(GPIOB, 9);`
+        return `planck_ez_left_led_on();`
       case 2:
-        return `palSetPad(GPIOB, 8);`
+        return `planck_ez_right_led_on();`
     }
     throw new Error(`Unknow Planck light #${light}`)
   }

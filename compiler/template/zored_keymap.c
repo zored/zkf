@@ -24,10 +24,20 @@
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
-} zored_os = OS_WINDOWS;
+};
+
+// TODO: better cache it.
+uint8_t zored_os(void) {
+  switch (get_unicode_input_mode()) {
+    case UC_OSX:
+      return OS_MACOS;
+    default:
+      return OS_WINDOWS;
+  }
+}
 
 uint8_t map_windows_keycode (uint8_t windowsKeycode) {
-  switch (zored_os) {
+  switch (zored_os()) {
     case OS_MACOS:
       switch (windowsKeycode) {
         case KC_LCTRL:
@@ -59,7 +69,7 @@ void code_up(uint8_t code) {
 }
 
 void close_app(void) {
-  switch (zored_os) {
+  switch (zored_os()) {
     case OS_WINDOWS:
       // alt+f4
       code_down(KC_LALT);
@@ -243,22 +253,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 {{{layers.keys}}}
 };
 
+
+{{#planck}}
+void planck_ez_led_all_off(void) {
+  planck_ez_left_led_off();
+  planck_ez_right_led_off();
+}
+{{/planck}}
+
 void matrix_init_user(void) {
   steno_set_mode(STENO_MODE_GEMINI);
   {{#ergodox}}
   ergodox_led_all_set(LED_BRIGHTNESS_LO);
   {{/ergodox}}
-  switch (get_unicode_input_mode()) {
-    case UC_OSX:
-      zored_os = OS_MACOS;
-    default:
-      zored_os = OS_WINDOWS;
-  }
+  {{#planck}}
+  planck_ez_right_led_level(64);
+  planck_ez_left_led_level(64);
+  planck_ez_led_all_off();
+  clicky_off(); // TODO: maybe there is some ENV for that?
+  {{/planck}}
 }
 
 void spotlight_start(void) {
   register_code(KC_LGUI);
-  switch (zored_os) {
+  switch (zored_os()) {
     case OS_WINDOWS:
       tap_code(KC_R);
       break;
@@ -292,7 +310,7 @@ void matrix_scan_user(void) {
     }
     SEQ_ONE_KEY(KC_S) {
       // Make screenshot:
-      switch (zored_os) {
+      switch (zored_os()) {
         case OS_MACOS:
           register_code(KC_LGUI);
           register_code(KC_LCTRL);
@@ -329,7 +347,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         complete = true;
       }
       break;
-
+{{!
     case UC_M_OS:
       zored_os = OS_MACOS;
       break;
@@ -337,24 +355,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case UC_M_WC:
       zored_os = OS_WINDOWS;
       break;
+}}
   }
 
   return !complete;
 };
 
 uint32_t layer_state_set_user(uint32_t state) {
+  uint8_t layer = biton32(state);
+
 {{#ergodox}}
   ergodox_led_all_off();
-
-  switch (biton32(state)) {
+  switch (layer) {
     {{{ergodox.lights}}}
   }
 {{/ergodox}}
-
 {{#planck}}
-  palClearPad(GPIOB, 8);
-  palClearPad(GPIOB, 9);
-  uint8_t layer = biton32(state);
+  planck_ez_led_all_off();
   switch (layer) {
     {{{planck.lights}}}
   }
