@@ -281,7 +281,7 @@ class KeySequence extends Action {
   onDanceAny(codeProp, prefix) {
     return ltrim(this.keys.reduce((acc, key) => {
       const code = key[codeProp]
-      if (code.indexOf(prefix) == -1) {
+      if (code.indexOf(prefix) === -1) {
         acc.codes.push(code)
         acc.keyCodeNames = []
         return acc
@@ -319,7 +319,7 @@ class TapDanceAction extends Action {
   get onDanceCode () {
     const 
       defaultCode = this.manyDancesCode,
-      isEmptySwitch = this.actions.length == 0 && defaultCode == ''
+      isEmptySwitch = this.actions.length === 0 && defaultCode === ''
 
     if (isEmptySwitch) {
       return `
@@ -351,7 +351,7 @@ class TapDanceAction extends Action {
   get onDanceResetCode () {
     return this.uniqActions
       .map(({onDanceResetCode, codeName}) => ({cond: codeName, body: onDanceResetCode}))
-      .filter(({body}) => body.trim() != '')
+      .filter(({body}) => body.trim() !== '')
       .map(({cond, body}) => `
           case ${cond}:
             ${body}
@@ -424,7 +424,7 @@ function getDanceTemplateData (layers) {
   const actionKeys = keys
     .flatMap(key => key.actions)
     .map(key => key.codeName)
-    .filter(key => key != null)
+    .filter(key => key !== null)
   const actionNames = glueEnum(actionKeys)
   const actions = keys.map(key => `[${key.codeName}] = DANCE_MODIFIER()`).join(ARRAY_GLUE + INDENT)
 
