@@ -230,7 +230,7 @@ keyboards:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
             - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
             - ['shift(', zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, 'shift)']
-            - [leader, toggleNavigation, ~, delete, backspace, space, ~, tabDance, enter, '[', ']', togglePlover]
+            - [leader, toggleNavigation, ~, delete, backspace, space, ~, tabDance, enter, '[', ']', toggleGame]
       symbol:
         lights: [1]
         keys:
@@ -259,13 +259,20 @@ keyboards:
             - [~, coolDance, okDance, loveDance, ~, ~, ~, F4Dance, F5Dance, F6Dance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
             - [enterBootloader, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~] 
-      plover:
+      game:
         lights: [2]
         keys:
-            - [~, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
-            - [~, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
-            - [~, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
-            - [~, ~, ~, sA, sO, ~, ~, sE, sU, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, up, ~, ~]
+            - [tab, ~, ~, ~, ~, ~, ~, ~, left, down, right, ~]
+            - [lShift, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - [lCtrl, lAlt, lgui, ~, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
+      # plover:
+      #   lights: [2]
+      #   keys:
+      #       - [~, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
+      #       - [~, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
+      #       - [~, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
+      #       - [~, ~, ~, sA, sO, ~, ~, sE, sU, ~, ~, ~]
 
 keys:
   tabDance:
