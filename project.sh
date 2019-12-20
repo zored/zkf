@@ -60,7 +60,7 @@ firmware=firmwares/$firmware_filename
 
 case $1 in
  build|b)
-  $0 transpile "$@"
+  $0 transpile $keyboard
 
   echo "Building firmware..."
   run $qmk_image "cd $QMK_DIR && make $keyboard:zored"

@@ -2059,6 +2059,10 @@ uint32_t layer_state_set_user(uint32_t state) {
   ergodox_led_all_off();
   switch (layer) {
     
+      case LAYER_GAME:
+        ergodox_right_led_on(3);
+        break;
+    
       case LAYER_SYMBOL:
         ergodox_right_led_on(2);
         break;

@@ -5,7 +5,7 @@ const ARRAY_GLUE = ',\n'
 const INDENT = '  '
 const _ = require('lodash')
 
-let MAX_CODES = 0;
+let MAX_CODES = 0
 
 function main () {
   const [,, keyboardQmkName = 'ergodox_ez'] = process.argv
@@ -278,7 +278,7 @@ class KeySequence extends Action {
   get onDanceResetCode () {
     return this.onDanceAny('upCode', 'code_up')
   }
-  onDanceAny(codeProp, prefix) {
+  onDanceAny (codeProp, prefix) {
     return ltrim(this.keys.reduce((acc, key) => {
       const code = key[codeProp]
       if (code.indexOf(prefix) === -1) {
@@ -300,8 +300,7 @@ class KeySequence extends Action {
       MAX_CODES = Math.max(MAX_CODES, total)
 
       return acc
-    }, {codes: [], keyCodeNames: []}).codes.join(''))
-
+    }, { codes: [], keyCodeNames: [] }).codes.join(''))
   }
   onDanceStateCode () {
     return `
@@ -317,9 +316,9 @@ class TapDanceAction extends Action {
     this.manyDancesType = manyDancesType
   }
   get onDanceCode () {
-    const 
-      defaultCode = this.manyDancesCode,
-      isEmptySwitch = this.actions.length === 0 && defaultCode === ''
+    const
+      defaultCode = this.manyDancesCode
+    const isEmptySwitch = this.actions.length === 0 && defaultCode === ''
 
     if (isEmptySwitch) {
       return `
@@ -338,7 +337,6 @@ class TapDanceAction extends Action {
       `
     }).join('').trimLeft('\n')
 
-
     return `
         switch (state->count) {
           ${actionsCode}
@@ -350,9 +348,9 @@ class TapDanceAction extends Action {
   }
   get onDanceResetCode () {
     return this.uniqActions
-      .map(({onDanceResetCode, codeName}) => ({cond: codeName, body: onDanceResetCode}))
-      .filter(({body}) => body.trim() !== '')
-      .map(({cond, body}) => `
+      .map(({ onDanceResetCode, codeName }) => ({ cond: codeName, body: onDanceResetCode }))
+      .filter(({ body }) => body.trim() !== '')
+      .map(({ cond, body }) => `
           case ${cond}:
             ${body}
             break;
@@ -468,7 +466,7 @@ function compileKeymap (layers, keyboard, files) {
     dance: getDanceTemplateData(layers),
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers, keyboard),
-    functions: getFunctions(),
+    functions: getFunctions()
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 }
@@ -482,14 +480,14 @@ function getFunctions () {
     .join('')
     .replace(/[, ]+$/, '')
 
-  const getBody = (aliasNumber, func) => rangeInclusive(1,aliasNumber).map(n => `
+  const getBody = (aliasNumber, func) => rangeInclusive(1, aliasNumber).map(n => `
   ${func}(map_windows_keycode(code${n}));
 `.trimRight()).join('')
 
-  return rangeInclusive(2,MAX_CODES).flatMap(aliasNumber => 
+  return rangeInclusive(2, MAX_CODES).flatMap(aliasNumber =>
     [
-      ['code_down_','register_code'],
-      ['code_up_','unregister_code']
+      ['code_down_', 'register_code'],
+      ['code_up_', 'unregister_code']
     ]
       .map(([aliasPrefix, func]) => `
 void ${aliasPrefix}${aliasNumber}(${getArguments(aliasNumber)}) {
