@@ -1,12 +1,7 @@
 language: minimal
-
-services:
-- docker
-
-before_install:
-- ./project.sh sync
-
+services: [docker]
 script:
+- ./project.sh sync
 - ./project.sh build-all
 
 deploy:

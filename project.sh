@@ -2,11 +2,14 @@
 # Contains helper code for easy work.
 set -ex
 
-keyboards="ergodox planck"
-keyboard=ergodox_ez
+keyboards="ergodox_ez planck"
+
 case $2 in
-  planck|p|2)
+  planck|'planck/ez'|p|2)
     keyboard=planck/ez
+    ;;
+  *)
+    keyboard=ergodox_ez
     ;;
 esac
 
@@ -151,7 +154,7 @@ TEXT
 
  build-all|ba)
   for keyboard in $keyboards; do
-    $0 b $keyboard
+    $0 build $keyboard
   done
   ;;
 
