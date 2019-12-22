@@ -20,8 +20,10 @@ function main () {
   )
   const files = new KeymapFiles(keyboard)
 
-  compileKeymap(layers, keyboard, files)
-  compileSettings(keyboard, files)
+  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory)
+  compileSettings(keyboard, files, {
+    COMBO_COUNT: comboCount
+  })
 
   console.log(`
 Keymap compiled. Files created.
@@ -47,6 +49,9 @@ class Key {
   }
   get upCode () {
     return `code_up(${this.codeName});`
+  }
+  get tapCode () {
+    return `tap_code(${this.codeName});`
   }
   get layerCodeName () {
     return this.codeName
@@ -181,6 +186,22 @@ class LayerHoldKey extends Key {
   }
   get upCode () {
     return `layer_off(${this.layer.codeName});`
+  }
+}
+
+class DoKey extends Key {
+  constructor (action) {
+    action = _.snakeCase(action).toUpperCase()
+    super(action)
+  }
+  get downCode () {
+    return ''
+  }
+  get upCode () {
+    return this.tapCode
+  }
+  get tapCode () {
+    return `run_advanced(${this.name});`
   }
 }
 
@@ -459,16 +480,87 @@ function getLayersTemplateData (layers, keyboard) {
   return { keys, names }
 }
 
-function compileKeymap (layers, keyboard, files) {
+function compileKeymap (layers, keyboard, files, keyFactory) {
   const Mustache = require('mustache')
 
+  const { combos, comboCount } = getCombos(keyboard.config.combos, keyFactory)
   const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
     dance: getDanceTemplateData(layers),
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers, keyboard),
-    functions: getFunctions()
+    functions: getFunctions(),
+    combos
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
+
+  return { comboCount }
+}
+
+function getCombos (combosConfig, keyFactory) {
+  const KEYS = [
+    ['we', 'rt', 'yu', 'io'],
+    ['sd', 'fg', 'hj', 'kl'],
+    ['vb', 'nm']
+  ]
+
+  const combos = combosConfig.flatMap(
+    (row, x) => row
+      .map((value, y) => [KEYS[x][y], value])
+      .filter(([,value]) => value !== null)
+  )
+    .map(([key, value]) => [
+      key,
+      value,
+      new KeySequence(
+        key.split('').map(key => keyFactory.create(key)),
+        null
+      )
+    ])
+    .map(([key, value, keys]) => ({
+      key: keyFactory.create(value),
+      name: `combo_${keys.id.toLowerCase()}`,
+      index: `CMB_${keys.id.toUpperCase()}`,
+      keyButtons: keys.allKeys.map(key => key.codeName).join(', ')
+    }))
+
+  const definitions = (() => {
+    const combosDefinitions = combos.map(({ name, keyButtons }) =>
+      `const uint16_t PROGMEM ${name}[] = {${keyButtons}, COMBO_END};`
+    ).join('\n')
+
+    const indexDefinitions = glueEnum(combos.map(({ index }) => index), 0)
+    const comboMap = combos.map(({ index, name }) => `
+    [${index}] = COMBO_ACTION(${name}),
+  `).join('')
+
+    return `
+${combosDefinitions}
+
+enum combo_names {
+  ${indexDefinitions}
+};
+
+combo_t key_combos[COMBO_COUNT] = {
+  ${comboMap}
+};
+`
+  })()
+
+  const declarations = (() => {
+    return combos.map(({ index, key }) => `
+    case ${index}:
+      ${key.tapCode}
+      break; 
+`).join('')
+  })()
+
+  return {
+    comboCount: combos.length,
+    combos: {
+      definitions,
+      declarations
+    }
+  }
 }
 
 function getFunctions () {
@@ -496,12 +588,20 @@ void ${aliasPrefix}${aliasNumber}(${getArguments(aliasNumber)}) {
 `)).join('')
 }
 
-function compileSettings (keyboard, files) {
+function compileSettings (keyboard, files, override) {
   const { config, rules } = keyboard.settings
+
+  const getValue = (value, name) => {
+    if (override[name] !== undefined) {
+      return override[name]
+    }
+
+    return value
+  }
 
   files.add('config.h', _.map(config, (value, name) => `
 #undef ${name}
-#define ${name} ${value}
+#define ${name} ${getValue(value, name)}
 `).join(''))
 
   files.add('rules.mk', _.map(rules, (value, name) => `
@@ -682,9 +782,12 @@ class KeyFactory {
     }
 
     if (_.isString(value)) {
+      if (value.match(/^do[A-Z]/)) {
+        return new DoKey(value, true)
+      }
+
       value = this.nameMap[value] || value
       const noPrefix = value.match(this.noPrefixPattern)
-
       return new Key(value, noPrefix)
     }
 

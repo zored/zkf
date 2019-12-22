@@ -12,7 +12,10 @@
 
 #include "action_layer.h"
 #include "version.h"
-#include "keymap_steno.h"
+
+#ifdef STENO_ENABLE
+ #include "keymap_steno.h"
+#endif
 
 #define LCGS(code) LCTL(LGUI(LSFT(code)))
 #define LCS(code) LCTL(LSFT(code))
@@ -61,20 +64,122 @@ void code_up(uint8_t code) {
 // Helper functions:
 {{functions}}
 
-void close_app(void) {
-  switch (zored_os) {
-    case OS_WINDOWS:
-      // alt+f4
-      code_down(KC_LALT);
-      tap_code(KC_F4);
-      code_up(KC_LALT);
-      break;
+enum do_command {
+  DO_FIND_BEGIN = 1,
+  DO_FIND_END,
+  DO_ENPASS,
+  DO_MAIL,
+  DO_LOGIN,
+  DO_TERMINAL,
+  DO_SCREENSHOT,
+  DO_BOOTLOADER,
+  DO_CLOSE,
+  DO_NEXT_LANGUAGE,
+  DO_UNDERSCORE,
+  DO_ARROW,
+  DO_FAT_ARROW,
+  DO_NOT_EQUALS,
+  DO_EMOJI_PANEL,
+  DO_AMPERSAND,
+};
 
-    case OS_MACOS:
-      // cmd+q
-      register_code(KC_LCMD);
-      tap_code(KC_Q);
-      unregister_code(KC_LCMD);
+// Advanced commands.
+void run_advanced (uint8_t command) {
+  switch (command) {
+    case DO_FIND_BEGIN:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code(KC_LGUI);
+          break;
+        case OS_MACOS:
+          tap_code16(G(KC_SPC));
+          break;
+      }
+      break;
+    case DO_FIND_END:
+      tap_code(KC_ENTER);
+      break;
+    case DO_NEXT_LANGUAGE:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code16(A(KC_LSHIFT));
+          break;
+        case OS_MACOS:
+          tap_code16(A(KC_SPC));
+          break;
+      }
+      break;
+    case DO_EMOJI_PANEL:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code16(G(KC_DOT));
+          break;
+        case OS_MACOS:
+          tap_code16(G(C(KC_SPC)));
+          break;
+      }
+      break;
+    case DO_AMPERSAND:
+      tap_code16(KC_AMPERSAND);
+      break;
+    case DO_UNDERSCORE:
+      SEND_STRING("_");
+      break;
+    case DO_ARROW:
+      SEND_STRING("->");
+      break;
+    case DO_FAT_ARROW:
+      SEND_STRING("=>");
+      break;
+    case DO_NOT_EQUALS:
+      SEND_STRING("!=");
+      break;
+    case DO_ENPASS:
+      run_advanced(DO_FIND_BEGIN);
+      SEND_STRING("enpass");
+      run_advanced(DO_FIND_END);
+      break;
+    case DO_TERMINAL:
+      run_advanced(DO_FIND_BEGIN);
+      switch (zored_os) {
+        case OS_WINDOWS:
+          SEND_STRING("conemu");
+          break;
+        case OS_MACOS:
+          SEND_STRING("iterm");
+          break;
+      }
+      run_advanced(DO_FIND_END);
+      break;
+    case DO_MAIL:
+      SEND_STRING("zored.box@gmail.com");
+      break;
+    case DO_LOGIN:
+      SEND_STRING("zored");
+      break;
+    case DO_SCREENSHOT:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(C(S(KC_4))));
+          break;
+        case OS_WINDOWS:
+          tap_code16(G(S(KC_S)));
+          break;
+      }
+      break;
+    case DO_BOOTLOADER:
+      clear_keyboard();
+      bootloader_jump();
+      break;
+    case DO_CLOSE:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code16(A(KC_F4));
+          break;
+        case OS_MACOS:
+          tap_code16(G(KC_Q));
+          break;
+      }
       break;
   }
 }
@@ -113,33 +218,7 @@ unicode_map[] = {
   {{{unicode.map}}}
 };
 
-// Combos:
-// - Unique only!
-// - Don't forget to update COMBO_COUNT.
-const uint16_t PROGMEM combo_esc[] = {KC_Y, KC_U, COMBO_END};
-const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_M, COMBO_END};
-const uint16_t PROGMEM combo_fat_right_arrow[] = {KC_F, KC_G, COMBO_END};
-const uint16_t PROGMEM combo_underscore[] = {KC_H, KC_J, COMBO_END};
-const uint16_t PROGMEM combo_quit[] = {KC_I, KC_O, COMBO_END};
-const uint16_t PROGMEM combo_backslash[] = {KC_K, KC_L, COMBO_END};
-
-enum combo_names {
-  CMB_ESC = 0,
-  CMB_RAR,
-  CMB_FRAR,
-  CMB_UND,
-  CMB_QUI,
-  CMB_BSLS,
-};
-
-combo_t key_combos[COMBO_COUNT] = {
-  [CMB_ESC] = COMBO_ACTION(combo_esc),
-  [CMB_RAR] = COMBO_ACTION(combo_right_arrow),
-  [CMB_FRAR] = COMBO_ACTION(combo_fat_right_arrow),
-  [CMB_UND] = COMBO_ACTION(combo_underscore),
-  [CMB_QUI] = COMBO_ACTION(combo_quit),
-  [CMB_BSLS] = COMBO_ACTION(combo_backslash),
-};
+{{{combos.definitions}}}
 
 void process_combo_event(uint8_t combo_index, bool pressed) {
   if (!pressed) {
@@ -147,42 +226,7 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
   }
 
   switch(combo_index) {
-    case CMB_ESC:
-      tap_code(KC_ESC);
-      break;
-
-    case CMB_FRAR:
-      tap_code(KC_EQL);
-
-      // >
-      code_down(KC_LSHIFT);
-      tap_code(KC_DOT);
-      code_up(KC_LSHIFT);
-      break;
-
-    case CMB_RAR:
-      tap_code(KC_MINUS);
-
-      // >
-      code_down(KC_LSHIFT);
-      tap_code(KC_DOT);
-      code_up(KC_LSHIFT);
-      break;
-
-    case CMB_UND:
-      // _
-      code_down(KC_LSHIFT);
-      tap_code(KC_MINUS);
-      code_up(KC_LSHIFT);
-      break;
-
-    case CMB_QUI:
-      close_app();
-      break;
-
-    case CMB_BSLS:
-      tap_code(KC_BSLS);
-      break;
+    {{{combos.declarations}}}
   }
 };
 
@@ -257,7 +301,10 @@ void planck_ez_led_all_off(void) {
 {{/planck}}
 
 void matrix_init_user(void) {
-  steno_set_mode(STENO_MODE_GEMINI);
+  #ifdef STENO_ENABLE
+    steno_set_mode(STENO_MODE_GEMINI);
+  #endif
+
   {{#ergodox}}
   ergodox_led_all_set(LED_BRIGHTNESS_LO);
   {{/ergodox}}
@@ -276,50 +323,19 @@ void keyboard_post_init_user(void) {
   }
 }
 
-void spotlight_start(void) {
-  register_code(KC_LGUI);
-  switch (zored_os) {
-    case OS_WINDOWS:
-      tap_code(KC_R);
-      break;
-
-    case OS_MACOS:
-      tap_code(KC_SPC);
-      break;
-  }
-  unregister_code(KC_LGUI);
-}
-
-void spotlight_finish(void) {
-  tap_code(KC_ENTER);
-}
-
 LEADER_EXTERNS();
 void matrix_scan_user(void) {
   LEADER_DICTIONARY() {
     leading = false;
     leader_end();
     SEQ_ONE_KEY(KC_U) {
-      SEND_STRING("zored");
-    }
-    SEQ_ONE_KEY(KC_E) {
-      SEND_STRING("zored.box@gmail.com");
+      run_advanced(DO_LOGIN);
     }
     SEQ_ONE_KEY(KC_P) {
-      spotlight_start();
-      SEND_STRING("enpass");
-      spotlight_finish();
+      run_advanced(DO_ENPASS);
     }
     SEQ_ONE_KEY(KC_S) {
-      // Make screenshot:
-      switch (zored_os) {
-        case OS_MACOS:
-          tap_code16(G(C(S(KC_4))));
-          break;
-        case OS_WINDOWS:
-          tap_code16(G(S(KC_S)));
-          break;
-      }
+      run_advanced(DO_SCREENSHOT);
     }
   }
 }
@@ -334,11 +350,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case ZKC_BTL:
       if (record->event.pressed) {
-        clear_keyboard();
-        bootloader_jump();
+        run_advanced(DO_BOOTLOADER);
         complete = true;
       }
       break;
+
     case UC_M_OS:
       zored_os = OS_MACOS;
       break;

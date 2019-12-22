@@ -1,9 +1,9 @@
 
 #undef COMBO_COUNT
-#define COMBO_COUNT 6
+#define COMBO_COUNT 10
 
 #undef COMBO_TERM
-#define COMBO_TERM 130
+#define COMBO_TERM 80
 
 #undef ENCODER_RESOLUTION
 #define ENCODER_RESOLUTION 4
