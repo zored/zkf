@@ -139,7 +139,7 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
-      # plover:
+      # steno:
       #   lights: [3]
       #   keys:
       #     left:
@@ -165,8 +165,8 @@ keyboards:
     settings:
       # https://docs.qmk.fm/#/config_options?id=the-configh-file
       config: &config
-        COMBO_COUNT: 6
-        COMBO_TERM: 130
+        COMBO_COUNT: 0 # - overriden by *combos.
+        COMBO_TERM: 80
         ENCODER_RESOLUTION: 4
         FORCE_NKRO: ''
         LEADER_TIMEOUT: 300
@@ -198,21 +198,14 @@ keyboards:
         LEADER_ENABLE: 'yes'
         LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
         RGBLIGHT_ENABLE: 'no'
-        STENO_ENABLE: 'yes'
+        STENO_ENABLE: 'no'
         TAP_DANCE_ENABLE: 'yes'
         UNICODE_ENABLE: 'no'
         UNICODEMAP_ENABLE: 'yes'
-    combos: &combos
-      - combo: [f, g]
-        result: ["=", ">"]
-      - combo: [y, u]
-        result: [esc]
-      - combo: [h, j]
-        result: ["-", ">"]
-      - combo: [n, m]
-        result: ["_"]
-      - combo: [i, o]
-        result: [closeApp]
+    combos: &combos # Pairs of letters: [w+e, r+t, ...]
+      - [doTerminal, doNotEquals, doScreenshot, doClose]
+      - [doEmojiPanel, '*', doUnderscore, doAmpersand]
+      - [doFatArrow, doArrow]
   planck:
     settings:
       rules:
@@ -266,7 +259,7 @@ keyboards:
             - [tab, ~, ~, ~, ~, ~, ~, ~, left, down, right, ~]
             - [lShift, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
             - [lCtrl, lAlt, lgui, ~, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
-      # plover:
+      # steno:
       #   lights: [2]
       #   keys:
       #       - [~, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
@@ -282,7 +275,7 @@ keys:
     - [holdSymbol]
   capsDance:
     tap:
-    - [capsLock]
+    - [doNextLanguage]
     hold:
     - [holdSymbol]
     - [holdSymbol, lCtrl]
@@ -506,3 +499,4 @@ map:
     - STN
     - UC
     - ZKC
+    - DO

@@ -3,7 +3,6 @@
 set -ex
 
 keyboards="ergodox_ez planck"
-
 case $2 in
   planck|'planck/ez'|p|2)
     keyboard=planck/ez
@@ -62,7 +61,7 @@ firmware=firmwares/$firmware_filename
 #qmk_image=zored/alebastr-qmk-whitefox-keymap
 
 case $1 in
- build|b)
+ build|b) ##
   $0 transpile $keyboard
 
   echo "Building firmware..."
@@ -70,24 +69,24 @@ case $1 in
   mv $firmware_source $firmware
  ;;
 
- transpile|t)
+ transpile|t) ##
   [[ -e $QMK_DIR ]] || $0 sync
   echo "Transpiling JS to C..."
   run $node_image node compiler/run.js $keyboard
  ;;
 
- upgrade|u)
+ lint|l) ##
+  run $node_image 'cd ./compiler/ && node_modules/eslint/bin/eslint.js --fix run.js'
+ ;;
+
+ upgrade|u) ## Update submodules.
   git submodule update --remote
   $0 s
  ;;
 
- sync|s)
+ sync|s) ##
   echo "Install keymap compiler."
-  run $node_image "\
-    cd compiler/ &&\
-    yarn install &&\
-    ./node_modules/eslint/bin/eslint.js --fix run.js \
-  "
+  run $node_image 'yarn install --no-bin-links --cwd=compiler'
 
   echo "Get and patch QMK."
   git submodule update --init --recursive
@@ -104,14 +103,14 @@ case $1 in
   fi
  ;;
 
- download|d)
+ download|d) ## Download firmware.
   echo "Downloading latest release."
   version=${version:-$(git describe --abbrev=0)}
   link=https://github.com/zored/zkf/releases/download/${version}/${firmware_filename}
   wget $link -O $firmware
   ;;
 
- wally-build|wb)
+ wally-build|wb) ##
    mkdir -p vendor/wally
    cd $_
    git pull || git clone git@github.com:zsa/wally.git .

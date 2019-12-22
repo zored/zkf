@@ -6,7 +6,10 @@
 
 #include "action_layer.h"
 #include "version.h"
-#include "keymap_steno.h"
+
+#ifdef STENO_ENABLE
+ #include "keymap_steno.h"
+#endif
 
 #define LCGS(code) LCTL(LGUI(LSFT(code)))
 #define LCS(code) LCTL(LSFT(code))
@@ -18,20 +21,10 @@
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
-};
-
-// TODO: better cache it.
-uint8_t zored_os(void) {
-  switch (get_unicode_input_mode()) {
-    case UC_OSX:
-      return OS_MACOS;
-    default:
-      return OS_WINDOWS;
-  }
-}
+} zored_os = OS_WINDOWS;
 
 uint8_t map_windows_keycode (uint8_t windowsKeycode) {
-  switch (zored_os()) {
+  switch (zored_os) {
     case OS_MACOS:
       switch (windowsKeycode) {
         case KC_LCTRL:
@@ -87,20 +80,113 @@ void code_up_3(uint8_t code1, uint8_t code2, uint8_t code3) {
 }
 
 
-void close_app(void) {
-  switch (zored_os()) {
-    case OS_WINDOWS:
-      // alt+f4
-      code_down(KC_LALT);
-      tap_code(KC_F4);
-      code_up(KC_LALT);
-      break;
+enum do_command {
+  DO_FIND_BEGIN = 1,
+  DO_FIND_END,
+  DO_ENPASS,
+  DO_MAIL,
+  DO_LOGIN,
+  DO_SCREENSHOT,
+  DO_BOOTLOADER,
+  DO_CLOSE,
+  DO_NEXT_LANGUAGE,
+  DO_UNDERSCORE,
+  DO_ARROW,
+  DO_FAT_ARROW,
+  DO_NOT_EQUALS,
+  DO_EMOJI_PANEL,
+  DO_AMPERSAND,
+};
 
-    case OS_MACOS:
-      // cmd+q
-      register_code(KC_LCMD);
-      tap_code(KC_Q);
-      unregister_code(KC_LCMD);
+// Advanced commands.
+void run_advanced (uint8_t command) {
+  switch (command) {
+    case DO_FIND_BEGIN:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code16(G(KC_R));
+          break;
+        case OS_MACOS:
+          tap_code16(G(KC_SPC));
+          break;
+      }
+      break;
+    case DO_FIND_END:
+      tap_code(KC_ENTER);
+      break;
+    case DO_NEXT_LANGUAGE:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code16(A(KC_LSHIFT));
+          break;
+        case OS_MACOS:
+          tap_code16(A(KC_SPC));
+          break;
+      }
+      break;
+    case DO_EMOJI_PANEL:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          register_code(KC_LGUI);
+          wait_ms(200);
+          tap_code(KC_DOT);
+          wait_ms(200);
+          unregister_code(KC_LGUI);
+          break;
+        case OS_MACOS:
+          tap_code16(G(C(KC_SPC)));
+          break;
+      }
+      break;
+    case DO_AMPERSAND:
+      tap_code16(KC_AMPERSAND);
+      break;
+    case DO_UNDERSCORE:
+      SEND_STRING("_");
+      break;
+    case DO_ARROW:
+      SEND_STRING("->");
+      break;
+    case DO_FAT_ARROW:
+      SEND_STRING("=>");
+      break;
+    case DO_NOT_EQUALS:
+      SEND_STRING("!=");
+      break;
+    case DO_ENPASS:
+      run_advanced(DO_FIND_BEGIN);
+      SEND_STRING("enpass");
+      run_advanced(DO_FIND_END);
+      break;
+    case DO_MAIL:
+      SEND_STRING("zored.box@gmail.com");
+      break;
+    case DO_LOGIN:
+      SEND_STRING("zored");
+      break;
+    case DO_SCREENSHOT:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(C(S(KC_4))));
+          break;
+        case OS_WINDOWS:
+          tap_code16(G(S(KC_S)));
+          break;
+      }
+      break;
+    case DO_BOOTLOADER:
+      clear_keyboard();
+      bootloader_jump();
+      break;
+    case DO_CLOSE:
+      switch (zored_os) {
+        case OS_WINDOWS:
+          tap_code16(A(KC_F4));
+          break;
+        case OS_MACOS:
+          tap_code16(G(KC_Q));
+          break;
+      }
       break;
   }
 }
@@ -179,33 +265,47 @@ unicode_map[] = {
 [EMOJI_1F496] 0x1F496, // 💖
 };
 
-// Combos:
-// - Unique only!
-// - Don't forget to update COMBO_COUNT.
-const uint16_t PROGMEM combo_esc[] = {KC_Y, KC_U, COMBO_END};
-const uint16_t PROGMEM combo_right_arrow[] = {KC_N, KC_M, COMBO_END};
-const uint16_t PROGMEM combo_fat_right_arrow[] = {KC_F, KC_G, COMBO_END};
-const uint16_t PROGMEM combo_underscore[] = {KC_H, KC_J, COMBO_END};
-const uint16_t PROGMEM combo_quit[] = {KC_I, KC_O, COMBO_END};
-const uint16_t PROGMEM combo_backslash[] = {KC_K, KC_L, COMBO_END};
+
+const uint16_t PROGMEM combo_seq__y__u[] = {KC_Y, KC_U, COMBO_END};
+const uint16_t PROGMEM combo_seq__i__o[] = {KC_I, KC_O, COMBO_END};
+const uint16_t PROGMEM combo_seq__h__j[] = {KC_H, KC_J, COMBO_END};
+const uint16_t PROGMEM combo_seq__k__l[] = {KC_K, KC_L, COMBO_END};
+const uint16_t PROGMEM combo_seq__x__c[] = {KC_X, KC_C, COMBO_END};
+const uint16_t PROGMEM combo_seq__v__b[] = {KC_V, KC_B, COMBO_END};
+const uint16_t PROGMEM combo_seq__n__m[] = {KC_N, KC_M, COMBO_END};
+const uint16_t PROGMEM combo_seq__comm__dot[] = {KC_COMM, KC_DOT, COMBO_END};
 
 enum combo_names {
-  CMB_ESC = 0,
-  CMB_RAR,
-  CMB_FRAR,
-  CMB_UND,
-  CMB_QUI,
-  CMB_BSLS,
+  CMB_SEQ__Y__U = 0,
+  CMB_SEQ__I__O,
+  CMB_SEQ__H__J,
+  CMB_SEQ__K__L,
+  CMB_SEQ__X__C,
+  CMB_SEQ__V__B,
+  CMB_SEQ__N__M,
+  CMB_SEQ__COMM__DOT
 };
 
 combo_t key_combos[COMBO_COUNT] = {
-  [CMB_ESC] = COMBO_ACTION(combo_esc),
-  [CMB_RAR] = COMBO_ACTION(combo_right_arrow),
-  [CMB_FRAR] = COMBO_ACTION(combo_fat_right_arrow),
-  [CMB_UND] = COMBO_ACTION(combo_underscore),
-  [CMB_QUI] = COMBO_ACTION(combo_quit),
-  [CMB_BSLS] = COMBO_ACTION(combo_backslash),
+  
+    [CMB_SEQ__Y__U] = COMBO_ACTION(combo_seq__y__u),
+  
+    [CMB_SEQ__I__O] = COMBO_ACTION(combo_seq__i__o),
+  
+    [CMB_SEQ__H__J] = COMBO_ACTION(combo_seq__h__j),
+  
+    [CMB_SEQ__K__L] = COMBO_ACTION(combo_seq__k__l),
+  
+    [CMB_SEQ__X__C] = COMBO_ACTION(combo_seq__x__c),
+  
+    [CMB_SEQ__V__B] = COMBO_ACTION(combo_seq__v__b),
+  
+    [CMB_SEQ__N__M] = COMBO_ACTION(combo_seq__n__m),
+  
+    [CMB_SEQ__COMM__DOT] = COMBO_ACTION(combo_seq__comm__dot),
+  
 };
+
 
 void process_combo_event(uint8_t combo_index, bool pressed) {
   if (!pressed) {
@@ -213,42 +313,39 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
   }
 
   switch(combo_index) {
-    case CMB_ESC:
-      tap_code(KC_ESC);
-      break;
+    
+    case CMB_SEQ__Y__U:
+      run_advanced(DO_SCREENSHOT);
+      break; 
 
-    case CMB_FRAR:
-      tap_code(KC_EQL);
+    case CMB_SEQ__I__O:
+      run_advanced(DO_CLOSE);
+      break; 
 
-      // >
-      code_down(KC_LSHIFT);
-      tap_code(KC_DOT);
-      code_up(KC_LSHIFT);
-      break;
+    case CMB_SEQ__H__J:
+      run_advanced(DO_UNDERSCORE);
+      break; 
 
-    case CMB_RAR:
-      tap_code(KC_MINUS);
+    case CMB_SEQ__K__L:
+      tap_code(KC_PAST)
+      break; 
 
-      // >
-      code_down(KC_LSHIFT);
-      tap_code(KC_DOT);
-      code_up(KC_LSHIFT);
-      break;
+    case CMB_SEQ__X__C:
+      run_advanced(DO_EMOJI_PANEL);
+      break; 
 
-    case CMB_UND:
-      // _
-      code_down(KC_LSHIFT);
-      tap_code(KC_MINUS);
-      code_up(KC_LSHIFT);
-      break;
+    case CMB_SEQ__V__B:
+      run_advanced(DO_FAT_ARROW);
+      break; 
 
-    case CMB_QUI:
-      close_app();
-      break;
+    case CMB_SEQ__N__M:
+      run_advanced(DO_ARROW);
+      break; 
 
-    case CMB_BSLS:
-      tap_code(KC_BSLS);
-      break;
+    case CMB_SEQ__COMM__DOT:
+      tap_code(KC_AMPR)
+      break; 
+
   }
 };
 
@@ -258,7 +355,7 @@ LAYER_DEFAULT = 0,
   LAYER_NAVIGATION,
   LAYER_NAVIGATION2,
   LAYER_EMOJI,
-  LAYER_PLOVER
+  LAYER_GAME
 };
 
 enum dance_keys {
@@ -293,7 +390,7 @@ enum dance_keys {
   DANCE_KC_F10DANCE
 };
 enum dance_action_names {
-  ACTION_SEQ__CAPSLOCK_1 = 1,
+  ACTION_SEQ__DO_NEXT_LANGUAGE_1 = 1,
   ACTION_SEQ__HOLD_LAYER_SYMBOL_3,
   ACTION_SEQ__HOLD_LAYER_SYMBOL__LCTRL_4,
   ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT_5,
@@ -430,15 +527,13 @@ void on_dance(qk_tap_dance_state_t *state, void *user_data) {
         // Tap actions:
         switch (state->count) {
           case 1:
-            code_down(KC_CAPSLOCK);
-            dance_key_states[dance_key] = ACTION_SEQ__CAPSLOCK_1;
+            dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_1;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
-              code_down(KC_CAPSLOCK);
-            dance_key_states[dance_key] = ACTION_SEQ__CAPSLOCK_1;
-              code_up(KC_CAPSLOCK);
+              dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_1;
+              run_advanced(DO_NEXT_LANGUAGE);
             }
             return;
         }
@@ -1524,8 +1619,8 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
           case ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT_5:
             layer_off(LAYER_SYMBOL);code_up(KC_LALT);
             break;
-        case ACTION_SEQ__CAPSLOCK_1:
-            code_up(KC_CAPSLOCK);
+        case ACTION_SEQ__DO_NEXT_LANGUAGE_1:
+            run_advanced(DO_NEXT_LANGUAGE);
             break;
     
         case ACTION_SEQ__HOLD_LAYER_NAVIGATION_9:
@@ -1848,7 +1943,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* keys-0 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
 /* keys-1 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),TD(DANCE_KC_QUOTEDANCE),
 /* keys-2 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),KC_RSPC,
-/* keys-3 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DELETE,KC_BSPC,KC_SPC,_______,TD(DANCE_KC_TABDANCE),KC_ENT,KC_LBRC,KC_RBRC,TG(LAYER_PLOVER)
+/* keys-3 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DELETE,KC_BSPC,KC_SPC,_______,TD(DANCE_KC_TABDANCE),KC_ENT,KC_LBRC,KC_RBRC,TG(LAYER_GAME)
 )
   ,
 
@@ -1888,12 +1983,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
   ,
 
-[LAYER_PLOVER] = LAYOUT_planck_grid(
+[LAYER_GAME] = LAYOUT_planck_grid(
   
-/* keys-0 */ _______,STN_N1,STN_N2,STN_N3,STN_N4,STN_N5,STN_N6,STN_N7,STN_N8,STN_N9,STN_NA,STN_NB,
-/* keys-1 */ _______,STN_S1,STN_TL,STN_PL,STN_HL,STN_ST1,STN_ST3,STN_FR,STN_PR,STN_LR,STN_TR,STN_DR,
-/* keys-2 */ _______,STN_S2,STN_KL,STN_WL,STN_RL,STN_ST2,STN_ST4,STN_RR,STN_BR,STN_GR,STN_SR,STN_ZR,
-/* keys-3 */ _______,_______,_______,STN_A,STN_O,_______,_______,STN_E,STN_U,_______,_______,_______
+/* keys-0 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,KC_UP,_______,_______,
+/* keys-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,_______,KC_LEFT,KC_DOWN,KC_RGHT,_______,
+/* keys-2 */ KC_LSHIFT,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
+/* keys-3 */ KC_LCTRL,KC_LALT,KC_LGUI,_______,_______,_______,_______,_______,KC_RGUI,KC_RALT,KC_RCTRL,_______
 )
   
 };
@@ -1905,29 +2000,21 @@ void planck_ez_led_all_off(void) {
 }
 
 void matrix_init_user(void) {
-  steno_set_mode(STENO_MODE_GEMINI);
+  #ifdef STENO_ENABLE
+    steno_set_mode(STENO_MODE_GEMINI);
+  #endif
+
   planck_ez_right_led_level(64);
   planck_ez_left_led_level(64);
   planck_ez_led_all_off();
   clicky_off(); // TODO: maybe there is some ENV for that?
 }
 
-void spotlight_start(void) {
-  register_code(KC_LGUI);
-  switch (zored_os()) {
-    case OS_WINDOWS:
-      tap_code(KC_R);
-      break;
-
-    case OS_MACOS:
-      tap_code(KC_SPC);
-      break;
+void keyboard_post_init_user(void) {
+  switch (get_unicode_input_mode()) {
+    case UC_OSX:
+      zored_os = OS_MACOS;
   }
-  unregister_code(KC_LGUI);
-}
-
-void spotlight_finish(void) {
-  tap_code(KC_ENTER);
 }
 
 LEADER_EXTERNS();
@@ -1936,36 +2023,13 @@ void matrix_scan_user(void) {
     leading = false;
     leader_end();
     SEQ_ONE_KEY(KC_U) {
-      SEND_STRING("zored");
-    }
-    SEQ_ONE_KEY(KC_E) {
-      SEND_STRING("zored.box@gmail.com");
+      run_advanced(DO_LOGIN);
     }
     SEQ_ONE_KEY(KC_P) {
-      spotlight_start();
-      SEND_STRING("enpass");
-      spotlight_finish();
+      run_advanced(DO_ENPASS);
     }
     SEQ_ONE_KEY(KC_S) {
-      // Make screenshot:
-      switch (zored_os()) {
-        case OS_MACOS:
-          register_code(KC_LGUI);
-          register_code(KC_LCTRL);
-          register_code(KC_LSHIFT);
-          tap_code(KC_4);
-          unregister_code(KC_LGUI);
-          unregister_code(KC_LCTRL);
-          unregister_code(KC_LSHIFT);
-          break;
-        case OS_WINDOWS:
-          register_code(KC_LGUI);
-          register_code(KC_LSHIFT);
-          tap_code(KC_S);
-          unregister_code(KC_LGUI);
-          unregister_code(KC_LSHIFT);
-          break;
-      }
+      run_advanced(DO_SCREENSHOT);
     }
   }
 }
@@ -1980,10 +2044,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case ZKC_BTL:
       if (record->event.pressed) {
-        clear_keyboard();
-        bootloader_jump();
+        run_advanced(DO_BOOTLOADER);
         complete = true;
       }
+      break;
+
+    case UC_M_OS:
+      zored_os = OS_MACOS;
+      break;
+
+    case UC_M_WC:
+      zored_os = OS_WINDOWS;
       break;
   }
 
@@ -2012,7 +2083,7 @@ uint32_t layer_state_set_user(uint32_t state) {
         planck_ez_left_led_on(); planck_ez_right_led_on();
         break;
     
-      case LAYER_PLOVER:
+      case LAYER_GAME:
         planck_ez_right_led_on();
         break;
     
