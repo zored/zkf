@@ -4,25 +4,25 @@ window.onload = async () => {
     '<div class="keybaords block"><h2>My keybaords</h2>',
     '</div>',
     config.keyboards,
-    (keyboard, name) => wrap(
-      `<div class="keybaord block"><h3>Keybaord ${name}</h2>`,
+    (keyboard, keybaordName) => wrap(
+      `<div class="keybaord block"><h3 id="${keybaordName}">Keybaord ${keybaordName}</h2>`,
       '</div>',
       keyboard.layers,
-      (layer, name) => wrap(
-        `<div class="layer block"><h4>Layer ${name}</h3>`,
+      (layer, layerName) => wrap(
+        `<div class="layer block"><h4 id="${keybaordName}-${layerName}">Layer ${layerName}</h3>`,
         '</div>',
         layer.keys,
-        (keys, name) => Number.isInteger(name)
-          ? keyRowCallback(keys, name)
-          : keyBlockCallback(keys, name),
+        (keys, keysName) => Number.isInteger(keysName)
+          ? keyRowCallback(keys, keysName)
+          : keyBlockCallback(keys, keysName, keyboard + '-' + layerName),
       ),
     ),
   );
 };
 
-function keyBlockCallback(keys, name) {
+function keyBlockCallback(keys, blockName, idPrefix) {
   return wrap(
-    `<div class="keys-block block"><h5>Block ${name}</h4>`,
+    `<div class="keys-block block"><h5 id="${idPrefix}+${blockName}">Block ${blockName}</h4>`,
     '</div>',
     keys,
     keyRowCallback,
