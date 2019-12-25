@@ -12,7 +12,7 @@ window.onload = async () => {
         `<div class="layer block"><h4>Layer ${name}</h3>`,
         '</div>',
         layer.keys,
-        Number.isInteger(name) ? keyRowCallback : keyBlockCallback,
+        (keys, name) => Number.isInteger(name) ? keyRowCallback : keyBlockCallback,
       ),
     ),
   );
@@ -20,7 +20,7 @@ window.onload = async () => {
 
 function keyBlockCallback(keys, name) {
   return wrap(
-    `<div class="keys-block block"><h5>Keys ${name}</h4>`,
+    `<div class="keys-block block"><h5>Block ${name}</h4>`,
     '</div>',
     keys,
     keyRowCallback,
