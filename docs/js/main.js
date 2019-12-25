@@ -20,7 +20,7 @@ window.onload = async () => {
             '<div class="keys-row">',
             '</div>',
             row,
-            key => `<span class="key" title="${key}">${key.substring(0, 3)}</span>`
+            key => `<span class="key" title="${key}">${(key || '~').substring(0, 3)}</span>`
           ),
         ),
       ),
