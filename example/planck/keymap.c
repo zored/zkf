@@ -86,6 +86,7 @@ enum do_command {
   DO_ENPASS,
   DO_MAIL,
   DO_LOGIN,
+  DO_TERMINAL,
   DO_SCREENSHOT,
   DO_BOOTLOADER,
   DO_CLOSE,
@@ -104,7 +105,7 @@ void run_advanced (uint8_t command) {
     case DO_FIND_BEGIN:
       switch (zored_os) {
         case OS_WINDOWS:
-          tap_code16(G(KC_R));
+          tap_code(KC_LGUI);
           break;
         case OS_MACOS:
           tap_code16(G(KC_SPC));
@@ -120,18 +121,14 @@ void run_advanced (uint8_t command) {
           tap_code16(A(KC_LSHIFT));
           break;
         case OS_MACOS:
-          tap_code16(A(KC_SPC));
+          tap_code16(G(KC_SPC));
           break;
       }
       break;
     case DO_EMOJI_PANEL:
       switch (zored_os) {
         case OS_WINDOWS:
-          register_code(KC_LGUI);
-          wait_ms(200);
-          tap_code(KC_DOT);
-          wait_ms(200);
-          unregister_code(KC_LGUI);
+          tap_code16(G(KC_DOT));
           break;
         case OS_MACOS:
           tap_code16(G(C(KC_SPC)));
@@ -156,6 +153,18 @@ void run_advanced (uint8_t command) {
     case DO_ENPASS:
       run_advanced(DO_FIND_BEGIN);
       SEND_STRING("enpass");
+      run_advanced(DO_FIND_END);
+      break;
+    case DO_TERMINAL:
+      run_advanced(DO_FIND_BEGIN);
+      switch (zored_os) {
+        case OS_WINDOWS:
+          SEND_STRING("conemu");
+          break;
+        case OS_MACOS:
+          SEND_STRING("iterm");
+          break;
+      }
       run_advanced(DO_FIND_END);
       break;
     case DO_MAIL:
@@ -266,43 +275,47 @@ unicode_map[] = {
 };
 
 
+const uint16_t PROGMEM combo_seq__w__e[] = {KC_W, KC_E, COMBO_END};
+const uint16_t PROGMEM combo_seq__r__t[] = {KC_R, KC_T, COMBO_END};
 const uint16_t PROGMEM combo_seq__y__u[] = {KC_Y, KC_U, COMBO_END};
 const uint16_t PROGMEM combo_seq__i__o[] = {KC_I, KC_O, COMBO_END};
+const uint16_t PROGMEM combo_seq__s__d[] = {KC_S, KC_D, COMBO_END};
+const uint16_t PROGMEM combo_seq__f__g[] = {KC_F, KC_G, COMBO_END};
 const uint16_t PROGMEM combo_seq__h__j[] = {KC_H, KC_J, COMBO_END};
 const uint16_t PROGMEM combo_seq__k__l[] = {KC_K, KC_L, COMBO_END};
-const uint16_t PROGMEM combo_seq__x__c[] = {KC_X, KC_C, COMBO_END};
-const uint16_t PROGMEM combo_seq__v__b[] = {KC_V, KC_B, COMBO_END};
 const uint16_t PROGMEM combo_seq__n__m[] = {KC_N, KC_M, COMBO_END};
-const uint16_t PROGMEM combo_seq__comm__dot[] = {KC_COMM, KC_DOT, COMBO_END};
 
 enum combo_names {
-  CMB_SEQ__Y__U = 0,
+  CMB_SEQ__W__E = 0,
+  CMB_SEQ__R__T,
+  CMB_SEQ__Y__U,
   CMB_SEQ__I__O,
+  CMB_SEQ__S__D,
+  CMB_SEQ__F__G,
   CMB_SEQ__H__J,
   CMB_SEQ__K__L,
-  CMB_SEQ__X__C,
-  CMB_SEQ__V__B,
-  CMB_SEQ__N__M,
-  CMB_SEQ__COMM__DOT
+  CMB_SEQ__N__M
 };
 
 combo_t key_combos[COMBO_COUNT] = {
+  
+    [CMB_SEQ__W__E] = COMBO_ACTION(combo_seq__w__e),
+  
+    [CMB_SEQ__R__T] = COMBO_ACTION(combo_seq__r__t),
   
     [CMB_SEQ__Y__U] = COMBO_ACTION(combo_seq__y__u),
   
     [CMB_SEQ__I__O] = COMBO_ACTION(combo_seq__i__o),
   
+    [CMB_SEQ__S__D] = COMBO_ACTION(combo_seq__s__d),
+  
+    [CMB_SEQ__F__G] = COMBO_ACTION(combo_seq__f__g),
+  
     [CMB_SEQ__H__J] = COMBO_ACTION(combo_seq__h__j),
   
     [CMB_SEQ__K__L] = COMBO_ACTION(combo_seq__k__l),
   
-    [CMB_SEQ__X__C] = COMBO_ACTION(combo_seq__x__c),
-  
-    [CMB_SEQ__V__B] = COMBO_ACTION(combo_seq__v__b),
-  
     [CMB_SEQ__N__M] = COMBO_ACTION(combo_seq__n__m),
-  
-    [CMB_SEQ__COMM__DOT] = COMBO_ACTION(combo_seq__comm__dot),
   
 };
 
@@ -314,6 +327,14 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
 
   switch(combo_index) {
     
+    case CMB_SEQ__W__E:
+      run_advanced(DO_TERMINAL);
+      break; 
+
+    case CMB_SEQ__R__T:
+      run_advanced(DO_NOT_EQUALS);
+      break; 
+
     case CMB_SEQ__Y__U:
       run_advanced(DO_SCREENSHOT);
       break; 
@@ -322,28 +343,24 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
       run_advanced(DO_CLOSE);
       break; 
 
+    case CMB_SEQ__S__D:
+      run_advanced(DO_EMOJI_PANEL);
+      break; 
+
+    case CMB_SEQ__F__G:
+      tap_code(KC_PAST);
+      break; 
+
     case CMB_SEQ__H__J:
       run_advanced(DO_UNDERSCORE);
       break; 
 
     case CMB_SEQ__K__L:
-      tap_code(KC_PAST)
-      break; 
-
-    case CMB_SEQ__X__C:
-      run_advanced(DO_EMOJI_PANEL);
-      break; 
-
-    case CMB_SEQ__V__B:
-      run_advanced(DO_FAT_ARROW);
+      run_advanced(DO_AMPERSAND);
       break; 
 
     case CMB_SEQ__N__M:
       run_advanced(DO_ARROW);
-      break; 
-
-    case CMB_SEQ__COMM__DOT:
-      tap_code(KC_AMPR)
       break; 
 
   }
@@ -2076,7 +2093,7 @@ uint32_t layer_state_set_user(uint32_t state) {
         break;
     
       case LAYER_NAVIGATION2:
-        planck_ez_right_led_on();
+        planck_ez_left_led_on();
         break;
     
       case LAYER_EMOJI:

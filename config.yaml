@@ -205,7 +205,7 @@ keyboards:
     combos: &combos # Pairs of letters: [w+e, r+t, ...]
       - [doTerminal, doNotEquals, doScreenshot, doClose]
       - [doEmojiPanel, '*', doUnderscore, doAmpersand]
-      - [doFatArrow, doArrow]
+      - [~, doArrow]
   planck:
     settings:
       rules:
@@ -239,7 +239,7 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
       navigation2:
-        lights: [2]
+        lights: [1]
         keys:
             - [~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
             - [~, audioClickToggle, audioClickUp, audioClickDown, ~, ~, home, pageDown, pageUp, end, ~, ~]

@@ -120,6 +120,14 @@ case $1 in
    go build -o wally-cli cli/main.go
    ;;
 
+ provision-host)
+  case $OS in
+    MACOSX)
+      sudo cp ./os/macos/Library/Keyboard\ Layouts/ /Library/Keyboard\ Layouts/*
+      ;;
+  esac
+  ;;
+
  flash|f)
   if [[ $wally = '' ]]; then
     echo 'No wally defined (could not guess OS?).'

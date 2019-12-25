@@ -17,3 +17,6 @@ Supports Windows and macOS.
 - JavaScript code [compiles](compiler/README.md) config into keymap files.
 - QMK (with [my patches](patches/)) builds firmware.
 - Teensy flashes firmware into keyboard.
+
+## Additional info
+- To make Russian layout on MacOS smae with Windows run `./project.sh provision` and choose `Русская BG46` as Russian input source.

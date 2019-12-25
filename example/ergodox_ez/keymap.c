@@ -103,7 +103,7 @@ void run_advanced (uint8_t command) {
     case DO_FIND_BEGIN:
       switch (zored_os) {
         case OS_WINDOWS:
-          tap_code16(G(KC_R));
+          tap_code(KC_LGUI);
           break;
         case OS_MACOS:
           tap_code16(G(KC_SPC));
@@ -119,7 +119,7 @@ void run_advanced (uint8_t command) {
           tap_code16(A(KC_LSHIFT));
           break;
         case OS_MACOS:
-          tap_code16(A(KC_SPC));
+          tap_code16(G(KC_SPC));
           break;
       }
       break;
@@ -281,7 +281,6 @@ const uint16_t PROGMEM combo_seq__s__d[] = {KC_S, KC_D, COMBO_END};
 const uint16_t PROGMEM combo_seq__f__g[] = {KC_F, KC_G, COMBO_END};
 const uint16_t PROGMEM combo_seq__h__j[] = {KC_H, KC_J, COMBO_END};
 const uint16_t PROGMEM combo_seq__k__l[] = {KC_K, KC_L, COMBO_END};
-const uint16_t PROGMEM combo_seq__v__b[] = {KC_V, KC_B, COMBO_END};
 const uint16_t PROGMEM combo_seq__n__m[] = {KC_N, KC_M, COMBO_END};
 
 enum combo_names {
@@ -293,7 +292,6 @@ enum combo_names {
   CMB_SEQ__F__G,
   CMB_SEQ__H__J,
   CMB_SEQ__K__L,
-  CMB_SEQ__V__B,
   CMB_SEQ__N__M
 };
 
@@ -314,8 +312,6 @@ combo_t key_combos[COMBO_COUNT] = {
     [CMB_SEQ__H__J] = COMBO_ACTION(combo_seq__h__j),
   
     [CMB_SEQ__K__L] = COMBO_ACTION(combo_seq__k__l),
-  
-    [CMB_SEQ__V__B] = COMBO_ACTION(combo_seq__v__b),
   
     [CMB_SEQ__N__M] = COMBO_ACTION(combo_seq__n__m),
   
@@ -359,10 +355,6 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
 
     case CMB_SEQ__K__L:
       run_advanced(DO_AMPERSAND);
-      break; 
-
-    case CMB_SEQ__V__B:
-      run_advanced(DO_FAT_ARROW);
       break; 
 
     case CMB_SEQ__N__M:

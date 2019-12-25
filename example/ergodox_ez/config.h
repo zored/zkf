@@ -1,6 +1,6 @@
 
 #undef COMBO_COUNT
-#define COMBO_COUNT 10
+#define COMBO_COUNT 9
 
 #undef COMBO_TERM
 #define COMBO_TERM 80

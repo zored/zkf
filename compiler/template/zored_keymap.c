@@ -105,7 +105,7 @@ void run_advanced (uint8_t command) {
           tap_code16(A(KC_LSHIFT));
           break;
         case OS_MACOS:
-          tap_code16(A(KC_SPC));
+          tap_code16(G(KC_SPC));
           break;
       }
       break;
