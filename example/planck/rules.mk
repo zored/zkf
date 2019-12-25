@@ -13,10 +13,13 @@ COMMAND_ENABLE = no
 
 CONSOLE_ENABLE = no
 
+<<<<<<< HEAD
 DYNAMIC_MACRO_ENABLE = no
 
 EXTRAKEY_ENABLE = yes
 
+=======
+>>>>>>> 4ec22ef... feature-11 Remove useless lights
 KEY_LOCK_ENABLE = no
 
 LEADER_ENABLE = yes
