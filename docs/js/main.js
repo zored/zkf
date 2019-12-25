@@ -1,4 +1,4 @@
-document.onload = () => {
+window.onload = () => {
   document.getElementById('content').innerHTML = wrap(
     '<div class="keybaords"><h2>My keybaords</h2>',
     '</div>',
@@ -44,6 +44,6 @@ function wrap(left, right, inside, map) {
 
 async function loadConfig() {
   const response = await fetch('https://raw.githubusercontent.com/zored/zkf/master/config.yaml');
-  const text = response.body.text();
+  const text = await response.text();
   return jsyaml.load(text);
 }

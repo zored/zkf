@@ -1,7 +1,12 @@
 [![Build Status](https://travis-ci.org/zored/zkf.svg?branch=master)](https://travis-ci.org/zored/zkf)
 
+
 # ZKF
-Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmwares based on [QMK](https://github.com/qmk/qmk_firmware). I have:
+Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmwares based on [QMK](https://github.com/qmk/qmk_firmware).
+
+[Github page is here](https://zored.github.io/zkf/).
+
+I have:
 - [Ergodox](https://ergodox-ez.com).
 - [Planck](https://ergodox-ez.com/pages/planck).
 
