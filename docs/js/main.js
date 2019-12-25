@@ -5,11 +5,11 @@ window.onload = async () => {
     '</div>',
     config.keyboards,
     (keyboard, keybaordName) => wrap(
-      `<div class="keybaord block"><h3 id="${keybaordName}">Keybaord ${keybaordName}</h2>`,
+      `<div class="keybaord block"><h3 id="${keybaordName}">Keyboard "${keybaordName}"</h2>`,
       '</div>',
       keyboard.layers,
       (layer, layerName) => wrap(
-        `<div class="layer block"><h4 id="${keybaordName}-${layerName}">Layer ${layerName}</h3>`,
+        `<div class="layer block"><h4 id="${keybaordName}-${layerName}">Layer "${layerName}"</h3>`,
         '</div>',
         layer.keys,
         (keys, keysName) => Number.isInteger(keysName)
