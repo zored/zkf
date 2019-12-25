@@ -12,7 +12,9 @@ window.onload = async () => {
         `<div class="layer block"><h4>Layer ${name}</h3>`,
         '</div>',
         layer.keys,
-        (keys, name) => Number.isInteger(name) ? keyRowCallback : keyBlockCallback,
+        (keys, name) => Number.isInteger(name)
+          ? keyRowCallback(keys, name)
+          : keyBlockCallback(keys, name),
       ),
     ),
   );
