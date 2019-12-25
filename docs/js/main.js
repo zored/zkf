@@ -5,26 +5,22 @@ window.onload = async () => {
     '</div>',
     config.keyboards,
     (keyboard, name) => wrap(
-      `<div class="keybaord"><h2>Keybaord ${name}<h2>`,
+      `<div class="keybaord"><h3>Keybaord ${name}</h2>`,
       '</div>',
       keyboard.layers,
       (layer, name) => wrap(
-        `<div class="layer"><h3>Layer ${name}</h3>`,
+        `<div class="layer"><h4>Layer ${name}</h3>`,
         '</div>',
         layer.keys,
         (keys, name) => wrap(
-          '<div class="keys-block">`<h4>Keys ${name}</h4>',
+          `<div class="keys-block"><h5>Keys ${name}</h4>`,
           '</div>',
           keys,
           row => wrap(
             '<div class="keys-row">',
             '</div>',
             row,
-            key => wrap(
-              '<span class="key">',
-              '</span>',
-              key,
-            ),
+            key => `<span class="key" title="${key}">${key.substring(0, 3)}</span>`
           ),
         ),
       ),
