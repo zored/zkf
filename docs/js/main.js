@@ -1,8 +1,9 @@
-window.onload = () => {
+window.onload = async () => {
+  const config = await loadConfig()
   document.getElementById('content').innerHTML = wrap(
     '<div class="keybaords"><h2>My keybaords</h2>',
     '</div>',
-    loadConfig().keybords,
+    config.keybords,
     (keyboard, name) => wrap(
       `<div class="keybaord"><h2>Keybaord ${name}<h2>`,
       '</div>',
