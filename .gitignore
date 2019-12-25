@@ -1,3 +1,4 @@
 vendor/teensy*
 firmware.hex
 node_modules/
+.idea/
