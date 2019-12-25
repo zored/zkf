@@ -1,21 +1,21 @@
 window.onload = async () => {
   const config = await loadConfig();
   document.getElementById('content').innerHTML = wrap(
-    '<div class="keybaords"><h2>My keybaords</h2>',
+    '<div class="keybaords block"><h2>My keybaords</h2>',
     '</div>',
     config.keyboards,
     (keyboard, name) => wrap(
-      `<div class="keybaord"><h3>Keybaord ${name}</h2>`,
+      `<div class="keybaord block"><h3>Keybaord ${name}</h2>`,
       '</div>',
       keyboard.layers,
       (layer, name) => wrap(
-        `<div class="layer"><h4>Layer ${name}</h3>`,
+        `<div class="layer block"><h4>Layer ${name}</h3>`,
         '</div>',
         layer.keys,
         (keys, name) => Number.isInteger(name)
           ? keys.map(getMapKeyRowCallback)
           : wrap(
-            `<div class="keys-block"><h5>Keys ${name}</h4>`,
+            `<div class="keys-block block"><h5>Keys ${name}</h4>`,
             '</div>',
             keys,
             getMapKeyRowCallback,
