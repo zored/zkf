@@ -12,13 +12,13 @@ window.onload = async () => {
         `<div class="layer block"><h4>Layer ${name}</h3>`,
         '</div>',
         layer.keys,
-        (keys, name) => (Number.isInteger(name) && Array.isArray(keys))
-          ? keys.map(keyRowCallback)
-          : wrap(
-            `<div class="keys-block block"><h5>Keys ${name}</h4>`,
-            '</div>',
-            keys,
-            keyRowCallback,
+        (Number.isInteger(name) && Array.isArray(keys))
+          ? layer.map(keyRowCallback)
+          : (keys, name) => wrap(
+          `<div class="keys-block block"><h5>Keys ${name}</h4>`,
+          '</div>',
+          keys,
+          keyRowCallback,
           ),
       ),
     ),
