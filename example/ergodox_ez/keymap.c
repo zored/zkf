@@ -318,9 +318,8 @@ combo_t key_combos[COMBO_COUNT] = {
 };
 
 
-bool disable_combos = false;
 void process_combo_event(uint8_t combo_index, bool pressed) {
-  if (!pressed || disable_combos) {
+  if (!pressed) {
     return;
   }
 
@@ -2145,32 +2144,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
-  disable_combos = true;
   ergodox_led_all_off();
   switch (layer) {
     
       case LAYER_DEFAULT:
-        disable_combos = false; 
+        combo_enable(); 
         break;
     
       case LAYER_GAME:
-        ergodox_right_led_on(3);
+        combo_disable(); ergodox_right_led_on(3);
         break;
     
       case LAYER_SYMBOL:
-        ergodox_right_led_on(2);
+        combo_disable(); ergodox_right_led_on(2);
         break;
     
       case LAYER_NAVIGATION:
-        ergodox_right_led_on(1);
+        combo_disable(); ergodox_right_led_on(1);
         break;
     
       case LAYER_EMOJI:
-        ergodox_right_led_on(1); ergodox_right_led_on(3);
+        combo_disable(); ergodox_right_led_on(1); ergodox_right_led_on(3);
         break;
     
       case LAYER_NAVIGATION2:
-        ergodox_right_led_on(3);
+        combo_disable(); ergodox_right_led_on(3);
         break;
     
   }

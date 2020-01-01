@@ -711,7 +711,7 @@ class ErgodoxEz extends Keyboard {
   getTemplateData (layers) {
     const onLayerOn = layers.all.map(layer => `
       case ${layer.codeName}:
-        ` + (layer.enableCombos ? 'disable_combos = false; ' : '')
+        ` + (layer.enableCombos ? 'combo_enable(); ' : 'combo_disable(); ')
           + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
         break;
     `).join('')
@@ -729,7 +729,7 @@ class PlanckEz extends Keyboard {
   getTemplateData (layers) {
     const onLayerOn = layers.all.map(layer => `
       case ${layer.codeName}:
-        ` + (layer.enableCombos ? 'disable_combos = false; ' : '')
+        ` + (layer.enableCombos ? 'combo_enable(); ' : 'combo_disable(); ')
           + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
         break;
     `).join('')

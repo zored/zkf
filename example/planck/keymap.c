@@ -320,9 +320,8 @@ combo_t key_combos[COMBO_COUNT] = {
 };
 
 
-bool disable_combos = false;
 void process_combo_event(uint8_t combo_index, bool pressed) {
-  if (!pressed || disable_combos) {
+  if (!pressed) {
     return;
   }
 
@@ -2082,32 +2081,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
-  disable_combos = true;
   planck_ez_led_all_off();
   switch (layer) {
     
       case LAYER_DEFAULT:
-        disable_combos = false; 
+        combo_enable(); 
         break;
     
       case LAYER_SYMBOL:
-        planck_ez_left_led_on();
+        combo_disable(); planck_ez_left_led_on();
         break;
     
       case LAYER_NAVIGATION:
-        planck_ez_right_led_on();
+        combo_disable(); planck_ez_right_led_on();
         break;
     
       case LAYER_NAVIGATION2:
-        planck_ez_left_led_on();
+        combo_disable(); planck_ez_left_led_on();
         break;
     
       case LAYER_EMOJI:
-        planck_ez_left_led_on(); planck_ez_right_led_on();
+        combo_disable(); planck_ez_left_led_on(); planck_ez_right_led_on();
         break;
     
       case LAYER_GAME:
-        planck_ez_right_led_on();
+        combo_disable(); planck_ez_right_led_on();
         break;
     
   }
