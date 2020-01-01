@@ -685,11 +685,26 @@ class Keyboard {
   get configName () {
     throw new Error(`No keyboard config defined`)
   }
+  get templateKey() {
+    return this.configName
+  }
   get layoutCodeName () {
     throw new Error(`No keyboard layout code name defined`)
   }
   getTemplateData (layers) {
-    return {}
+    const onLayerOn = layers.all.map(layer => `
+      case ${layer.codeName}:
+        ` + (layer.enableCombos ? 'combo_enable(); ' : 'combo_disable(); ')
+          + layer.lights.map(light => this.getLightCode(light)).join(' ') + `
+        break;
+    `).join('')
+
+    let data = {}
+    data[this.templateKey] = { onLayerOn }
+    return data
+  }
+  getLightCode (light) {
+    throw new Error('Undefined light code function.')
   }
   get layers () {
     return this.config.layers
@@ -708,15 +723,14 @@ class ErgodoxEz extends Keyboard {
   get layoutCodeName () {
     return 'LAYOUT_ergodox'
   }
-  getTemplateData (layers) {
-    const onLayerOn = layers.all.map(layer => `
-      case ${layer.codeName}:
-        ` + (layer.enableCombos ? 'combo_enable(); ' : 'combo_disable(); ')
-          + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
-        break;
-    `).join('')
-
-    return { ergodox: { onLayerOn } }
+  get templateKey() {
+    return 'ergodox'
+  }
+  getLightCode (light) {
+    if (light < 1 || light > 3) {
+      throw new Error(`Unknow Ergodox light #${light}`)
+    }
+    return `ergodox_right_led_on(${light});`
   }
 }
 class PlanckEz extends Keyboard {
@@ -726,17 +740,7 @@ class PlanckEz extends Keyboard {
   get layoutCodeName () {
     return 'LAYOUT_planck_grid'
   }
-  getTemplateData (layers) {
-    const onLayerOn = layers.all.map(layer => `
-      case ${layer.codeName}:
-        ` + (layer.enableCombos ? 'combo_enable(); ' : 'combo_disable(); ')
-          + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
-        break;
-    `).join('')
-
-    return { planck: { onLayerOn } }
-  }
-  _getLightCode (light) {
+  getLightCode (light) {
     switch (light) {
       case 1:
         return `planck_ez_left_led_on();`
