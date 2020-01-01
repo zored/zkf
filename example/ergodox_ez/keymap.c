@@ -318,8 +318,9 @@ combo_t key_combos[COMBO_COUNT] = {
 };
 
 
+bool disable_combos = false;
 void process_combo_event(uint8_t combo_index, bool pressed) {
-  if (!pressed) {
+  if (!pressed || disable_combos) {
     return;
   }
 
@@ -1955,127 +1956,127 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_DEFAULT] = LAYOUT_ergodox(
   
-/* keys-left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
-/* keys-left-1 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
-/* keys-left-2 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,
-/* keys-left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,_______,
-/* keys-left-4 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_LEFT,KC_RGHT,
-/* keys-left-thumb-0 */ KC_ESC,_______,
-/* keys-left-thumb-1 */ KC_HOME,
-/* keys-left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
-/* keys-right-0 */ _______,KC_6,KC_7,KC_8,KC_9,KC_0,_______,
-/* keys-right-1 */ _______,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
-/* keys-right-2 */ KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),TD(DANCE_KC_QUOTEDANCE),
-/* keys-right-3 */ _______,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),KC_RSPC,
-/* keys-right-4 */ KC_LBRC,KC_RBRC,_______,_______,TG(LAYER_GAME),
-/* keys-right-thumb-0 */ KC_ESC,_______,
-/* keys-right-thumb-1 */ KC_PGUP,
-/* keys-right-thumb-2 */ KC_PGDN,TD(DANCE_KC_TABDANCE),KC_ENT
+/* left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
+/* left-1 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
+/* left-2 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,
+/* left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,_______,
+/* left-4 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_LEFT,KC_RGHT,
+/* left-thumb-0 */ KC_ESC,_______,
+/* left-thumb-1 */ KC_HOME,
+/* left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
+/* right-0 */ _______,KC_6,KC_7,KC_8,KC_9,KC_0,_______,
+/* right-1 */ _______,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
+/* right-2 */ KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),TD(DANCE_KC_QUOTEDANCE),
+/* right-3 */ _______,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),KC_RSPC,
+/* right-4 */ KC_LBRC,KC_RBRC,_______,_______,TG(LAYER_GAME),
+/* right-thumb-0 */ KC_ESC,_______,
+/* right-thumb-1 */ KC_PGUP,
+/* right-thumb-2 */ KC_PGDN,TD(DANCE_KC_TABDANCE),KC_ENT
 )
   ,
 
 [LAYER_GAME] = LAYOUT_ergodox(
   
-/* keys-left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
-/* keys-left-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,
-/* keys-left-2 */ KC_CAPSLOCK,_______,_______,_______,_______,_______,
-/* keys-left-3 */ KC_LSHIFT,KC_Z,KC_X,KC_C,_______,_______,_______,
-/* keys-left-4 */ KC_LGUI,KC_LALT,KC_LCTRL,_______,_______,
-/* keys-left-thumb-0 */ _______,_______,
-/* keys-left-thumb-1 */ _______,
-/* keys-left-thumb-2 */ _______,_______,_______,
-/* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-right-1 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-right-2 */ _______,_______,_______,_______,KC_SCOLON,KC_QUOT,
-/* keys-right-3 */ _______,_______,_______,KC_COMM,KC_DOT,KC_SLSH,KC_RSHIFT,
-/* keys-right-4 */ _______,_______,_______,_______,_______,
-/* keys-right-thumb-0 */ _______,_______,
-/* keys-right-thumb-1 */ _______,
-/* keys-right-thumb-2 */ _______,KC_TAB,_______
+/* left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
+/* left-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,
+/* left-2 */ KC_CAPSLOCK,_______,_______,_______,_______,_______,
+/* left-3 */ KC_LSHIFT,KC_Z,KC_X,KC_C,_______,_______,_______,
+/* left-4 */ KC_LGUI,KC_LALT,KC_LCTRL,_______,_______,
+/* left-thumb-0 */ _______,_______,
+/* left-thumb-1 */ _______,
+/* left-thumb-2 */ _______,_______,_______,
+/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* right-1 */ _______,_______,_______,_______,_______,_______,_______,
+/* right-2 */ _______,_______,_______,_______,KC_SCOLON,KC_QUOT,
+/* right-3 */ _______,_______,_______,KC_COMM,KC_DOT,KC_SLSH,KC_RSHIFT,
+/* right-4 */ _______,_______,_______,_______,_______,
+/* right-thumb-0 */ _______,_______,
+/* right-thumb-1 */ _______,
+/* right-thumb-2 */ _______,KC_TAB,_______
 )
   ,
 
 [LAYER_SYMBOL] = LAYOUT_ergodox(
   
-/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-1 */ _______,KC_EXLM,KC_HASH,KC_LCBR,KC_RCBR,KC_SLSH,_______,
-/* keys-left-2 */ _______,KC_AT,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,
-/* keys-left-3 */ _______,TD(DANCE_KC_PERCENTDANCE),TD(DANCE_KC_CIRCUMFLEXDANCE),TD(DANCE_KC_LEFTSQUAREBRACKETDANCE),KC_RBRC,KC_TILD,_______,
-/* keys-left-4 */ _______,_______,_______,_______,_______,
-/* keys-left-thumb-0 */ _______,_______,
-/* keys-left-thumb-1 */ _______,
-/* keys-left-thumb-2 */ _______,KC_DELETE,_______,
-/* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-right-1 */ _______,KC_EQL,KC_7,KC_8,KC_9,KC_AMPR,KC_PIPE,
-/* keys-right-2 */ KC_PPLS,KC_4,KC_5,KC_6,KC_PAST,_______,
-/* keys-right-3 */ _______,KC_MINS,KC_1,KC_2,KC_3,KC_SLSH,_______,
-/* keys-right-4 */ _______,KC_0,KC_DOT,_______,_______,
-/* keys-right-thumb-0 */ _______,_______,
-/* keys-right-thumb-1 */ _______,
-/* keys-right-thumb-2 */ _______,_______,_______
+/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-1 */ _______,KC_EXLM,KC_HASH,KC_LCBR,KC_RCBR,KC_SLSH,_______,
+/* left-2 */ _______,KC_AT,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,
+/* left-3 */ _______,TD(DANCE_KC_PERCENTDANCE),TD(DANCE_KC_CIRCUMFLEXDANCE),TD(DANCE_KC_LEFTSQUAREBRACKETDANCE),KC_RBRC,KC_TILD,_______,
+/* left-4 */ _______,_______,_______,_______,_______,
+/* left-thumb-0 */ _______,_______,
+/* left-thumb-1 */ _______,
+/* left-thumb-2 */ _______,KC_DELETE,_______,
+/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* right-1 */ _______,KC_EQL,KC_7,KC_8,KC_9,KC_AMPR,KC_PIPE,
+/* right-2 */ KC_PPLS,KC_4,KC_5,KC_6,KC_PAST,_______,
+/* right-3 */ _______,KC_MINS,KC_1,KC_2,KC_3,KC_SLSH,_______,
+/* right-4 */ _______,KC_0,KC_DOT,_______,_______,
+/* right-thumb-0 */ _______,_______,
+/* right-thumb-1 */ _______,
+/* right-thumb-2 */ _______,_______,_______
 )
   ,
 
 [LAYER_NAVIGATION] = LAYOUT_ergodox(
   
-/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
-/* keys-left-2 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,
-/* keys-left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-4 */ _______,_______,_______,_______,_______,
-/* keys-left-thumb-0 */ _______,_______,
-/* keys-left-thumb-1 */ _______,
-/* keys-left-thumb-2 */ _______,_______,_______,
-/* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-right-1 */ _______,_______,KC_BRID,KC_BRIU,_______,_______,_______,
-/* keys-right-2 */ KC_LEFT,KC_DOWN,KC_UP,KC_RGHT,_______,_______,
-/* keys-right-3 */ _______,KC_WH_L,KC_WH_D,KC_WH_U,KC_WH_R,_______,_______,
-/* keys-right-4 */ KC_VOLD,KC_VOLU,KC_MUTE,_______,_______,
-/* keys-right-thumb-0 */ _______,_______,
-/* keys-right-thumb-1 */ _______,
-/* keys-right-thumb-2 */ _______,_______,_______
+/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
+/* left-2 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,
+/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-4 */ _______,_______,_______,_______,_______,
+/* left-thumb-0 */ _______,_______,
+/* left-thumb-1 */ _______,
+/* left-thumb-2 */ _______,_______,_______,
+/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* right-1 */ _______,_______,KC_BRID,KC_BRIU,_______,_______,_______,
+/* right-2 */ KC_LEFT,KC_DOWN,KC_UP,KC_RGHT,_______,_______,
+/* right-3 */ _______,KC_WH_L,KC_WH_D,KC_WH_U,KC_WH_R,_______,_______,
+/* right-4 */ KC_VOLD,KC_VOLU,KC_MUTE,_______,_______,
+/* right-thumb-0 */ _______,_______,
+/* right-thumb-1 */ _______,
+/* right-thumb-2 */ _______,_______,_______
 )
   ,
 
 [LAYER_EMOJI] = LAYOUT_ergodox(
   
-/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-1 */ _______,TD(DANCE_KC_HAPPYDANCE),TD(DANCE_KC_SADDANCE),TD(DANCE_KC_STRANGEDANCE),_______,_______,_______,
-/* keys-left-2 */ _______,TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,
-/* keys-left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-4 */ ZKC_BTL,_______,_______,_______,_______,
-/* keys-left-thumb-0 */ _______,_______,
-/* keys-left-thumb-1 */ _______,
-/* keys-left-thumb-2 */ _______,_______,_______,
-/* keys-right-0 */ _______,DYN_REC_START1,DYN_REC_START2,DYN_REC_STOP,DYN_MACRO_PLAY1,DYN_MACRO_PLAY2,_______,
-/* keys-right-1 */ _______,_______,TD(DANCE_KC_F7DANCE),TD(DANCE_KC_F8DANCE),TD(DANCE_KC_F9DANCE),_______,_______,
-/* keys-right-2 */ _______,TD(DANCE_KC_F4DANCE),TD(DANCE_KC_F5DANCE),TD(DANCE_KC_F6DANCE),_______,_______,
-/* keys-right-3 */ _______,_______,TD(DANCE_KC_F1DANCE),TD(DANCE_KC_F2DANCE),TD(DANCE_KC_F3DANCE),_______,_______,
-/* keys-right-4 */ _______,_______,TD(DANCE_KC_F10DANCE),_______,_______,
-/* keys-right-thumb-0 */ _______,_______,
-/* keys-right-thumb-1 */ _______,
-/* keys-right-thumb-2 */ _______,_______,_______
+/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-1 */ _______,TD(DANCE_KC_HAPPYDANCE),TD(DANCE_KC_SADDANCE),TD(DANCE_KC_STRANGEDANCE),_______,_______,_______,
+/* left-2 */ _______,TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,
+/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-4 */ ZKC_BTL,_______,_______,_______,_______,
+/* left-thumb-0 */ _______,_______,
+/* left-thumb-1 */ _______,
+/* left-thumb-2 */ _______,_______,_______,
+/* right-0 */ _______,DYN_REC_START1,DYN_REC_START2,DYN_REC_STOP,DYN_MACRO_PLAY1,DYN_MACRO_PLAY2,_______,
+/* right-1 */ _______,_______,TD(DANCE_KC_F7DANCE),TD(DANCE_KC_F8DANCE),TD(DANCE_KC_F9DANCE),_______,_______,
+/* right-2 */ _______,TD(DANCE_KC_F4DANCE),TD(DANCE_KC_F5DANCE),TD(DANCE_KC_F6DANCE),_______,_______,
+/* right-3 */ _______,_______,TD(DANCE_KC_F1DANCE),TD(DANCE_KC_F2DANCE),TD(DANCE_KC_F3DANCE),_______,_______,
+/* right-4 */ _______,_______,TD(DANCE_KC_F10DANCE),_______,_______,
+/* right-thumb-0 */ _______,_______,
+/* right-thumb-1 */ _______,
+/* right-thumb-2 */ _______,_______,_______
 )
   ,
 
 [LAYER_NAVIGATION2] = LAYOUT_ergodox(
   
-/* keys-left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-1 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-2 */ _______,_______,_______,_______,_______,_______,
-/* keys-left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-left-4 */ _______,_______,_______,_______,_______,
-/* keys-left-thumb-0 */ _______,_______,
-/* keys-left-thumb-1 */ _______,
-/* keys-left-thumb-2 */ _______,_______,_______,
-/* keys-right-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* keys-right-1 */ _______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_M_WC,UC_M_OS,_______,_______,
-/* keys-right-2 */ KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
-/* keys-right-3 */ _______,KC_MEDIA_PREV_TRACK,_______,KC_MEDIA_PLAY_PAUSE,KC_MEDIA_NEXT_TRACK,_______,_______,
-/* keys-right-4 */ _______,_______,_______,_______,_______,
-/* keys-right-thumb-0 */ _______,_______,
-/* keys-right-thumb-1 */ _______,
-/* keys-right-thumb-2 */ _______,_______,_______
+/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-1 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-2 */ _______,_______,_______,_______,_______,_______,
+/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-4 */ _______,_______,_______,_______,_______,
+/* left-thumb-0 */ _______,_______,
+/* left-thumb-1 */ _______,
+/* left-thumb-2 */ _______,_______,_______,
+/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* right-1 */ _______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_M_WC,UC_M_OS,_______,_______,
+/* right-2 */ KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
+/* right-3 */ _______,KC_MEDIA_PREV_TRACK,_______,KC_MEDIA_PLAY_PAUSE,KC_MEDIA_NEXT_TRACK,_______,_______,
+/* right-4 */ _______,_______,_______,_______,_______,
+/* right-thumb-0 */ _______,_______,
+/* right-thumb-1 */ _______,
+/* right-thumb-2 */ _______,_______,_______
 )
   
 };
@@ -2144,26 +2145,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
+  disable_combos = true;
   ergodox_led_all_off();
   switch (layer) {
     
       case LAYER_GAME:
+        
         ergodox_right_led_on(3);
         break;
     
       case LAYER_SYMBOL:
+        
         ergodox_right_led_on(2);
         break;
     
       case LAYER_NAVIGATION:
+        
         ergodox_right_led_on(1);
         break;
     
       case LAYER_EMOJI:
+        
         ergodox_right_led_on(1); ergodox_right_led_on(3);
         break;
     
       case LAYER_NAVIGATION2:
+        
         ergodox_right_led_on(3);
         break;
     

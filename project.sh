@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Contains helper code for easy work.
 set -ex
 
@@ -12,7 +12,7 @@ case $2 in
     ;;
 esac
 
-pre-run () {
+pre_run () {
   # Already running:
   docker ps &> /dev/null && return
 
@@ -22,7 +22,7 @@ pre-run () {
 }
 
 run () {
-  pre-run
+  pre_run
   local image=$1
   shift
   docker run --rm \

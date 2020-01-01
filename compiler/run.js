@@ -13,10 +13,16 @@ function main () {
   const config = getConfig()
   const keyboard = (new KeyboardFactory(config.keyboards)).create(keyboardQmkName)
   const layersConfig = keyboard.layers
-  const layerStructure = new LayerStructure(flatternStructure(layersConfig.default))
+  const layerStructure = new LayerStructure(flatternStructure(layersConfig.default.keys))
   const keyFactory = new KeyFactory(config.keys, config.map.keys, config.map.prefixes)
   const layers = new LayerCollection(
-    _.map(layersConfig, ({ keys, lights }, name) => new Layer(name, keyFactory.createFromObject(keys), layerStructure, lights))
+    _.map(layersConfig, ({ keys, lights, enable_combos = false }, name) => new Layer(
+      name, 
+      keyFactory.createFromObject(keys), 
+      layerStructure, 
+      lights,
+      enable_combos,
+    ))
   )
   const files = new KeymapFiles(keyboard)
 
@@ -131,17 +137,21 @@ class LayerStructure {
 }
 
 class Layer {
-  constructor (name, keys, structure, lights) {
+  constructor (name, keys, structure, lights, enableCombos) {
     this.name = name
     this.keys = keys || []
     this.structure = structure || null
     this._lights = lights || []
+    this._enableCombos = enableCombos
   }
   get codeName () {
     return 'LAYER_' + this.name.toUpperCase()
   }
   get lights () {
     return this._lights
+  }
+  get enableCombos () {
+    return this._enableCombos
   }
   get keyCodesString () {
     return this.structure.formatLayer(this)
@@ -703,13 +713,14 @@ class ErgodoxEz extends Keyboard {
     return 'LAYOUT_ergodox'
   }
   getTemplateData (layers) {
-    const lights = layers.allWithLights.map(layer => `
+    const onLayerOn = layers.allWithLights.map(layer => `
       case ${layer.codeName}:
+        ${layer.enableCombos ? 'disable_combo = false;' : ''}
         ` + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
         break;
     `).join('')
 
-    return { ergodox: { lights } }
+    return { ergodox: { onLayerOn } }
   }
 }
 class PlanckEz extends Keyboard {
@@ -720,13 +731,13 @@ class PlanckEz extends Keyboard {
     return 'LAYOUT_planck_grid'
   }
   getTemplateData (layers) {
-    const lights = layers.allWithLights.map(layer => `
+    const onLayerOn = layers.allWithLights.map(layer => `
       case ${layer.codeName}:
         ` + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
         break;
     `).join('')
 
-    return { planck: { lights } }
+    return { planck: { onLayerOn } }
   }
   _getLightCode (light) {
     switch (light) {

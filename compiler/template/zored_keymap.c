@@ -220,8 +220,9 @@ unicode_map[] = {
 
 {{{combos.definitions}}}
 
+bool disable_combos = false;
 void process_combo_event(uint8_t combo_index, bool pressed) {
-  if (!pressed) {
+  if (!pressed || disable_combos) {
     return;
   }
 
@@ -370,16 +371,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
+  disable_combos = true;
 {{#ergodox}}
   ergodox_led_all_off();
   switch (layer) {
-    {{{ergodox.lights}}}
+    {{{ergodox.onLayerOn}}}
   }
 {{/ergodox}}
 {{#planck}}
   planck_ez_led_all_off();
   switch (layer) {
-    {{{planck.lights}}}
+    {{{planck.onLayerOn}}}
   }
 {{/planck}}
 

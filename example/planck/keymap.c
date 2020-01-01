@@ -320,8 +320,9 @@ combo_t key_combos[COMBO_COUNT] = {
 };
 
 
+bool disable_combos = false;
 void process_combo_event(uint8_t combo_index, bool pressed) {
-  if (!pressed) {
+  if (!pressed || disable_combos) {
     return;
   }
 
@@ -1957,55 +1958,55 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_DEFAULT] = LAYOUT_planck_grid(
   
-/* keys-0 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
-/* keys-1 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),TD(DANCE_KC_QUOTEDANCE),
-/* keys-2 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),KC_RSPC,
-/* keys-3 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DELETE,KC_BSPC,KC_SPC,_______,TD(DANCE_KC_TABDANCE),KC_ENT,KC_LBRC,KC_RBRC,TG(LAYER_GAME)
+/* 0 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
+/* 1 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),TD(DANCE_KC_QUOTEDANCE),
+/* 2 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),KC_RSPC,
+/* 3 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DELETE,KC_BSPC,KC_SPC,_______,TD(DANCE_KC_TABDANCE),KC_ENT,KC_LBRC,KC_RBRC,TG(LAYER_GAME)
 )
   ,
 
 [LAYER_SYMBOL] = LAYOUT_planck_grid(
   
-/* keys-0 */ _______,KC_EXLM,KC_HASH,KC_LCBR,KC_RCBR,KC_SLSH,KC_EQL,KC_7,KC_8,KC_9,KC_AMPR,KC_PIPE,
-/* keys-1 */ _______,KC_AT,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,KC_PPLS,KC_4,KC_5,KC_6,KC_PAST,_______,
-/* keys-2 */ _______,TD(DANCE_KC_PERCENTDANCE),TD(DANCE_KC_CIRCUMFLEXDANCE),TD(DANCE_KC_LEFTSQUAREBRACKETDANCE),KC_RBRC,KC_TILD,KC_MINS,KC_1,KC_2,KC_3,KC_SLSH,_______,
-/* keys-3 */ _______,_______,_______,_______,_______,_______,_______,_______,KC_0,KC_DOT,_______,_______
+/* 0 */ _______,KC_EXLM,KC_HASH,KC_LCBR,KC_RCBR,KC_SLSH,KC_EQL,KC_7,KC_8,KC_9,KC_AMPR,KC_PIPE,
+/* 1 */ _______,KC_AT,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,KC_PPLS,KC_4,KC_5,KC_6,KC_PAST,_______,
+/* 2 */ _______,TD(DANCE_KC_PERCENTDANCE),TD(DANCE_KC_CIRCUMFLEXDANCE),TD(DANCE_KC_LEFTSQUAREBRACKETDANCE),KC_RBRC,KC_TILD,KC_MINS,KC_1,KC_2,KC_3,KC_SLSH,_______,
+/* 3 */ _______,_______,_______,_______,_______,_______,_______,_______,KC_0,KC_DOT,_______,_______
 )
   ,
 
 [LAYER_NAVIGATION] = LAYOUT_planck_grid(
   
-/* keys-0 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,KC_BRID,KC_BRIU,_______,_______,_______,
-/* keys-1 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,KC_LEFT,KC_DOWN,KC_UP,KC_RGHT,_______,_______,
-/* keys-2 */ _______,_______,_______,_______,_______,_______,KC_WH_L,KC_WH_D,KC_WH_U,KC_WH_R,_______,_______,
-/* keys-3 */ _______,_______,_______,_______,_______,_______,_______,KC_VOLD,KC_VOLU,KC_MUTE,_______,_______
+/* 0 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,KC_BRID,KC_BRIU,_______,_______,_______,
+/* 1 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,KC_LEFT,KC_DOWN,KC_UP,KC_RGHT,_______,_______,
+/* 2 */ _______,_______,_______,_______,_______,_______,KC_WH_L,KC_WH_D,KC_WH_U,KC_WH_R,_______,_______,
+/* 3 */ _______,_______,_______,_______,_______,_______,_______,KC_VOLD,KC_VOLU,KC_MUTE,_______,_______
 )
   ,
 
 [LAYER_NAVIGATION2] = LAYOUT_planck_grid(
   
-/* keys-0 */ _______,RGB_VAD,RGB_VAI,RGB_SAD,RGB_SAI,_______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_M_WC,UC_M_OS,_______,_______,
-/* keys-1 */ _______,CK_TOGG,CK_UP,CK_DOWN,_______,_______,KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
-/* keys-2 */ _______,MU_TOG,MU_MOD,_______,_______,_______,_______,KC_MEDIA_PREV_TRACK,_______,KC_MEDIA_PLAY_PAUSE,KC_MEDIA_NEXT_TRACK,_______,
-/* keys-3 */ _______,_______,_______,_______,_______,_______,_______,RGB_HUD,RGB_HUI,RGB_TOG,RGB_MOD,_______
+/* 0 */ _______,RGB_VAD,RGB_VAI,RGB_SAD,RGB_SAI,_______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_M_WC,UC_M_OS,_______,_______,
+/* 1 */ _______,CK_TOGG,CK_UP,CK_DOWN,_______,_______,KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
+/* 2 */ _______,MU_TOG,MU_MOD,_______,_______,_______,_______,KC_MEDIA_PREV_TRACK,_______,KC_MEDIA_PLAY_PAUSE,KC_MEDIA_NEXT_TRACK,_______,
+/* 3 */ _______,_______,_______,_______,_______,_______,_______,RGB_HUD,RGB_HUI,RGB_TOG,RGB_MOD,_______
 )
   ,
 
 [LAYER_EMOJI] = LAYOUT_planck_grid(
   
-/* keys-0 */ _______,TD(DANCE_KC_HAPPYDANCE),TD(DANCE_KC_SADDANCE),TD(DANCE_KC_STRANGEDANCE),_______,_______,_______,TD(DANCE_KC_F7DANCE),TD(DANCE_KC_F8DANCE),TD(DANCE_KC_F9DANCE),_______,_______,
-/* keys-1 */ _______,TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,_______,TD(DANCE_KC_F4DANCE),TD(DANCE_KC_F5DANCE),TD(DANCE_KC_F6DANCE),_______,_______,
-/* keys-2 */ _______,_______,_______,_______,_______,_______,_______,TD(DANCE_KC_F1DANCE),TD(DANCE_KC_F2DANCE),TD(DANCE_KC_F3DANCE),_______,_______,
-/* keys-3 */ ZKC_BTL,_______,_______,_______,_______,_______,_______,_______,TD(DANCE_KC_F10DANCE),_______,_______,_______
+/* 0 */ _______,TD(DANCE_KC_HAPPYDANCE),TD(DANCE_KC_SADDANCE),TD(DANCE_KC_STRANGEDANCE),_______,_______,_______,TD(DANCE_KC_F7DANCE),TD(DANCE_KC_F8DANCE),TD(DANCE_KC_F9DANCE),_______,_______,
+/* 1 */ _______,TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,_______,TD(DANCE_KC_F4DANCE),TD(DANCE_KC_F5DANCE),TD(DANCE_KC_F6DANCE),_______,_______,
+/* 2 */ _______,_______,_______,_______,_______,_______,_______,TD(DANCE_KC_F1DANCE),TD(DANCE_KC_F2DANCE),TD(DANCE_KC_F3DANCE),_______,_______,
+/* 3 */ ZKC_BTL,_______,_______,_______,_______,_______,_______,_______,TD(DANCE_KC_F10DANCE),_______,_______,_______
 )
   ,
 
 [LAYER_GAME] = LAYOUT_planck_grid(
   
-/* keys-0 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,KC_UP,_______,_______,
-/* keys-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,_______,KC_LEFT,KC_DOWN,KC_RGHT,_______,
-/* keys-2 */ KC_LSHIFT,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-/* keys-3 */ KC_LCTRL,KC_LALT,KC_LGUI,_______,_______,_______,_______,_______,KC_RGUI,KC_RALT,KC_RCTRL,_______
+/* 0 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,KC_UP,_______,_______,
+/* 1 */ KC_TAB,_______,_______,_______,_______,_______,_______,_______,KC_LEFT,KC_DOWN,KC_RGHT,_______,
+/* 2 */ KC_LSHIFT,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
+/* 3 */ KC_LCTRL,KC_LALT,KC_LGUI,_______,_______,_______,_______,_______,KC_RGUI,KC_RALT,KC_RCTRL,_______
 )
   
 };
@@ -2081,6 +2082,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
+  disable_combos = true;
   planck_ez_led_all_off();
   switch (layer) {
     
