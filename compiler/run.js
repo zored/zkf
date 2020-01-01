@@ -729,7 +729,8 @@ class PlanckEz extends Keyboard {
   getTemplateData (layers) {
     const onLayerOn = layers.all.map(layer => `
       case ${layer.codeName}:
-        ` + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
+        ` + (layer.enableCombos ? 'disable_combos = false; ' : '')
+          + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
         break;
     `).join('')
 

@@ -2087,7 +2087,7 @@ uint32_t layer_state_set_user(uint32_t state) {
   switch (layer) {
     
       case LAYER_DEFAULT:
-        
+        disable_combos = false; 
         break;
     
       case LAYER_SYMBOL:
