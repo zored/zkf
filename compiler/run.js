@@ -16,12 +16,12 @@ function main () {
   const layerStructure = new LayerStructure(flatternStructure(layersConfig.default.keys))
   const keyFactory = new KeyFactory(config.keys, config.map.keys, config.map.prefixes)
   const layers = new LayerCollection(
-    _.map(layersConfig, ({ keys, lights, enable_combos = false }, name) => new Layer(
+    _.map(layersConfig, ({ keys, lights, enable_combos }, name) => new Layer(
       name, 
       keyFactory.createFromObject(keys), 
       layerStructure, 
       lights,
-      enable_combos,
+      enable_combos || false,
     ))
   )
   const files = new KeymapFiles(keyboard)
@@ -101,10 +101,6 @@ class LayerCollection {
 
   get all () {
     return this.layers
-  }
-
-  get allWithLights () {
-    return this.layers.filter(layer => layer.lights.length > 0)
   }
 
   get allKeys () {
@@ -713,10 +709,10 @@ class ErgodoxEz extends Keyboard {
     return 'LAYOUT_ergodox'
   }
   getTemplateData (layers) {
-    const onLayerOn = layers.allWithLights.map(layer => `
+    const onLayerOn = layers.all.map(layer => `
       case ${layer.codeName}:
-        ${layer.enableCombos ? 'disable_combo = false;' : ''}
-        ` + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
+        ` + (layer.enableCombos ? 'disable_combos = false; ' : '')
+          + layer.lights.map(light => `ergodox_right_led_on(${light});`).join(' ') + `
         break;
     `).join('')
 
@@ -731,7 +727,7 @@ class PlanckEz extends Keyboard {
     return 'LAYOUT_planck_grid'
   }
   getTemplateData (layers) {
-    const onLayerOn = layers.allWithLights.map(layer => `
+    const onLayerOn = layers.all.map(layer => `
       case ${layer.codeName}:
         ` + layer.lights.map(light => this._getLightCode(light)).join(' ') + `
         break;

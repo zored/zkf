@@ -2086,6 +2086,10 @@ uint32_t layer_state_set_user(uint32_t state) {
   planck_ez_led_all_off();
   switch (layer) {
     
+      case LAYER_DEFAULT:
+        
+        break;
+    
       case LAYER_SYMBOL:
         planck_ez_left_led_on();
         break;
