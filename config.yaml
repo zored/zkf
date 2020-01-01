@@ -2,6 +2,7 @@ keyboards:
   ergodox_ez:
     layers:
       default:
+        enable_combos: true
         lights: []
         keys:
           left:
@@ -218,6 +219,7 @@ keyboards:
     combos: *combos
     layers:
       default:
+        enable_combos: true
         lights: []
         keys:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
