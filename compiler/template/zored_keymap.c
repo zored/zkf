@@ -1,5 +1,7 @@
 {{! Keymap template for all of my keymaps. Has a lot of common code. }}
 
+{{! This guy should be before RGB. }}
+
 {{#ergodox}}
 #include "ergodox_ez.h"
 {{/ergodox}}
