@@ -735,6 +735,10 @@ function compileSettings (keyboard, files, override) {
   files.add('rules.mk', _.map(rules, (value, name) => `
 ${name} = ${value}
 `).join(''))
+
+  if (config.RGB_MATRIX_CUSTOM_USER === '') {
+    files.add('rgb_matrix_user.inc', fs.readFileSync('compiler/template/rgb_matrix_user.inc', 'utf8'))
+  }
 }
 
 // general
