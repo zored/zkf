@@ -37,7 +37,7 @@ keyboards:
           left-thumb:
             - [~, ~]
             - [~]
-            - [~, ~, ~]
+            - [~, ~, keyLock]
           right:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~]
@@ -195,7 +195,7 @@ keyboards:
         COMMAND_ENABLE: 'no'
         EXTRAKEY_ENABLE: 'yes'
         NKRO_ENABLE: 'yes'
-        KEY_LOCK_ENABLE: 'no'
+        KEY_LOCK_ENABLE: 'yes'
         LEADER_ENABLE: 'yes'
         LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
         RGBLIGHT_ENABLE: 'no'
@@ -260,7 +260,7 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~, ~, ~, up, ~, ~]
             - [tab, ~, ~, ~, ~, ~, ~, ~, left, down, right, ~]
             - [lShift, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [lCtrl, lAlt, lgui, ~, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
+            - [lCtrl, lAlt, lgui, keyLock, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
       # steno:
       #   lights: [2]
       #   keys:
@@ -408,6 +408,7 @@ map:
     brightnessUp: BRIU
     down: DOWN
     enter: ENT
+    keyLock: LOCK
     enterBootloader: ZKC_BTL
     left: LEFT
     leader: LEAD
