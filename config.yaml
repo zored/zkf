@@ -194,6 +194,7 @@ keyboards:
         COMBO_ENABLE: 'yes'
         COMMAND_ENABLE: 'no'
         EXTRAKEY_ENABLE: 'yes'
+        DYNAMIC_MACRO_ENABLE: 'yes'
         NKRO_ENABLE: 'yes'
         KEY_LOCK_ENABLE: 'yes'
         LEADER_ENABLE: 'yes'

@@ -1,0 +1,12 @@
+diff --git a/quantum/quantum.c b/quantum/quantum.c
+index 1b5ce3292..d7f24baec 100644
+--- a/quantum/quantum.c
++++ b/quantum/quantum.c
+@@ -194,6 +194,7 @@ bool process_record_quantum(keyrecord_t *record) {
+ 
+ #ifdef TAP_DANCE_ENABLE
+     preprocess_tap_dance(keycode, record);
++    keycode = get_record_keycode(record);
+ #endif
+ 
+     if (!(

@@ -1951,8 +1951,6 @@ enum custom_keycodes {
   DYNAMIC_MACRO_RANGE,
 };
 
-#include "dynamic_macro.h"
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_DEFAULT] = LAYOUT_planck_grid(
@@ -2005,7 +2003,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* 0 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,KC_UP,_______,_______,
 /* 1 */ KC_TAB,_______,_______,_______,_______,_______,_______,_______,KC_LEFT,KC_DOWN,KC_RGHT,_______,
 /* 2 */ KC_LSHIFT,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-/* 3 */ KC_LCTRL,KC_LALT,KC_LGUI,_______,_______,_______,_______,_______,KC_RGUI,KC_RALT,KC_RCTRL,_______
+/* 3 */ KC_LCTRL,KC_LALT,KC_LGUI,KC_LOCK,_______,_______,_______,_______,KC_RGUI,KC_RALT,KC_RCTRL,_______
 )
   
 };
@@ -2052,10 +2050,6 @@ void matrix_scan_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (!process_record_dynamic_macro(keycode, record)) {
-    return false;
-  }
-
   bool complete = false;
 
   switch (keycode) {
