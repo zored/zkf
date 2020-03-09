@@ -282,43 +282,36 @@ keys:
     hold:
     - [holdSymbol]
     - [holdSymbol, lCtrl]
-    - [holdSymbol, lAlt]
-  lShiftDance:
-    tap:
-    - [lShift, 9] # (
-    #- [lShift, '['] # {
-    #- ['[']
-    hold:
-    - [lShift]
-    - [lShift, lAlt]
-    - [lShift, lAlt, lgui]
-  rShiftDance:
-    tap:
-    - [lShift, 0] # )
-    #- [lShift, ']'] # }
-    #- [']']
-    hold:
-    - [rShift]
-    - [rShift, rAlt]
-    - [rShift, rAlt, rgui]
   zDance:
     tap: [[z]]
     hold: &lCtrlDance
     - [lCtrl]
     - [lCtrl, lShift]
-    - [lCtrl, lShift, lAlt]
   xDance:
     tap: [[x]]
     hold: &lAltDance
     - [lAlt]
     - [lAlt, lShift]
-    - [lAlt, lShift, lCtrl]
+  slashDance:
+    tap: [['/']]
+    hold:
+    - [rCtrl]
+    - [rCtrl, rShift]
+  dotDance:
+    tap: [['.']]
+    hold:
+    - [rAlt]
+    - [rAlt, rShift]
+  commaDance:
+    tap: [[',']]
+    hold:
+    - [rgui]
+    - [rgui, rShift]
   cDance:
     tap: [[c]]
     hold: &lGuiDance
     - [lgui]
     - [lgui, lShift]
-    - [lgui, lShift, lCtrl]
   percentDance:
     tap: [['lShift', 5]] # %
     hold: *lCtrlDance
@@ -328,24 +321,6 @@ keys:
   leftSquareBracketDance:
     tap: [['[']]
     hold: *lGuiDance
-  slashDance:
-    tap: [['/']]
-    hold:
-    - [rCtrl]
-    - [rCtrl, rShift]
-    - [rCtrl, rShift, rAlt]
-  dotDance:
-    tap: [['.']]
-    hold:
-    - [rAlt]
-    - [rAlt, rShift]
-    - [rAlt, rShift, rCtrl]
-  commaDance:
-    tap: [[',']]
-    hold:
-    - [rgui]
-    - [rgui, rShift]
-    - [rgui, rShift, rCtrl]
   happyDance: {tap: [[😊], [😁], [😄], [😂]]}
   sadDance: {tap: [[😞], [😢], [😭]]}
   coolDance: {tap: [[😏], [😎], [💪], [🔥]]}

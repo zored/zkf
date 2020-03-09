@@ -65,18 +65,6 @@ void code_up_2(uint8_t code1, uint8_t code2) {
   unregister_code(map_windows_keycode(code2));
 }
 
-void code_down_3(uint8_t code1, uint8_t code2, uint8_t code3) {
-  register_code(map_windows_keycode(code1));
-  register_code(map_windows_keycode(code2));
-  register_code(map_windows_keycode(code3));
-}
-
-void code_up_3(uint8_t code1, uint8_t code2, uint8_t code3) {
-  unregister_code(map_windows_keycode(code1));
-  unregister_code(map_windows_keycode(code2));
-  unregister_code(map_windows_keycode(code3));
-}
-
 
 enum do_command {
   DO_FIND_BEGIN = 1,
@@ -420,97 +408,305 @@ enum dance_action_names {
   ACTION_SEQ__DO_NEXT_LANGUAGE_1 = 1,
   ACTION_SEQ__HOLD_LAYER_SYMBOL_3,
   ACTION_SEQ__HOLD_LAYER_SYMBOL__LCTRL_4,
-  ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT_5,
-  ACTION_SEQ__Z_7,
-  ACTION_SEQ__LCTRL_9,
-  ACTION_SEQ__LCTRL__LSHIFT_10,
-  ACTION_SEQ__LCTRL__LSHIFT__LALT_11,
-  ACTION_SEQ__X_13,
-  ACTION_SEQ__LALT_15,
-  ACTION_SEQ__LALT__LSHIFT_16,
-  ACTION_SEQ__LALT__LSHIFT__LCTRL_17,
-  ACTION_SEQ__C_19,
-  ACTION_SEQ__LGUI_21,
-  ACTION_SEQ__LGUI__LSHIFT_22,
-  ACTION_SEQ__LGUI__LSHIFT__LCTRL_23,
-  ACTION_SEQ__SCOLON_25,
-  ACTION_SEQ__HOLD_LAYER_NAVIGATION_27,
-  ACTION_SEQ__HOLD_LAYER_NAVIGATION2_28,
-  ACTION_SEQ__TOGGLE_LAYER_NAVIGATION_29,
-  ACTION_SEQ__QUOT_31,
-  ACTION_SEQ__HOLD_LAYER_EMOJI_33,
-  ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_34,
-  ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_35,
-  ACTION_SEQ__COMM_37,
-  ACTION_SEQ__RGUI_39,
-  ACTION_SEQ__RGUI__RSHIFT_40,
-  ACTION_SEQ__RGUI__RSHIFT__RCTRL_41,
-  ACTION_SEQ__DOT_43,
-  ACTION_SEQ__RALT_45,
-  ACTION_SEQ__RALT__RSHIFT_46,
-  ACTION_SEQ__RALT__RSHIFT__RCTRL_47,
-  ACTION_SEQ__SLSH_49,
-  ACTION_SEQ__RCTRL_51,
-  ACTION_SEQ__RCTRL__RSHIFT_52,
-  ACTION_SEQ__RCTRL__RSHIFT__RALT_53,
-  ACTION_SEQ__TAB_55,
-  ACTION_SEQ__HOLD_LAYER_SYMBOL_57,
-  ACTION_SEQ__LSHIFT__5_59,
-  ACTION_SEQ__LCTRL_61,
-  ACTION_SEQ__LCTRL__LSHIFT_62,
-  ACTION_SEQ__LCTRL__LSHIFT__LALT_63,
-  ACTION_SEQ__LSHIFT__6_65,
-  ACTION_SEQ__LALT_67,
-  ACTION_SEQ__LALT__LSHIFT_68,
-  ACTION_SEQ__LALT__LSHIFT__LCTRL_69,
-  ACTION_SEQ__LBRC_71,
-  ACTION_SEQ__LGUI_73,
-  ACTION_SEQ__LGUI__LSHIFT_74,
-  ACTION_SEQ__LGUI__LSHIFT__LCTRL_75,
-  ACTION_SEQ__1F60A_77,
-  ACTION_SEQ__1F601_78,
-  ACTION_SEQ__1F604_79,
-  ACTION_SEQ__1F602_80,
-  ACTION_SEQ__1F61E_83,
-  ACTION_SEQ__1F622_84,
-  ACTION_SEQ__1F62D_85,
-  ACTION_SEQ__1F914_88,
-  ACTION_SEQ__1F928_89,
-  ACTION_SEQ__1F631_90,
-  ACTION_SEQ__1F60F_93,
-  ACTION_SEQ__1F60E_94,
-  ACTION_SEQ__1F4AA_95,
-  ACTION_SEQ__1F525_96,
-  ACTION_SEQ__1F44D_99,
-  ACTION_SEQ__1F44C_100,
-  ACTION_SEQ__1F197_101,
-  ACTION_SEQ__1F61A_104,
-  ACTION_SEQ__1F60D_105,
-  ACTION_SEQ__1F618_106,
-  ACTION_SEQ__1F496_107,
-  ACTION_SEQ__F7_110,
-  ACTION_SEQ__F17_111,
-  ACTION_SEQ__F8_114,
-  ACTION_SEQ__F18_115,
-  ACTION_SEQ__F9_118,
-  ACTION_SEQ__F19_119,
-  ACTION_SEQ__F4_122,
-  ACTION_SEQ__F14_123,
-  ACTION_SEQ__F5_126,
-  ACTION_SEQ__F15_127,
-  ACTION_SEQ__F6_130,
-  ACTION_SEQ__F16_131,
-  ACTION_SEQ__F1_134,
-  ACTION_SEQ__F11_135,
-  ACTION_SEQ__F2_138,
-  ACTION_SEQ__F12_139,
-  ACTION_SEQ__F3_142,
-  ACTION_SEQ__F13_143,
-  ACTION_SEQ__F10_146,
-  ACTION_SEQ__F20_147
+  ACTION_SEQ__Z_6,
+  ACTION_SEQ__LCTRL_8,
+  ACTION_SEQ__LCTRL__LSHIFT_9,
+  ACTION_SEQ__X_11,
+  ACTION_SEQ__LALT_13,
+  ACTION_SEQ__LALT__LSHIFT_14,
+  ACTION_SEQ__C_16,
+  ACTION_SEQ__LGUI_18,
+  ACTION_SEQ__LGUI__LSHIFT_19,
+  ACTION_SEQ__SCOLON_21,
+  ACTION_SEQ__HOLD_LAYER_NAVIGATION_23,
+  ACTION_SEQ__HOLD_LAYER_NAVIGATION2_24,
+  ACTION_SEQ__TOGGLE_LAYER_NAVIGATION_25,
+  ACTION_SEQ__QUOT_27,
+  ACTION_SEQ__HOLD_LAYER_EMOJI_29,
+  ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_30,
+  ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_31,
+  ACTION_SEQ__COMM_33,
+  ACTION_SEQ__RGUI_35,
+  ACTION_SEQ__RGUI__RSHIFT_36,
+  ACTION_SEQ__DOT_38,
+  ACTION_SEQ__RALT_40,
+  ACTION_SEQ__RALT__RSHIFT_41,
+  ACTION_SEQ__SLSH_43,
+  ACTION_SEQ__RCTRL_45,
+  ACTION_SEQ__RCTRL__RSHIFT_46,
+  ACTION_SEQ__TAB_48,
+  ACTION_SEQ__HOLD_LAYER_SYMBOL_50,
+  ACTION_SEQ__LSHIFT__5_52,
+  ACTION_SEQ__LCTRL_54,
+  ACTION_SEQ__LCTRL__LSHIFT_55,
+  ACTION_SEQ__LSHIFT__6_57,
+  ACTION_SEQ__LALT_59,
+  ACTION_SEQ__LALT__LSHIFT_60,
+  ACTION_SEQ__LBRC_62,
+  ACTION_SEQ__LGUI_64,
+  ACTION_SEQ__LGUI__LSHIFT_65,
+  ACTION_SEQ__1F60A_67,
+  ACTION_SEQ__1F601_68,
+  ACTION_SEQ__1F604_69,
+  ACTION_SEQ__1F602_70,
+  ACTION_SEQ__1F61E_73,
+  ACTION_SEQ__1F622_74,
+  ACTION_SEQ__1F62D_75,
+  ACTION_SEQ__1F914_78,
+  ACTION_SEQ__1F928_79,
+  ACTION_SEQ__1F631_80,
+  ACTION_SEQ__1F60F_83,
+  ACTION_SEQ__1F60E_84,
+  ACTION_SEQ__1F4AA_85,
+  ACTION_SEQ__1F525_86,
+  ACTION_SEQ__1F44D_89,
+  ACTION_SEQ__1F44C_90,
+  ACTION_SEQ__1F197_91,
+  ACTION_SEQ__1F61A_94,
+  ACTION_SEQ__1F60D_95,
+  ACTION_SEQ__1F618_96,
+  ACTION_SEQ__1F496_97,
+  ACTION_SEQ__F7_100,
+  ACTION_SEQ__F17_101,
+  ACTION_SEQ__F8_104,
+  ACTION_SEQ__F18_105,
+  ACTION_SEQ__F9_108,
+  ACTION_SEQ__F19_109,
+  ACTION_SEQ__F4_112,
+  ACTION_SEQ__F14_113,
+  ACTION_SEQ__F5_116,
+  ACTION_SEQ__F15_117,
+  ACTION_SEQ__F6_120,
+  ACTION_SEQ__F16_121,
+  ACTION_SEQ__F1_124,
+  ACTION_SEQ__F11_125,
+  ACTION_SEQ__F2_128,
+  ACTION_SEQ__F12_129,
+  ACTION_SEQ__F3_132,
+  ACTION_SEQ__F13_133,
+  ACTION_SEQ__F10_136,
+  ACTION_SEQ__F20_137
 };
 
-static int dance_key_states[91] = {0};
+static int dance_key_states[81] = {0};
+
+void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
+  if (state->count == 0) {
+    return;
+  }
+  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+
+  switch (dance_key) {
+    
+    case DANCE_KC_CAPSDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_ZDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_XDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_CDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_SEMICOLONDANCE:
+      if (state->count <= 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_QUOTEDANCE:
+      if (state->count <= 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_COMMADANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_DOTDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_SLASHDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_TABDANCE:
+      if (state->count <= 1) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_PERCENTDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_CIRCUMFLEXDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_LEFTSQUAREBRACKETDANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_HAPPYDANCE:
+      if (state->count <= 4) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_SADDANCE:
+      if (state->count <= 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_STRANGEDANCE:
+      if (state->count <= 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_COOLDANCE:
+      if (state->count <= 4) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_OKDANCE:
+      if (state->count <= 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_LOVEDANCE:
+      if (state->count <= 4) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F7DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F8DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F9DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F4DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F5DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F6DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F1DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F2DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F3DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F10DANCE:
+      if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+    default:
+      return;
+  }
+
+  state->timer = 0;
+  state->pressed = false;
+}
 
 void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
   if (state->count == 0) {
@@ -521,7 +717,7 @@ void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
 
   switch(dance_key) {
     
-    
+// Enemies modifiers #0
 case DANCE_KC_ZDANCE:
 case DANCE_KC_XDANCE:
 case DANCE_KC_CDANCE:
@@ -535,6 +731,7 @@ dance_key_states[DANCE_KC_SLASHDANCE] == 0
     break;
 
 
+// Enemies modifiers #1
 case DANCE_KC_COMMADANCE:
 case DANCE_KC_DOTDANCE:
 case DANCE_KC_SLASHDANCE:
@@ -547,10 +744,8 @@ dance_key_states[DANCE_KC_CDANCE] == 0
     }
     break;
 
-
     default:
       return;
-  
   }
 
   state->timer = 0;
@@ -559,6 +754,7 @@ dance_key_states[DANCE_KC_CDANCE] == 0
 
 void on_dance_each_tap(qk_tap_dance_state_t *state, void *user_data) {
   dance_tap_on_enemy_hold(state);
+  dance_flush_on_many_taps(state);
 }
 
 void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
@@ -585,16 +781,8 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
             dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL__LCTRL_4;
             return;
       
-          case 3:
-            layer_on(LAYER_SYMBOL);
-    code_down(KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT_5;
-            return;
-      
           default:
-            layer_on(LAYER_SYMBOL);
-    code_down(KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT_5;
+            
             return;
         }
       }
@@ -621,22 +809,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL_9;
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL_8;
             return;
       
           case 2:
             code_down_2(KC_LCTRL, KC_LSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT_10;
-            return;
-      
-          case 3:
-            code_down_3(KC_LCTRL, KC_LSHIFT, KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT__LALT_11;
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT_9;
             return;
       
           default:
-            code_down_3(KC_LCTRL, KC_LSHIFT, KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT__LALT_11;
+            
             return;
         }
       }
@@ -645,13 +827,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_Z);
-            dance_key_states[dance_key] = ACTION_SEQ__Z_7;
+            dance_key_states[dance_key] = ACTION_SEQ__Z_6;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_Z);
-            dance_key_states[dance_key] = ACTION_SEQ__Z_7;
+            dance_key_states[dance_key] = ACTION_SEQ__Z_6;
               code_up(KC_Z);
             }
             return;
@@ -665,22 +847,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT_15;
+            dance_key_states[dance_key] = ACTION_SEQ__LALT_13;
             return;
       
           case 2:
             code_down_2(KC_LALT, KC_LSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT_16;
-            return;
-      
-          case 3:
-            code_down_3(KC_LALT, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT__LCTRL_17;
+            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT_14;
             return;
       
           default:
-            code_down_3(KC_LALT, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT__LCTRL_17;
+            
             return;
         }
       }
@@ -689,13 +865,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_X);
-            dance_key_states[dance_key] = ACTION_SEQ__X_13;
+            dance_key_states[dance_key] = ACTION_SEQ__X_11;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_X);
-            dance_key_states[dance_key] = ACTION_SEQ__X_13;
+            dance_key_states[dance_key] = ACTION_SEQ__X_11;
               code_up(KC_X);
             }
             return;
@@ -709,22 +885,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_LGUI);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI_21;
+            dance_key_states[dance_key] = ACTION_SEQ__LGUI_18;
             return;
       
           case 2:
             code_down_2(KC_LGUI, KC_LSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT_22;
-            return;
-      
-          case 3:
-            code_down_3(KC_LGUI, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT__LCTRL_23;
+            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT_19;
             return;
       
           default:
-            code_down_3(KC_LGUI, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT__LCTRL_23;
+            
             return;
         }
       }
@@ -733,13 +903,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_C);
-            dance_key_states[dance_key] = ACTION_SEQ__C_19;
+            dance_key_states[dance_key] = ACTION_SEQ__C_16;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_C);
-            dance_key_states[dance_key] = ACTION_SEQ__C_19;
+            dance_key_states[dance_key] = ACTION_SEQ__C_16;
               code_up(KC_C);
             }
             return;
@@ -754,23 +924,22 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             layer_on(LAYER_NAVIGATION);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION_27;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION_23;
             return;
       
           case 2:
             layer_on(LAYER_NAVIGATION2);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION2_28;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION2_24;
             return;
       
           case 3:
             layer_invert(LAYER_NAVIGATION);
-            dance_key_states[dance_key] = ACTION_SEQ__TOGGLE_LAYER_NAVIGATION_29;
+            dance_key_states[dance_key] = ACTION_SEQ__TOGGLE_LAYER_NAVIGATION_25;
             return;
       
           default:
-            layer_invert(LAYER_NAVIGATION);
-            dance_key_states[dance_key] = ACTION_SEQ__TOGGLE_LAYER_NAVIGATION_29;
+            
             return;
         }
       }
@@ -779,13 +948,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_SCOLON);
-            dance_key_states[dance_key] = ACTION_SEQ__SCOLON_25;
+            dance_key_states[dance_key] = ACTION_SEQ__SCOLON_21;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_SCOLON);
-            dance_key_states[dance_key] = ACTION_SEQ__SCOLON_25;
+            dance_key_states[dance_key] = ACTION_SEQ__SCOLON_21;
               code_up(KC_SCOLON);
             }
             return;
@@ -800,25 +969,23 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             layer_on(LAYER_EMOJI);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI_33;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI_29;
             return;
       
           case 2:
             layer_on(LAYER_EMOJI);
     code_down(KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_34;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_30;
             return;
       
           case 3:
             layer_on(LAYER_EMOJI);
     code_down_2(KC_LCTRL, KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_35;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_31;
             return;
       
           default:
-            layer_on(LAYER_EMOJI);
-    code_down_2(KC_LCTRL, KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_35;
+            
             return;
         }
       }
@@ -827,13 +994,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_QUOT);
-            dance_key_states[dance_key] = ACTION_SEQ__QUOT_31;
+            dance_key_states[dance_key] = ACTION_SEQ__QUOT_27;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_QUOT);
-            dance_key_states[dance_key] = ACTION_SEQ__QUOT_31;
+            dance_key_states[dance_key] = ACTION_SEQ__QUOT_27;
               code_up(KC_QUOT);
             }
             return;
@@ -847,22 +1014,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_RGUI);
-            dance_key_states[dance_key] = ACTION_SEQ__RGUI_39;
+            dance_key_states[dance_key] = ACTION_SEQ__RGUI_35;
             return;
       
           case 2:
             code_down_2(KC_RGUI, KC_RSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__RGUI__RSHIFT_40;
-            return;
-      
-          case 3:
-            code_down_3(KC_RGUI, KC_RSHIFT, KC_RCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__RGUI__RSHIFT__RCTRL_41;
+            dance_key_states[dance_key] = ACTION_SEQ__RGUI__RSHIFT_36;
             return;
       
           default:
-            code_down_3(KC_RGUI, KC_RSHIFT, KC_RCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__RGUI__RSHIFT__RCTRL_41;
+            
             return;
         }
       }
@@ -871,13 +1032,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_COMM);
-            dance_key_states[dance_key] = ACTION_SEQ__COMM_37;
+            dance_key_states[dance_key] = ACTION_SEQ__COMM_33;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_COMM);
-            dance_key_states[dance_key] = ACTION_SEQ__COMM_37;
+            dance_key_states[dance_key] = ACTION_SEQ__COMM_33;
               code_up(KC_COMM);
             }
             return;
@@ -891,22 +1052,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_RALT);
-            dance_key_states[dance_key] = ACTION_SEQ__RALT_45;
+            dance_key_states[dance_key] = ACTION_SEQ__RALT_40;
             return;
       
           case 2:
             code_down_2(KC_RALT, KC_RSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__RALT__RSHIFT_46;
-            return;
-      
-          case 3:
-            code_down_3(KC_RALT, KC_RSHIFT, KC_RCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__RALT__RSHIFT__RCTRL_47;
+            dance_key_states[dance_key] = ACTION_SEQ__RALT__RSHIFT_41;
             return;
       
           default:
-            code_down_3(KC_RALT, KC_RSHIFT, KC_RCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__RALT__RSHIFT__RCTRL_47;
+            
             return;
         }
       }
@@ -915,13 +1070,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_DOT);
-            dance_key_states[dance_key] = ACTION_SEQ__DOT_43;
+            dance_key_states[dance_key] = ACTION_SEQ__DOT_38;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_DOT);
-            dance_key_states[dance_key] = ACTION_SEQ__DOT_43;
+            dance_key_states[dance_key] = ACTION_SEQ__DOT_38;
               code_up(KC_DOT);
             }
             return;
@@ -935,22 +1090,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_RCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__RCTRL_51;
+            dance_key_states[dance_key] = ACTION_SEQ__RCTRL_45;
             return;
       
           case 2:
             code_down_2(KC_RCTRL, KC_RSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__RCTRL__RSHIFT_52;
-            return;
-      
-          case 3:
-            code_down_3(KC_RCTRL, KC_RSHIFT, KC_RALT);
-            dance_key_states[dance_key] = ACTION_SEQ__RCTRL__RSHIFT__RALT_53;
+            dance_key_states[dance_key] = ACTION_SEQ__RCTRL__RSHIFT_46;
             return;
       
           default:
-            code_down_3(KC_RCTRL, KC_RSHIFT, KC_RALT);
-            dance_key_states[dance_key] = ACTION_SEQ__RCTRL__RSHIFT__RALT_53;
+            
             return;
         }
       }
@@ -959,13 +1108,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_SLSH);
-            dance_key_states[dance_key] = ACTION_SEQ__SLSH_49;
+            dance_key_states[dance_key] = ACTION_SEQ__SLSH_43;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_SLSH);
-            dance_key_states[dance_key] = ACTION_SEQ__SLSH_49;
+            dance_key_states[dance_key] = ACTION_SEQ__SLSH_43;
               code_up(KC_SLSH);
             }
             return;
@@ -980,13 +1129,11 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             layer_on(LAYER_SYMBOL);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL_57;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL_50;
             return;
       
           default:
-            layer_on(LAYER_SYMBOL);
-    
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_SYMBOL_57;
+            
             return;
         }
       }
@@ -995,13 +1142,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_TAB);
-            dance_key_states[dance_key] = ACTION_SEQ__TAB_55;
+            dance_key_states[dance_key] = ACTION_SEQ__TAB_48;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_TAB);
-            dance_key_states[dance_key] = ACTION_SEQ__TAB_55;
+            dance_key_states[dance_key] = ACTION_SEQ__TAB_48;
               code_up(KC_TAB);
             }
             return;
@@ -1015,22 +1162,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL_61;
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL_54;
             return;
       
           case 2:
             code_down_2(KC_LCTRL, KC_LSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT_62;
-            return;
-      
-          case 3:
-            code_down_3(KC_LCTRL, KC_LSHIFT, KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT__LALT_63;
+            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT_55;
             return;
       
           default:
-            code_down_3(KC_LCTRL, KC_LSHIFT, KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL__LSHIFT__LALT_63;
+            
             return;
         }
       }
@@ -1039,13 +1180,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down_2(KC_LSHIFT, KC_5);
-            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__5_59;
+            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__5_52;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down_2(KC_LSHIFT, KC_5);
-            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__5_59;
+            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__5_52;
               code_up_2(KC_LSHIFT, KC_5);
             }
             return;
@@ -1059,22 +1200,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT_67;
+            dance_key_states[dance_key] = ACTION_SEQ__LALT_59;
             return;
       
           case 2:
             code_down_2(KC_LALT, KC_LSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT_68;
-            return;
-      
-          case 3:
-            code_down_3(KC_LALT, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT__LCTRL_69;
+            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT_60;
             return;
       
           default:
-            code_down_3(KC_LALT, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LALT__LSHIFT__LCTRL_69;
+            
             return;
         }
       }
@@ -1083,13 +1218,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down_2(KC_LSHIFT, KC_6);
-            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__6_65;
+            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__6_57;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down_2(KC_LSHIFT, KC_6);
-            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__6_65;
+            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT__6_57;
               code_up_2(KC_LSHIFT, KC_6);
             }
             return;
@@ -1103,22 +1238,16 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_LGUI);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI_73;
+            dance_key_states[dance_key] = ACTION_SEQ__LGUI_64;
             return;
       
           case 2:
             code_down_2(KC_LGUI, KC_LSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT_74;
-            return;
-      
-          case 3:
-            code_down_3(KC_LGUI, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT__LCTRL_75;
+            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT_65;
             return;
       
           default:
-            code_down_3(KC_LGUI, KC_LSHIFT, KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LGUI__LSHIFT__LCTRL_75;
+            
             return;
         }
       }
@@ -1127,13 +1256,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_LBRC);
-            dance_key_states[dance_key] = ACTION_SEQ__LBRC_71;
+            dance_key_states[dance_key] = ACTION_SEQ__LBRC_62;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_LBRC);
-            dance_key_states[dance_key] = ACTION_SEQ__LBRC_71;
+            dance_key_states[dance_key] = ACTION_SEQ__LBRC_62;
               code_up(KC_LBRC);
             }
             return;
@@ -1152,32 +1281,32 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             tap_unicode(EMOJI_1F60A);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F60A_77;
+            dance_key_states[dance_key] = ACTION_SEQ__1F60A_67;
             return;
       
           case 2:
             tap_unicode(EMOJI_1F601);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F601_78;
+            dance_key_states[dance_key] = ACTION_SEQ__1F601_68;
             return;
       
           case 3:
             tap_unicode(EMOJI_1F604);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F604_79;
+            dance_key_states[dance_key] = ACTION_SEQ__1F604_69;
             return;
       
           case 4:
             tap_unicode(EMOJI_1F602);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F602_80;
+            dance_key_states[dance_key] = ACTION_SEQ__1F602_70;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               tap_unicode(EMOJI_1F60A);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F60A_77;
+            dance_key_states[dance_key] = ACTION_SEQ__1F60A_67;
               
             }
             return;
@@ -1196,26 +1325,26 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             tap_unicode(EMOJI_1F61E);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F61E_83;
+            dance_key_states[dance_key] = ACTION_SEQ__1F61E_73;
             return;
       
           case 2:
             tap_unicode(EMOJI_1F622);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F622_84;
+            dance_key_states[dance_key] = ACTION_SEQ__1F622_74;
             return;
       
           case 3:
             tap_unicode(EMOJI_1F62D);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F62D_85;
+            dance_key_states[dance_key] = ACTION_SEQ__1F62D_75;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               tap_unicode(EMOJI_1F61E);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F61E_83;
+            dance_key_states[dance_key] = ACTION_SEQ__1F61E_73;
               
             }
             return;
@@ -1234,26 +1363,26 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             tap_unicode(EMOJI_1F914);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F914_88;
+            dance_key_states[dance_key] = ACTION_SEQ__1F914_78;
             return;
       
           case 2:
             tap_unicode(EMOJI_1F928);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F928_89;
+            dance_key_states[dance_key] = ACTION_SEQ__1F928_79;
             return;
       
           case 3:
             tap_unicode(EMOJI_1F631);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F631_90;
+            dance_key_states[dance_key] = ACTION_SEQ__1F631_80;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               tap_unicode(EMOJI_1F914);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F914_88;
+            dance_key_states[dance_key] = ACTION_SEQ__1F914_78;
               
             }
             return;
@@ -1272,32 +1401,32 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             tap_unicode(EMOJI_1F60F);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F60F_93;
+            dance_key_states[dance_key] = ACTION_SEQ__1F60F_83;
             return;
       
           case 2:
             tap_unicode(EMOJI_1F60E);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F60E_94;
+            dance_key_states[dance_key] = ACTION_SEQ__1F60E_84;
             return;
       
           case 3:
             tap_unicode(EMOJI_1F4AA);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F4AA_95;
+            dance_key_states[dance_key] = ACTION_SEQ__1F4AA_85;
             return;
       
           case 4:
             tap_unicode(EMOJI_1F525);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F525_96;
+            dance_key_states[dance_key] = ACTION_SEQ__1F525_86;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               tap_unicode(EMOJI_1F60F);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F60F_93;
+            dance_key_states[dance_key] = ACTION_SEQ__1F60F_83;
               
             }
             return;
@@ -1316,26 +1445,26 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             tap_unicode(EMOJI_1F44D);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F44D_99;
+            dance_key_states[dance_key] = ACTION_SEQ__1F44D_89;
             return;
       
           case 2:
             tap_unicode(EMOJI_1F44C);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F44C_100;
+            dance_key_states[dance_key] = ACTION_SEQ__1F44C_90;
             return;
       
           case 3:
             tap_unicode(EMOJI_1F197);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F197_101;
+            dance_key_states[dance_key] = ACTION_SEQ__1F197_91;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               tap_unicode(EMOJI_1F44D);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F44D_99;
+            dance_key_states[dance_key] = ACTION_SEQ__1F44D_89;
               
             }
             return;
@@ -1354,32 +1483,32 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             tap_unicode(EMOJI_1F61A);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F61A_104;
+            dance_key_states[dance_key] = ACTION_SEQ__1F61A_94;
             return;
       
           case 2:
             tap_unicode(EMOJI_1F60D);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F60D_105;
+            dance_key_states[dance_key] = ACTION_SEQ__1F60D_95;
             return;
       
           case 3:
             tap_unicode(EMOJI_1F618);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F618_106;
+            dance_key_states[dance_key] = ACTION_SEQ__1F618_96;
             return;
       
           case 4:
             tap_unicode(EMOJI_1F496);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F496_107;
+            dance_key_states[dance_key] = ACTION_SEQ__1F496_97;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               tap_unicode(EMOJI_1F61A);
     
-            dance_key_states[dance_key] = ACTION_SEQ__1F61A_104;
+            dance_key_states[dance_key] = ACTION_SEQ__1F61A_94;
               
             }
             return;
@@ -1397,18 +1526,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F7);
-            dance_key_states[dance_key] = ACTION_SEQ__F7_110;
+            dance_key_states[dance_key] = ACTION_SEQ__F7_100;
             return;
       
           case 2:
             code_down(KC_F17);
-            dance_key_states[dance_key] = ACTION_SEQ__F17_111;
+            dance_key_states[dance_key] = ACTION_SEQ__F17_101;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F7);
-            dance_key_states[dance_key] = ACTION_SEQ__F7_110;
+            dance_key_states[dance_key] = ACTION_SEQ__F7_100;
               code_up(KC_F7);
             }
             return;
@@ -1426,18 +1555,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F8);
-            dance_key_states[dance_key] = ACTION_SEQ__F8_114;
+            dance_key_states[dance_key] = ACTION_SEQ__F8_104;
             return;
       
           case 2:
             code_down(KC_F18);
-            dance_key_states[dance_key] = ACTION_SEQ__F18_115;
+            dance_key_states[dance_key] = ACTION_SEQ__F18_105;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F8);
-            dance_key_states[dance_key] = ACTION_SEQ__F8_114;
+            dance_key_states[dance_key] = ACTION_SEQ__F8_104;
               code_up(KC_F8);
             }
             return;
@@ -1455,18 +1584,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F9);
-            dance_key_states[dance_key] = ACTION_SEQ__F9_118;
+            dance_key_states[dance_key] = ACTION_SEQ__F9_108;
             return;
       
           case 2:
             code_down(KC_F19);
-            dance_key_states[dance_key] = ACTION_SEQ__F19_119;
+            dance_key_states[dance_key] = ACTION_SEQ__F19_109;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F9);
-            dance_key_states[dance_key] = ACTION_SEQ__F9_118;
+            dance_key_states[dance_key] = ACTION_SEQ__F9_108;
               code_up(KC_F9);
             }
             return;
@@ -1484,18 +1613,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F4);
-            dance_key_states[dance_key] = ACTION_SEQ__F4_122;
+            dance_key_states[dance_key] = ACTION_SEQ__F4_112;
             return;
       
           case 2:
             code_down(KC_F14);
-            dance_key_states[dance_key] = ACTION_SEQ__F14_123;
+            dance_key_states[dance_key] = ACTION_SEQ__F14_113;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F4);
-            dance_key_states[dance_key] = ACTION_SEQ__F4_122;
+            dance_key_states[dance_key] = ACTION_SEQ__F4_112;
               code_up(KC_F4);
             }
             return;
@@ -1513,18 +1642,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F5);
-            dance_key_states[dance_key] = ACTION_SEQ__F5_126;
+            dance_key_states[dance_key] = ACTION_SEQ__F5_116;
             return;
       
           case 2:
             code_down(KC_F15);
-            dance_key_states[dance_key] = ACTION_SEQ__F15_127;
+            dance_key_states[dance_key] = ACTION_SEQ__F15_117;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F5);
-            dance_key_states[dance_key] = ACTION_SEQ__F5_126;
+            dance_key_states[dance_key] = ACTION_SEQ__F5_116;
               code_up(KC_F5);
             }
             return;
@@ -1542,18 +1671,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F6);
-            dance_key_states[dance_key] = ACTION_SEQ__F6_130;
+            dance_key_states[dance_key] = ACTION_SEQ__F6_120;
             return;
       
           case 2:
             code_down(KC_F16);
-            dance_key_states[dance_key] = ACTION_SEQ__F16_131;
+            dance_key_states[dance_key] = ACTION_SEQ__F16_121;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F6);
-            dance_key_states[dance_key] = ACTION_SEQ__F6_130;
+            dance_key_states[dance_key] = ACTION_SEQ__F6_120;
               code_up(KC_F6);
             }
             return;
@@ -1571,18 +1700,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F1);
-            dance_key_states[dance_key] = ACTION_SEQ__F1_134;
+            dance_key_states[dance_key] = ACTION_SEQ__F1_124;
             return;
       
           case 2:
             code_down(KC_F11);
-            dance_key_states[dance_key] = ACTION_SEQ__F11_135;
+            dance_key_states[dance_key] = ACTION_SEQ__F11_125;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F1);
-            dance_key_states[dance_key] = ACTION_SEQ__F1_134;
+            dance_key_states[dance_key] = ACTION_SEQ__F1_124;
               code_up(KC_F1);
             }
             return;
@@ -1600,18 +1729,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F2);
-            dance_key_states[dance_key] = ACTION_SEQ__F2_138;
+            dance_key_states[dance_key] = ACTION_SEQ__F2_128;
             return;
       
           case 2:
             code_down(KC_F12);
-            dance_key_states[dance_key] = ACTION_SEQ__F12_139;
+            dance_key_states[dance_key] = ACTION_SEQ__F12_129;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F2);
-            dance_key_states[dance_key] = ACTION_SEQ__F2_138;
+            dance_key_states[dance_key] = ACTION_SEQ__F2_128;
               code_up(KC_F2);
             }
             return;
@@ -1629,18 +1758,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F3);
-            dance_key_states[dance_key] = ACTION_SEQ__F3_142;
+            dance_key_states[dance_key] = ACTION_SEQ__F3_132;
             return;
       
           case 2:
             code_down(KC_F13);
-            dance_key_states[dance_key] = ACTION_SEQ__F13_143;
+            dance_key_states[dance_key] = ACTION_SEQ__F13_133;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F3);
-            dance_key_states[dance_key] = ACTION_SEQ__F3_142;
+            dance_key_states[dance_key] = ACTION_SEQ__F3_132;
               code_up(KC_F3);
             }
             return;
@@ -1658,18 +1787,18 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_F10);
-            dance_key_states[dance_key] = ACTION_SEQ__F10_146;
+            dance_key_states[dance_key] = ACTION_SEQ__F10_136;
             return;
       
           case 2:
             code_down(KC_F20);
-            dance_key_states[dance_key] = ACTION_SEQ__F20_147;
+            dance_key_states[dance_key] = ACTION_SEQ__F20_137;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_F10);
-            dance_key_states[dance_key] = ACTION_SEQ__F10_146;
+            dance_key_states[dance_key] = ACTION_SEQ__F10_136;
               code_up(KC_F10);
             }
             return;
@@ -1690,269 +1819,229 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
           case ACTION_SEQ__HOLD_LAYER_SYMBOL__LCTRL_4:
             layer_off(LAYER_SYMBOL);code_up(KC_LCTRL);
             break;
-    
-          case ACTION_SEQ__HOLD_LAYER_SYMBOL__LALT_5:
-            layer_off(LAYER_SYMBOL);code_up(KC_LALT);
-            break;
         case ACTION_SEQ__DO_NEXT_LANGUAGE_1:
             run_advanced(DO_NEXT_LANGUAGE);
             break;
     
-        case ACTION_SEQ__LCTRL_9:
+        case ACTION_SEQ__LCTRL_8:
             code_up(KC_LCTRL);
             break;
     
-          case ACTION_SEQ__LCTRL__LSHIFT_10:
+          case ACTION_SEQ__LCTRL__LSHIFT_9:
             code_up_2(KC_LCTRL, KC_LSHIFT);
             break;
-    
-          case ACTION_SEQ__LCTRL__LSHIFT__LALT_11:
-            code_up_3(KC_LCTRL, KC_LSHIFT, KC_LALT);
-            break;
-        case ACTION_SEQ__Z_7:
+        case ACTION_SEQ__Z_6:
             code_up(KC_Z);
             break;
     
-        case ACTION_SEQ__LALT_15:
+        case ACTION_SEQ__LALT_13:
             code_up(KC_LALT);
             break;
     
-          case ACTION_SEQ__LALT__LSHIFT_16:
+          case ACTION_SEQ__LALT__LSHIFT_14:
             code_up_2(KC_LALT, KC_LSHIFT);
             break;
-    
-          case ACTION_SEQ__LALT__LSHIFT__LCTRL_17:
-            code_up_3(KC_LALT, KC_LSHIFT, KC_LCTRL);
-            break;
-        case ACTION_SEQ__X_13:
+        case ACTION_SEQ__X_11:
             code_up(KC_X);
             break;
     
-        case ACTION_SEQ__LGUI_21:
+        case ACTION_SEQ__LGUI_18:
             code_up(KC_LGUI);
             break;
     
-          case ACTION_SEQ__LGUI__LSHIFT_22:
+          case ACTION_SEQ__LGUI__LSHIFT_19:
             code_up_2(KC_LGUI, KC_LSHIFT);
             break;
-    
-          case ACTION_SEQ__LGUI__LSHIFT__LCTRL_23:
-            code_up_3(KC_LGUI, KC_LSHIFT, KC_LCTRL);
-            break;
-        case ACTION_SEQ__C_19:
+        case ACTION_SEQ__C_16:
             code_up(KC_C);
             break;
     
-        case ACTION_SEQ__HOLD_LAYER_NAVIGATION_27:
+        case ACTION_SEQ__HOLD_LAYER_NAVIGATION_23:
             layer_off(LAYER_NAVIGATION);
             break;
     
-          case ACTION_SEQ__HOLD_LAYER_NAVIGATION2_28:
+          case ACTION_SEQ__HOLD_LAYER_NAVIGATION2_24:
             layer_off(LAYER_NAVIGATION2);
             break;
-        case ACTION_SEQ__SCOLON_25:
+        case ACTION_SEQ__SCOLON_21:
             code_up(KC_SCOLON);
             break;
     
-        case ACTION_SEQ__HOLD_LAYER_EMOJI_33:
+        case ACTION_SEQ__HOLD_LAYER_EMOJI_29:
             layer_off(LAYER_EMOJI);
             break;
     
-          case ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_34:
+          case ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_30:
             layer_off(LAYER_EMOJI);code_up(KC_LCTRL);
             break;
     
-          case ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_35:
+          case ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_31:
             layer_off(LAYER_EMOJI);code_up_2(KC_LCTRL, KC_LALT);
             break;
-        case ACTION_SEQ__QUOT_31:
+        case ACTION_SEQ__QUOT_27:
             code_up(KC_QUOT);
             break;
     
-        case ACTION_SEQ__RGUI_39:
+        case ACTION_SEQ__RGUI_35:
             code_up(KC_RGUI);
             break;
     
-          case ACTION_SEQ__RGUI__RSHIFT_40:
+          case ACTION_SEQ__RGUI__RSHIFT_36:
             code_up_2(KC_RGUI, KC_RSHIFT);
             break;
-    
-          case ACTION_SEQ__RGUI__RSHIFT__RCTRL_41:
-            code_up_3(KC_RGUI, KC_RSHIFT, KC_RCTRL);
-            break;
-        case ACTION_SEQ__COMM_37:
+        case ACTION_SEQ__COMM_33:
             code_up(KC_COMM);
             break;
     
-        case ACTION_SEQ__RALT_45:
+        case ACTION_SEQ__RALT_40:
             code_up(KC_RALT);
             break;
     
-          case ACTION_SEQ__RALT__RSHIFT_46:
+          case ACTION_SEQ__RALT__RSHIFT_41:
             code_up_2(KC_RALT, KC_RSHIFT);
             break;
-    
-          case ACTION_SEQ__RALT__RSHIFT__RCTRL_47:
-            code_up_3(KC_RALT, KC_RSHIFT, KC_RCTRL);
-            break;
-        case ACTION_SEQ__DOT_43:
+        case ACTION_SEQ__DOT_38:
             code_up(KC_DOT);
             break;
     
-        case ACTION_SEQ__RCTRL_51:
+        case ACTION_SEQ__RCTRL_45:
             code_up(KC_RCTRL);
             break;
     
-          case ACTION_SEQ__RCTRL__RSHIFT_52:
+          case ACTION_SEQ__RCTRL__RSHIFT_46:
             code_up_2(KC_RCTRL, KC_RSHIFT);
             break;
-    
-          case ACTION_SEQ__RCTRL__RSHIFT__RALT_53:
-            code_up_3(KC_RCTRL, KC_RSHIFT, KC_RALT);
-            break;
-        case ACTION_SEQ__SLSH_49:
+        case ACTION_SEQ__SLSH_43:
             code_up(KC_SLSH);
             break;
     
-        case ACTION_SEQ__HOLD_LAYER_SYMBOL_57:
+        case ACTION_SEQ__HOLD_LAYER_SYMBOL_50:
             layer_off(LAYER_SYMBOL);
             break;
-        case ACTION_SEQ__TAB_55:
+        case ACTION_SEQ__TAB_48:
             code_up(KC_TAB);
             break;
     
-        case ACTION_SEQ__LCTRL_61:
+        case ACTION_SEQ__LCTRL_54:
             code_up(KC_LCTRL);
             break;
     
-          case ACTION_SEQ__LCTRL__LSHIFT_62:
+          case ACTION_SEQ__LCTRL__LSHIFT_55:
             code_up_2(KC_LCTRL, KC_LSHIFT);
             break;
-    
-          case ACTION_SEQ__LCTRL__LSHIFT__LALT_63:
-            code_up_3(KC_LCTRL, KC_LSHIFT, KC_LALT);
-            break;
-        case ACTION_SEQ__LSHIFT__5_59:
+        case ACTION_SEQ__LSHIFT__5_52:
             code_up_2(KC_LSHIFT, KC_5);
             break;
     
-        case ACTION_SEQ__LALT_67:
+        case ACTION_SEQ__LALT_59:
             code_up(KC_LALT);
             break;
     
-          case ACTION_SEQ__LALT__LSHIFT_68:
+          case ACTION_SEQ__LALT__LSHIFT_60:
             code_up_2(KC_LALT, KC_LSHIFT);
             break;
-    
-          case ACTION_SEQ__LALT__LSHIFT__LCTRL_69:
-            code_up_3(KC_LALT, KC_LSHIFT, KC_LCTRL);
-            break;
-        case ACTION_SEQ__LSHIFT__6_65:
+        case ACTION_SEQ__LSHIFT__6_57:
             code_up_2(KC_LSHIFT, KC_6);
             break;
     
-        case ACTION_SEQ__LGUI_73:
+        case ACTION_SEQ__LGUI_64:
             code_up(KC_LGUI);
             break;
     
-          case ACTION_SEQ__LGUI__LSHIFT_74:
+          case ACTION_SEQ__LGUI__LSHIFT_65:
             code_up_2(KC_LGUI, KC_LSHIFT);
             break;
-    
-          case ACTION_SEQ__LGUI__LSHIFT__LCTRL_75:
-            code_up_3(KC_LGUI, KC_LSHIFT, KC_LCTRL);
-            break;
-        case ACTION_SEQ__LBRC_71:
+        case ACTION_SEQ__LBRC_62:
             code_up(KC_LBRC);
             break;
     
         
-        case ACTION_SEQ__F7_110:
+        case ACTION_SEQ__F7_100:
             code_up(KC_F7);
             break;
     
-          case ACTION_SEQ__F17_111:
+          case ACTION_SEQ__F17_101:
             code_up(KC_F17);
             break;
     
         
-        case ACTION_SEQ__F8_114:
+        case ACTION_SEQ__F8_104:
             code_up(KC_F8);
             break;
     
-          case ACTION_SEQ__F18_115:
+          case ACTION_SEQ__F18_105:
             code_up(KC_F18);
             break;
     
         
-        case ACTION_SEQ__F9_118:
+        case ACTION_SEQ__F9_108:
             code_up(KC_F9);
             break;
     
-          case ACTION_SEQ__F19_119:
+          case ACTION_SEQ__F19_109:
             code_up(KC_F19);
             break;
     
         
-        case ACTION_SEQ__F4_122:
+        case ACTION_SEQ__F4_112:
             code_up(KC_F4);
             break;
     
-          case ACTION_SEQ__F14_123:
+          case ACTION_SEQ__F14_113:
             code_up(KC_F14);
             break;
     
         
-        case ACTION_SEQ__F5_126:
+        case ACTION_SEQ__F5_116:
             code_up(KC_F5);
             break;
     
-          case ACTION_SEQ__F15_127:
+          case ACTION_SEQ__F15_117:
             code_up(KC_F15);
             break;
     
         
-        case ACTION_SEQ__F6_130:
+        case ACTION_SEQ__F6_120:
             code_up(KC_F6);
             break;
     
-          case ACTION_SEQ__F16_131:
+          case ACTION_SEQ__F16_121:
             code_up(KC_F16);
             break;
     
         
-        case ACTION_SEQ__F1_134:
+        case ACTION_SEQ__F1_124:
             code_up(KC_F1);
             break;
     
-          case ACTION_SEQ__F11_135:
+          case ACTION_SEQ__F11_125:
             code_up(KC_F11);
             break;
     
         
-        case ACTION_SEQ__F2_138:
+        case ACTION_SEQ__F2_128:
             code_up(KC_F2);
             break;
     
-          case ACTION_SEQ__F12_139:
+          case ACTION_SEQ__F12_129:
             code_up(KC_F12);
             break;
     
         
-        case ACTION_SEQ__F3_142:
+        case ACTION_SEQ__F3_132:
             code_up(KC_F3);
             break;
     
-          case ACTION_SEQ__F13_143:
+          case ACTION_SEQ__F13_133:
             code_up(KC_F13);
             break;
     
         
-        case ACTION_SEQ__F10_146:
+        case ACTION_SEQ__F10_136:
             code_up(KC_F10);
             break;
     
-          case ACTION_SEQ__F20_147:
+          case ACTION_SEQ__F20_137:
             code_up(KC_F20);
             break;
     

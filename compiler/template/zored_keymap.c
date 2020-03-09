@@ -256,8 +256,23 @@ enum dance_action_names {
 
 static int dance_key_states[{{{dance.count}}}] = {0};
 
+void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
+  if (state->count == 0) {
+    return;
+  }
+  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+
+  switch (dance_key) {
+    {{{dance.counts}}}
+    default:
+      return;
+  }
+
+  state->timer = 0;
+  state->pressed = false;
+}
+
 void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
-  {{#danceEnemies}}
   if (state->count == 0) {
     return;
   }
@@ -265,16 +280,18 @@ void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
   uint16_t dance_key = state->keycode - QK_TAP_DANCE;
 
   switch(dance_key) {
-    {{{danceEnemies}}}
+    {{{dance.enemies}}}
+    default:
+      return;
   }
 
   state->timer = 0;
   state->pressed = false;
-  {{/danceEnemies}}
 }
 
 void on_dance_each_tap(qk_tap_dance_state_t *state, void *user_data) {
   dance_tap_on_enemy_hold(state);
+  dance_flush_on_many_taps(state);
 }
 
 void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {

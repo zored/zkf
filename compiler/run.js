@@ -223,6 +223,9 @@ class DanceKey extends Key {
   get actions () {
     return this.tapAction.allActionsRecursive.concat(this.holdAction.allActionsRecursive)
   }
+  get maxActionCount() {
+    return Math.max(this.tapAction.actionsCount, this.holdAction.actionsCount)
+  }
   get onDanceCode () {
     return `
     case ${this.codeName}:
@@ -342,9 +345,11 @@ class TapDanceAction extends Action {
     this.actions = actions
     this.manyDancesType = manyDancesType
   }
+  get actionsCount () {
+    return this.actions.length
+  }
   get onDanceCode () {
-    const
-      defaultCode = this.manyDancesCode
+    const defaultCode = this.manyDancesCode.trim()
     const isEmptySwitch = this.actions.length === 0 && defaultCode === ''
 
     if (isEmptySwitch) {
@@ -368,7 +373,7 @@ class TapDanceAction extends Action {
         switch (state->count) {
           ${actionsCode}
           default:
-            ${this.manyDancesCode.trim()}
+            ${defaultCode}
             return;
         }
     `
@@ -400,6 +405,9 @@ class TapDanceAction extends Action {
         return `
             ${action.onDanceCode}
         `.trimRight('\n')
+
+      case 'none':
+        return '';
 
       case 'repeatFirst':
         action = _.first(this.actions)
@@ -441,7 +449,7 @@ function ltrim (value) {
   return value.replace(/^\s+/, '')
 }
 
-function getDanceTemplateData (layers) {
+function getDanceTemplateData (layers, danceEnemies, keyFactory) {
   const keys = layers.allKeys.filter(key => key instanceof DanceKey)
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
@@ -452,14 +460,23 @@ function getDanceTemplateData (layers) {
     .filter(key => key !== null)
   const actionNames = glueEnum(actionKeys)
   const actions = keys.map(key => `[${key.codeName}] = DANCE_MODIFIER()`).join(ARRAY_GLUE + INDENT)
-
+  const enemies = getDanceEnemiesCases(danceEnemies, keyFactory)
+  const counts = keys.map(k => `
+    case ${k.codeName}:
+      if (state->count <= ${k.maxActionCount}) {
+        return;
+      }
+      break;
+ `).join('\n')
   return {
     names,
     actionNames,
     count: actionKeys.length,
     onDance,
     onDanceReset,
-    actions
+    actions,
+    enemies,
+    counts,
   }
 }
 
@@ -491,21 +508,20 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
 
   const { combos, comboCount } = getCombos(keyboard.config.combos, keyFactory)
   const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
-    dance: getDanceTemplateData(layers),
+    dance: getDanceTemplateData(layers, danceEnemies, keyFactory),
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers, keyboard),
     functions: getFunctions(),
     combos,
-    danceEnemies: getDanceEnemies(danceEnemies, keyFactory),
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 
   return { comboCount }
 }
 
-function getDanceEnemies(danceEnemies, keyFactory) {
+function getDanceEnemiesCases(danceEnemies, keyFactory) {
   const getCodeName = k => keyFactory.create(k).codeName;
-  const cases = _.flatMap(danceEnemies, ([a,b], name) => [[a,b],[b,a]].flatMap(([left,right], i) => `
+  return _.flatMap(danceEnemies, ([a,b], name) => [[a,b],[b,a]].flatMap(([left,right], i) => `
 // Enemies ${name} #${i}
 ${left.map(getCodeName).map(c => `case ${c}:`).join('\n')}
     if (
@@ -514,14 +530,7 @@ ${right.map(getCodeName).map(c => `dance_key_states[${c}] == 0`).join(' && \n')}
       return;
     }
     break;
-`)).join('\n');
-
-  return `
-    ${cases}
-
-    default:
-      return;
-  `
+`)).join('\n')
 }
 
 function getCombos (combosConfig, keyFactory) {
@@ -888,7 +897,7 @@ class KeyFactory {
       return new DanceKey(
         key.name,
         createActions(tap, 'repeatFirst'),
-        createActions(hold, 'startLast')
+        createActions(hold, 'none')
       )
     }
 
