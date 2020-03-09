@@ -100,14 +100,26 @@ void run_advanced (uint8_t command) {
       tap_code(KC_ENTER);
       break;
     case DO_NEXT_LANGUAGE:
+      ; // empty statement.
+      uint8_t hold = 0;
+      uint8_t tap = 0;
+      uint32_t timeout = 40;
+
       switch (zored_os) {
         case OS_WINDOWS:
-          tap_code16(A(KC_LSHIFT));
+          hold = KC_LALT;
+          tap = KC_LSHIFT;
           break;
         case OS_MACOS:
-          tap_code16(G(KC_SPC));
+          hold = KC_LGUI;
+          tap = KC_SPC;
           break;
       }
+      register_code(hold);
+      wait_ms(timeout);
+      tap_code(tap);
+      wait_ms(timeout);
+      unregister_code(hold);
       break;
     case DO_EMOJI_PANEL:
       switch (zored_os) {
@@ -244,12 +256,32 @@ enum dance_action_names {
 
 static int dance_key_states[{{{dance.count}}}] = {0};
 
-void on_dance(qk_tap_dance_state_t *state, void *user_data) {
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
-
+void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
+  {{#danceEnemies}}
   if (state->count == 0) {
     return;
   }
+
+  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+
+  switch(dance_key) {
+    {{{danceEnemies}}}
+  }
+
+  state->timer = 0;
+  state->pressed = false;
+  {{/danceEnemies}}
+}
+
+void on_dance_each_tap(qk_tap_dance_state_t *state, void *user_data) {
+  dance_tap_on_enemy_hold(state);
+}
+
+void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
+  if (state->count == 0) {
+    return;
+  }
+  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
 
   switch (dance_key) {
     {{{dance.onDance}}}
@@ -271,7 +303,7 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
     .user_data = (void *)&((qk_tap_dance_pair_t) { kc1, kc2 }),  \
     .custom_tapping_term = tap_specific_tapping_term, \
   }
-#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, on_dance, on_dance_reset, TAPPING_TERM_TAP_DANCE)
+#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_dance_each_tap, on_dance_finished, on_dance_reset, TAPPING_TERM_TAP_DANCE)
 #define DANCE_TWO(k1,k11) ACTION_TAP_DANCE_DOUBLE_TIME(k1, k11, TAPPING_TERM_TAP_DANCE)
 
 qk_tap_dance_action_t tap_dance_actions[] = {

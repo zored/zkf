@@ -172,12 +172,12 @@ keyboards:
         FORCE_NKRO: ''
         LEADER_TIMEOUT: 300
         MOUSEKEY_DELAY: 0
-        MOUSEKEY_INTERVAL: 20
-        MOUSEKEY_MAX_SPEED: 11
-        MOUSEKEY_TIME_TO_MAX: 60
+        MOUSEKEY_INTERVAL: 16
+        MOUSEKEY_MAX_SPEED: 13
+        MOUSEKEY_TIME_TO_MAX: 100
         MOUSEKEY_WHEEL_DELAY: 0
         MOUSEKEY_WHEEL_MAX_SPEED: 4
-        MOUSEKEY_WHEEL_TIME_TO_MAX: 150
+        MOUSEKEY_WHEEL_TIME_TO_MAX: 180
         TAPPING_TERM: 110
         TAPPING_TERM_TAP_DANCE: 270
         UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
@@ -374,6 +374,10 @@ keys:
     - [holdEmoji]
     - [holdEmoji, lCtrl]
     - [holdEmoji, lCtrl, lAlt]
+dance_enemies: # holding one group means you must tap the other one.
+  modifiers:
+    - [zDance, xDance, cDance]
+    - [commaDance, dotDance, slashDance]
 map:
   keys:
     "'": QUOT

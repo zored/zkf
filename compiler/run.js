@@ -26,7 +26,7 @@ function main () {
   )
   const files = new KeymapFiles(keyboard)
 
-  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory)
+  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies)
   compileSettings(keyboard, files, {
     COMBO_COUNT: comboCount
   })
@@ -486,7 +486,7 @@ function getLayersTemplateData (layers, keyboard) {
   return { keys, names }
 }
 
-function compileKeymap (layers, keyboard, files, keyFactory) {
+function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
   const Mustache = require('mustache')
 
   const { combos, comboCount } = getCombos(keyboard.config.combos, keyFactory)
@@ -495,11 +495,33 @@ function compileKeymap (layers, keyboard, files, keyFactory) {
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers, keyboard),
     functions: getFunctions(),
-    combos
+    combos,
+    danceEnemies: getDanceEnemies(danceEnemies, keyFactory),
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 
   return { comboCount }
+}
+
+function getDanceEnemies(danceEnemies, keyFactory) {
+  const getCodeName = k => keyFactory.create(k).codeName;
+  const cases = _.flatMap(danceEnemies, ([a,b], name) => [[a,b],[b,a]].flatMap(([left,right], i) => `
+// Enemies ${name} #${i}
+${left.map(getCodeName).map(c => `case ${c}:`).join('\n')}
+    if (
+${right.map(getCodeName).map(c => `dance_key_states[${c}] == 0`).join(' && \n')}
+    ) {
+      return;
+    }
+    break;
+`)).join('\n');
+
+  return `
+    ${cases}
+
+    default:
+      return;
+  `
 }
 
 function getCombos (combosConfig, keyFactory) {
