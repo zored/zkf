@@ -262,15 +262,62 @@ keyboards:
             - [tab, ~, ~, ~, ~, ~, ~, ~, left, down, right, ~]
             - [lShift, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
             - [lCtrl, lAlt, lgui, keyLock, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
-      # steno:
-      #   lights: [2]
-      #   keys:
-      #       - [~, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
-      #       - [~, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
-      #       - [~, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
-      #       - [~, ~, ~, sA, sO, ~, ~, sE, sU, ~, ~, ~]
-
+  ymd09:
+    settings:
+      rules:
+        <<: *rules
+        COMBO_ENABLE: 'no'
+        DYNAMIC_MACRO_ENABLE: 'no'
+        EXTRAKEY_ENABLE: 'no'
+        KEY_LOCK_ENABLE: 'no'
+        LEADER_ENABLE: 'no'
+        NKRO_ENABLE: 'no'
+        TAP_DANCE_ENABLE: 'no'
+        UNICODEMAP_ENABLE: 'no'
+      config:
+        <<: *config
+    combos: []
+    layers:
+      default:
+        keys:
+            - [ymd1Dance,ymd2Dance,ymd3Dance]
+            - [ymd4Dance,ymd5Dance,ymd6Dance]
+            - [ymd7Dance,ymd8Dance,enterBootloader]
+      one:
+        keys:
+            - [a,b,c]
+            - [d,e,f]
+            - [g,h,i]
 keys:
+  ymd1Dance:
+    tap:
+    - [1]
+    hold:
+    - [holdOne]
+  ymd2Dance:
+    tap:
+    - [2]
+  ymd3Dance:
+    tap:
+    - [3]
+  ymd4Dance:
+    tap:
+    - [4]
+  ymd5Dance:
+    tap:
+    - [5]
+  ymd6Dance:
+    tap:
+    - [6]
+  ymd7Dance:
+    tap:
+    - [7]
+  ymd8Dance:
+    tap:
+    - [8]
+  ymd9Dance:
+    tap:
+    - [9]
   tabDance:
     tap:
     - [tab]

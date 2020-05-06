@@ -4,8 +4,11 @@ set -ex
 
 keyboards="ergodox_ez planck"
 case $2 in
-  planck|'planck/ez'|p|2)
+  planck|planck/ez|p|2)
     keyboard=planck/ez
+    ;;
+  ymd09|ymdk/ymd09|y|2)
+    keyboard=ymdk/ymd09
     ;;
   *)
     keyboard=ergodox_ez
@@ -47,6 +50,7 @@ node_image=node:12.4.0-alpine
 qmk_image=qmkfm/qmk_firmware
 
 
+flash_with=wally
 case $keyboard in
   planck/ez)
     firmware_source=$QMK_DIR/planck_ez_zored.bin
@@ -56,9 +60,13 @@ case $keyboard in
     firmware_source=$QMK_DIR/ergodox_ez_zored.hex
     firmware_filename=ergodox_ez.hex
     ;;
+  ymdk/ymd09)
+    firmware_source=$QMK_DIR/ymdk_ymd09_zored.hex
+    firmware_filename=ymd09.hex
+    flash_with=dfu
+    ;;
 esac
 firmware=firmwares/$firmware_filename
-#qmk_image=zored/alebastr-qmk-whitefox-keymap
 
 case $1 in
  build|b) ##
@@ -115,7 +123,7 @@ case $1 in
    cd $_
    git pull || git clone git@github.com:zsa/wally.git .
    if [[ "$OS" = 'MACOSX' ]]; then
-     brew install libusb
+     brew install libusb dfu-programmer
    fi
    go build -o wally-cli cli/main.go
    ;;
@@ -129,24 +137,39 @@ case $1 in
   ;;
 
  flash|f)
-  if [[ $wally = '' ]]; then
-    echo 'No wally defined (could not guess OS?).'
-    exit 1
-  fi
   cat <<'TEXT'
 
 ===========
 
-ENTER BOOTLOADER ON YOUR ERGODOX
-- Either push a little button on top-right.
+ENTER BOOTLOADER ON YOUR KEYBOARD
+- Either push a little reset button.
 - Or hold SPACE + B on reconnect.
 - Press Bootloader button (`ZKC_BTL`)
 
 TEXT
-
-  flasher=$wally
-
-  eval $flasher $firmware
+  case $flash_with in
+    dfu)
+      run="dfu-programmer atmega32u4"
+      while ! $run get bootloader-version; do
+        sleep 1
+      done
+      $run erase --force
+      $run flash $firmware
+      $run reset || true
+      ;;
+    wally)
+      if [[ $wally = '' ]]; then
+        echo 'No wally defined (could not guess OS?).'
+        exit 1
+      fi
+      flasher=$wally
+      eval $flasher $firmware
+      ;;
+    *)
+      echo "Unknown flash type: $flash_with"
+      exit 1
+      ;;
+  esac
  ;;
 
  download-and-flash|df)

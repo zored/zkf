@@ -451,6 +451,9 @@ function ltrim (value) {
 
 function getDanceTemplateData (layers, danceEnemies, keyFactory) {
   const keys = layers.allKeys.filter(key => key instanceof DanceKey)
+  if (keys.length === 0) {
+    return null;
+  }
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
   const onDanceReset = ltrim(keys.map(key => key.onDanceResetCode).filter(s => s.trim() !== '').join(''))
@@ -482,6 +485,9 @@ function getDanceTemplateData (layers, danceEnemies, keyFactory) {
 
 function getUnicodeTemplateData (layers) {
   const keys = layers.allKeys.filter(key => key instanceof EmojiKey)
+  if (keys.length === 0) {
+    return null
+  }
   const names = glueEnum(keys.map(key => key.codeName), 0)
   const map = keys.map(key => `[${key.codeName}] 0x${key.hex}, // ${key.emoji}`).join('\n')
 
@@ -560,6 +566,9 @@ function getCombos (combosConfig, keyFactory) {
       keyButtons: keys.allKeys.map(key => key.codeName).join(', ')
     }))
 
+  if (combos.length === 0) {
+    return '';
+  }
   const definitions = (() => {
     const combosDefinitions = combos.map(({ name, keyButtons }) =>
       `const uint16_t PROGMEM ${name}[] = {${keyButtons}, COMBO_END};`
@@ -705,7 +714,9 @@ class KeymapFiles {
     return this._list
   }
   _checkDir (dir) {
-    fs.existsSync(dir) || fs.mkdirSync(dir)
+    fs.existsSync(dir) || fs.mkdirSync(dir, {
+      recursive: true,
+    })
     return dir
   }
 }
@@ -781,6 +792,17 @@ class PlanckEz extends Keyboard {
     throw new Error(`Unknow Planck light #${light}`)
   }
 }
+class Ymd09 extends Keyboard {
+  get configName () {
+    return 'ymd09'
+  }
+  get layoutCodeName () {
+    return 'LAYOUT'
+  }
+  get keymapPath () {
+    return 'vendor/qmk_firmware/keyboards/ymdk/' + this.configName + '/keymaps/zored/'
+  }
+}
 
 class KeyboardFactory {
   constructor (config) {
@@ -792,6 +814,8 @@ class KeyboardFactory {
         return new ErgodoxEz(this.config)
       case 'planck/ez':
         return new PlanckEz(this.config)
+      case 'ymdk/ymd09':
+        return new Ymd09(this.config)
     }
 
     throw new Error(`Unknown QMK keyboard ${qmkName}.`)

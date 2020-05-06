@@ -2,6 +2,7 @@
 #include "ergodox_ez.h"
 
 
+
 #include "action_layer.h"
 #include "version.h"
 
@@ -2127,7 +2128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,
 /* left-2 */ KC_CAPSLOCK,_______,_______,_______,_______,_______,
 /* left-3 */ KC_LSHIFT,KC_Z,KC_X,KC_C,_______,_______,_______,
-/* left-4 */ KC_LGUI,KC_LALT,KC_LCTRL,_______,_______,
+/* left-4 */ KC_LCTRL,KC_LALT,KC_LGUI,_______,_______,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
 /* left-thumb-2 */ _______,_______,KC_LOCK,
@@ -2284,6 +2285,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return !complete;
 };
 
+
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
@@ -2318,4 +2320,3 @@ uint32_t layer_state_set_user(uint32_t state) {
 
   return state;
 };
-

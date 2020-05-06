@@ -4,6 +4,7 @@
 #include "muse.h"
 #include "eeprom.h"
 
+
 #include "action_layer.h"
 #include "version.h"
 
@@ -2221,6 +2222,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return !complete;
 };
 
+
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
@@ -2255,4 +2257,3 @@ uint32_t layer_state_set_user(uint32_t state) {
 
   return state;
 };
-

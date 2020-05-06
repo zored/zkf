@@ -1,6 +1,6 @@
 
 #undef COMBO_COUNT
-#define COMBO_COUNT 9
+#define COMBO_COUNT 0
 
 #undef COMBO_TERM
 #define COMBO_TERM 80
@@ -58,9 +58,3 @@
 
 #undef NO_ACTION_ONESHOT
 #define NO_ACTION_ONESHOT 
-
-#undef AUDIO_CLICKY
-#define AUDIO_CLICKY 
-
-#undef STARTUP_SONG
-#define STARTUP_SONG SONG(NO_SOUND)

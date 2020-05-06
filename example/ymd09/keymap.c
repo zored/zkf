@@ -1,18 +1,7 @@
-{{! Keymap template for all of my keymaps. Has a lot of common code. }}
 
-{{#ergodox}}
-#include "ergodox_ez.h"
-{{/ergodox}}
 
-{{#planck}}
+
 #include QMK_KEYBOARD_H
-#include "muse.h"
-#include "eeprom.h"
-{{/planck}}
-
-{{#ymd09}}
-#include QMK_KEYBOARD_H
-{{/ymd09}}
 
 #include "action_layer.h"
 #include "version.h"
@@ -66,7 +55,7 @@ void code_up(uint8_t code) {
 }
 
 // Helper functions:
-{{functions}}
+
 
 enum do_command {
   DO_FIND_BEGIN = 1,
@@ -200,43 +189,8 @@ void run_advanced (uint8_t command) {
   }
 }
 
-{{#unicode}}
-enum unicode_names {
-  {{{unicode.names}}}
-};
 
-void tap_unicode(enum unicode_names name) {
-  // Inspired by process_unicodemap().
-  unicode_input_start();
 
-  uint32_t code = pgm_read_dword(&unicode_map[name]);
-  uint8_t input_mode = get_unicode_input_mode();
-
-  if (code > 0x10FFFF || (code > 0xFFFF && input_mode == UC_WIN)) {
-    unicode_input_cancel();
-    return;
-  }
-
-  if (code > 0xFFFF && input_mode == UC_OSX) {
-    code -= 0x10000;
-    uint32_t lo = code & 0x3FF, hi = (code & 0xFFC00) >> 10;
-    register_hex32(hi + 0xD800);
-    register_hex32(lo + 0xDC00);
-    unicode_input_finish();
-    return;
-  }
-
-  register_hex32(code);
-  unicode_input_finish();
-}
-
-const uint32_t PROGMEM
-unicode_map[] = {
-  {{{unicode.map}}}
-};
-{{/unicode}}
-
-{{{combos.definitions}}}
 
 void process_combo_event(uint8_t combo_index, bool pressed) {
   if (!pressed) {
@@ -244,95 +198,14 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
   }
 
   switch(combo_index) {
-    {{{combos.declarations}}}
+    
   }
 };
 
 enum layers {
-{{{layers.names}}}
+LAYER_DEFAULT = 0
 };
 
-{{#dance}}
-enum dance_keys {
-  {{{dance.names}}}
-};
-enum dance_action_names {
-  {{{dance.actionNames}}}
-};
-
-static int dance_key_states[{{{dance.count}}}] = {0};
-
-void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
-  if (state->count == 0) {
-    return;
-  }
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
-
-  switch (dance_key) {
-    {{{dance.counts}}}
-    default:
-      return;
-  }
-
-  state->timer = 0;
-  state->pressed = false;
-}
-
-void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
-  if (state->count == 0) {
-    return;
-  }
-
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
-
-  switch(dance_key) {
-    {{{dance.enemies}}}
-    default:
-      return;
-  }
-
-  state->timer = 0;
-  state->pressed = false;
-}
-
-void on_dance_each_tap(qk_tap_dance_state_t *state, void *user_data) {
-  dance_tap_on_enemy_hold(state);
-  dance_flush_on_many_taps(state);
-}
-
-void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
-  if (state->count == 0) {
-    return;
-  }
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
-
-  switch (dance_key) {
-    {{{dance.onDance}}}
-  }
-}
-
-void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
-  switch (dance_key_states[dance_key]) {
-    {{{dance.onDanceReset}}}
-  }
-
-  dance_key_states[dance_key] = 0;
-}
-
-
-#define ACTION_TAP_DANCE_DOUBLE_TIME(kc1, kc2, tap_specific_tapping_term) { \
-    .fn = { qk_tap_dance_pair_on_each_tap, qk_tap_dance_pair_finished, qk_tap_dance_pair_reset }, \
-    .user_data = (void *)&((qk_tap_dance_pair_t) { kc1, kc2 }),  \
-    .custom_tapping_term = tap_specific_tapping_term, \
-  }
-#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_dance_each_tap, on_dance_finished, on_dance_reset, TAPPING_TERM_TAP_DANCE)
-#define DANCE_TWO(k1,k11) ACTION_TAP_DANCE_DOUBLE_TIME(k1, k11, TAPPING_TERM_TAP_DANCE)
-
-qk_tap_dance_action_t tap_dance_actions[] = {
-    {{{dance.actions}}}
-};
-{{/dance}}
 
 enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE,
@@ -342,60 +215,26 @@ enum custom_keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-{{{layers.keys}}}
+
+[LAYER_DEFAULT] = LAYOUT(
+  
+/* 0 */ KC_1,KC_2,KC_3,
+/* 1 */ KC_4,KC_5,KC_6,
+/* 2 */ KC_7,KC_8,ZKC_BTL
+)
+  
 };
 
 
-{{#planck}}
-void planck_ez_led_all_off(void) {
-  planck_ez_left_led_off();
-  planck_ez_right_led_off();
-}
-{{/planck}}
 
 void matrix_init_user(void) {
   #ifdef STENO_ENABLE
     steno_set_mode(STENO_MODE_GEMINI);
   #endif
 
-  {{#ergodox}}
-  ergodox_led_all_set(LED_BRIGHTNESS_LO);
-  {{/ergodox}}
-  {{#planck}}
-  planck_ez_right_led_level(64);
-  planck_ez_left_led_level(64);
-  planck_ez_led_all_off();
-  clicky_off(); // TODO: maybe there is some ENV for that?
-  {{/planck}}
 }
 
-{{#unicode}}
-void keyboard_post_init_user(void) {
-  switch (get_unicode_input_mode()) {
-    case UC_OSX:
-      zored_os = OS_MACOS;
-  }
-}
-{{/unicode}}
 
-{{^ymd09}}
-LEADER_EXTERNS();
-void matrix_scan_user(void) {
-  LEADER_DICTIONARY() {
-    leading = false;
-    leader_end();
-    SEQ_ONE_KEY(KC_U) {
-      run_advanced(DO_LOGIN);
-    }
-    SEQ_ONE_KEY(KC_P) {
-      run_advanced(DO_ENPASS);
-    }
-    SEQ_ONE_KEY(KC_S) {
-      run_advanced(DO_SCREENSHOT);
-    }
-  }
-}
-{{/ymd09}}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool complete = false;
@@ -421,23 +260,3 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 };
 
 
-{{^ymd09}}
-uint32_t layer_state_set_user(uint32_t state) {
-  uint8_t layer = biton32(state);
-
-{{#ergodox}}
-  ergodox_led_all_off();
-  switch (layer) {
-    {{{ergodox.onLayerOn}}}
-  }
-{{/ergodox}}
-{{#planck}}
-  planck_ez_led_all_off();
-  switch (layer) {
-    {{{planck.onLayerOn}}}
-  }
-{{/planck}}
-
-  return state;
-};
-{{/ymd09}}
