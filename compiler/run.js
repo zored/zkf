@@ -26,7 +26,7 @@ function main () {
   )
   const files = new KeymapFiles(keyboard)
 
-  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies)
+  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies, config)
   compileSettings(keyboard, files, {
     COMBO_COUNT: comboCount
   })
@@ -519,10 +519,49 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
     layers: getLayersTemplateData(layers, keyboard),
     functions: getFunctions(),
     combos,
+    mappings: getMappings(keyboard.config.mappings, keyFactory),
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 
   return { comboCount }
+}
+
+function getMappings(mappings, keyFactory){
+  const mappingsArray = Object.entries(mappings || {});
+  const cases = mappingsArray.map(([name, [beforeString, afterString]], mappingIndex) => {
+    if (beforeString.length !== afterString.length) {
+      throw new Error(`Invalid mappings: "${name}", "${beforeString}" "${afterString}".`)
+    }
+
+    const cases = beforeString.split('').map((beforeK, index) => [
+      keyFactory.create(beforeK).codeName,
+      keyFactory.create(afterString[index]).codeName,
+    ]).map(([before, after]) => `case ${before}: return ${after};`).join('\n')
+
+    return `
+      case ${mappingIndex+1}:
+        // Mapping "${name}":
+        switch(code) {
+          ${cases}
+        }
+        break;
+    `
+  }).join('\n');
+
+  if (cases.length === 0) {
+    return null;
+  }
+
+  return {
+    code: `
+      switch(mappingIndex) {
+        case 0:
+          break;
+        ${cases}
+      }
+  `,
+  maxIndex: mappingsArray.length,
+};
 }
 
 function getDanceEnemiesCases(keys, danceEnemies, keyFactory) {
@@ -532,7 +571,6 @@ function getDanceEnemiesCases(keys, danceEnemies, keyFactory) {
     danceEnemies,
     ([a,b]) => a.concat(b).filter(key => keyNames.indexOf(key) === -1).length === 0
   );
-  console.log('XXX', actualEnemies);
 
   return _.flatMap(
     actualEnemies,
@@ -628,7 +666,7 @@ function getFunctions () {
     .replace(/[, ]+$/, '')
 
   const getBody = (aliasNumber, func) => rangeInclusive(1, aliasNumber).map(n => `
-  ${func}(map_windows_keycode(code${n}));
+  ${func}(map_code(code${n}));
 `.trimRight()).join('')
 
   return rangeInclusive(2, MAX_CODES).flatMap(aliasNumber =>
@@ -862,7 +900,9 @@ class KeyFactory {
         return new DoKey(value, true)
       }
 
-      value = this.nameMap[value] || value
+      for (let i = 0; i < 2; i++) {
+        value = this.nameMap[value] || value
+      }
       const noPrefix = value.match(this.noPrefixPattern)
       return new Key(value, noPrefix)
     }

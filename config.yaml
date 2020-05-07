@@ -277,38 +277,93 @@ keyboards:
       config:
         <<: *config
     combos: []
+    mappings:
+      ru:
+      - "abcdefghijklmnopqrstuvwxyz,;[]'.`"
+      - "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
     layers:
       default:
+        keys: # a-f
+            - [yADance,yBDance,yCDance]
+            - [yDDance,yEDance,yFDance]
+            - [yCtrlDance,yAltDance,yGuiDance]
+                             # a b c    а б в
+                             # d e f    г д е
+                             # 
+      layerA:
+        keys: # g-n
+            - [~,g,yHDance]  #   g h      ё ж
+            - [i,j,k]        # i j k    з и й
+            - [l,m,n]        # l m n    к л м
+      layerB:
+        keys: # o-v
+            - [o,~,p]        # o   p    н   о
+            - [q,r,s]        # q r s    п р с
+            - [t,u,v]        # t u v    т у ф
+      layerC:
+        keys: # w-z
+            - [w,x,~]        # w x      х ц  
+            - [y,z,',']      # y z ,    ч ш щ
+            - [';','[',']']  # ; [ ]    ъ ы ь 
+      layerD:
         keys:
-            - [ymd1Dance,ymd2Dance,ymd3Dance]
-            - [ymd4Dance,ymd5Dance,ymd6Dance]
-            - [ymd7Dance,ymd8Dance,ymd9Dance]
+            - ["'",'.','`']  # ' . `    э ю я
+            - [~,'/','\']    #   \ /      \ .
+            - [esc,tab,delete] 
+      layerE:
+        keys:
+            - [1,2,3]
+            - [4,~,6]
+            - [7,8,9]
+      layerF: # Привет 
+
+        keys:
+            - ['-',toggleNavigation,'=']
+            - [0,5,~]
+            - [windowsMode,macosMode,yMappingDance]
+      navigation:
+        keys:
+            - [pageDown, toggleNavigation, pageUp]
+            - [mouseLeftButton, mouseUp, mouseRightButton]
+            - [mouseLeft, mouseDown, mouseRight]
       color:
         keys:
-            - [~,rgbHueDown,rgbHueUp]
-            - [~,rgbBriDown,rgbBriUp]
-            - [enterBootloader,rgbToggle,rgbNext]
+            - [~,rgbToggle,~]
+            - [rgbNext,rgbBriDown,rgbBriUp]
+            - [enterBootloader,rgbHueDown,rgbHueUp]
 keys:
-  ymd1Dance:
-    tap: [[1],[0],[space]]
-    hold:
-    - [holdColor]
-  ymd2Dance:
-      tap: [[2],[a],[b],[c]]
-  ymd3Dance:
-      tap: [[3],[d],[e],[f]]
-  ymd4Dance:
-      tap: [[4],[g],[h],[i]]
-  ymd5Dance:
-      tap: [[5],[j],[k],[l]]
-  ymd6Dance:
-      tap: [[6],[m],[n],[o]]
-  ymd7Dance:
-      tap: [[7],[p],[q],[r],[s]]
-  ymd8Dance:
-      tap: [[8],[t],[u],[v]]
-  ymd9Dance:
-      tap: [[9],[w],[x],[y],[z]]
+  yADance:
+    tap:  [[a]]
+    hold: [[holdLayerA]]
+  yBDance:
+    tap:  [[b]]
+    hold: [[holdLayerB]]
+  yCDance:
+    tap:  [[c]]
+    hold: [[holdLayerC]]
+  yDDance:
+    tap:  [[d]]
+    hold: [[holdLayerD]]
+  yEDance:
+    tap:  [[e]]
+    hold: [[holdLayerE]]
+  yFDance:
+    tap:  [[f]]
+    hold: [[holdLayerF]]
+  yCtrlDance:
+    tap:  [[backspace]]
+    hold: [[lCtrl], [lShift]]
+  yAltDance:
+    tap:  [[space]]
+    hold: [[lAlt]]
+  yGuiDance:
+    tap:  [[enter]]
+    hold: [[lGui], [rShift]]
+  yHDance:
+    tap:  [[h]]
+    hold: [[holdColor]]
+  yMappingDance:
+    tap: [[doNextMapping]]
   tabDance:
     tap:
     - [tab]
@@ -421,6 +476,39 @@ map:
     '~': TILD
     .: DOT
     /: SLSH
+    а: f
+    б: ','
+    в: d
+    г: u
+    д: l
+    е: t
+    ё: '`'
+    ж: ;
+    з: p
+    и: b
+    й: q
+    к: r
+    л: k
+    м: v
+    н: y
+    о: j
+    п: g
+    р: h
+    с: c
+    т: n
+    у: e
+    ф: a
+    х: "["
+    ц: w
+    ч: x
+    ш: i
+    щ: o
+    ъ: "]"
+    ы: s
+    ь: m
+    э: "'"
+    ю: '.'
+    я: z
     backspace: BSPC
     brightnessDown: BRID
     brightnessUp: BRIU

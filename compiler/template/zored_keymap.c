@@ -33,10 +33,15 @@ enum operating_systems {
   OS_WINDOWS,
 } zored_os = OS_WINDOWS;
 
-uint8_t map_windows_keycode (uint8_t windowsKeycode) {
+{{#mappings}}
+uint8_t mappingIndex = 0;
+uint8_t mappingIndexMax = {{{mappings.maxIndex}}};
+{{/mappings}}
+
+uint8_t map_code (uint8_t code) {
   switch (zored_os) {
     case OS_MACOS:
-      switch (windowsKeycode) {
+      switch (code) {
         case KC_LCTRL:
           return KC_LGUI;
         case KC_RCTRL:
@@ -54,15 +59,19 @@ uint8_t map_windows_keycode (uint8_t windowsKeycode) {
       break;
   }
 
-  return windowsKeycode;
+  {{#mappings}}
+  {{{mappings.code}}}
+  {{/mappings}}
+
+  return code;
 }
 
 void code_down(uint8_t code) {
-  register_code(map_windows_keycode(code));
+  register_code(map_code(code));
 }
 
 void code_up(uint8_t code) {
-  unregister_code(map_windows_keycode(code));
+  unregister_code(map_code(code));
 }
 
 // Helper functions:
@@ -85,6 +94,7 @@ enum do_command {
   DO_NOT_EQUALS,
   DO_EMOJI_PANEL,
   DO_AMPERSAND,
+  DO_NEXT_MAPPING,
 };
 
 // Advanced commands.
@@ -103,11 +113,18 @@ void run_advanced (uint8_t command) {
     case DO_FIND_END:
       tap_code(KC_ENTER);
       break;
+    case DO_NEXT_MAPPING:
+      run_advanced(DO_NEXT_LANGUAGE);
+      mappingIndex++;
+      if (mappingIndex > mappingIndexMax) {
+        mappingIndex = 0;
+      }
+      break;
     case DO_NEXT_LANGUAGE:
       ; // empty statement.
       uint8_t hold = 0;
       uint8_t tap = 0;
-      uint32_t timeout = 40;
+      uint32_t timeout = 100;
 
       switch (zored_os) {
         case OS_WINDOWS:
@@ -398,14 +415,14 @@ void matrix_scan_user(void) {
 {{/ymd09}}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  bool complete = false;
+  bool pressed = record->event.pressed;
+  if (!pressed) {
+    return true;
+  }
 
   switch (keycode) {
     case ZKC_BTL:
-      if (record->event.pressed) {
-        run_advanced(DO_BOOTLOADER);
-        complete = true;
-      }
+      run_advanced(DO_BOOTLOADER);
       break;
 
     case UC_M_OS:
@@ -415,10 +432,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case UC_M_WC:
       zored_os = OS_WINDOWS;
       break;
+
+    default:
+      return true;
   }
 
-  return !complete;
-};
+  return false;
+}
 
 
 {{^ymd09}}

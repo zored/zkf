@@ -2264,10 +2264,11 @@ void matrix_scan_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool complete = false;
+  bool pressed = record->event.pressed;
 
   switch (keycode) {
     case ZKC_BTL:
-      if (record->event.pressed) {
+      if (pressed) {
         run_advanced(DO_BOOTLOADER);
         complete = true;
       }
@@ -2282,7 +2283,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
   }
 
-  return !complete;
+  if (complete) {
+    return false;
+  }
+
+  
+
+  return true;
 };
 
 
