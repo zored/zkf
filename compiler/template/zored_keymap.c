@@ -122,11 +122,13 @@ void run_advanced (uint8_t command) {
       tap_code(KC_ENTER);
       break;
     case DO_NEXT_MAPPING:
-      run_advanced(DO_NEXT_LANGUAGE);
+      run_advanced(DO_NEXT_LANGUAGE);  
+{{#mappings}}
       mappingIndex++;
       if (mappingIndex > mappingIndexMax) {
         mappingIndex = 0;
       }
+{{/mappings}}
       break;
     case DO_NEXT_LANGUAGE:
       ; // empty statement.
