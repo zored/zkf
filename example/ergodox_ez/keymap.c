@@ -2127,7 +2127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,
 /* left-2 */ KC_CAPSLOCK,_______,_______,_______,_______,_______,
 /* left-3 */ KC_LSHIFT,KC_Z,KC_X,KC_C,_______,_______,_______,
-/* left-4 */ KC_LGUI,KC_LALT,KC_LCTRL,_______,_______,
+/* left-4 */ KC_LCTRL,KC_LALT,KC_LGUI,_______,_______,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
 /* left-thumb-2 */ _______,_______,KC_LOCK,
