@@ -24,28 +24,7 @@ enum operating_systems {
 
 uint8_t mappingIndex = 0;
 uint8_t mappingIndexMax = 1;
-
-uint8_t map_code (uint8_t code) {
-  switch (zored_os) {
-    case OS_MACOS:
-      switch (code) {
-        case KC_LCTRL:
-          return KC_LGUI;
-        case KC_RCTRL:
-          return KC_RGUI;
-        case KC_LGUI:
-          return KC_LCTRL;
-        case KC_RGUI:
-          return KC_RCTRL;
-        case KC_MEDIA_PREV_TRACK:
-          return KC_MEDIA_REWIND;
-        case KC_MEDIA_NEXT_TRACK:
-          return KC_MEDIA_FAST_FORWARD;
-      }
-    case OS_WINDOWS:
-      break;
-  }
-
+uint8_t map_code8_hash (uint8_t keycode) {
   
       switch(mappingIndex) {
         case 0:
@@ -53,7 +32,7 @@ uint8_t map_code (uint8_t code) {
         
       case 1:
         // Mapping "ru":
-        switch(code) {
+        switch(keycode) {
           case KC_A: return KC_F;
 case KC_B: return KC_COMM;
 case KC_C: return KC_D;
@@ -92,8 +71,82 @@ case KC_GRV: return KC_Z;
     
       }
   
+  return keycode;
+}
+uint8_t map_code16_hash (uint16_t keycode) {
+  
+      switch(mappingIndex) {
+        case 0:
+          break;
+        
+      case 1:
+        // Mapping "ru":
+        switch(keycode) {
+          case KC_A: return KC_F;
+case KC_B: return KC_COMM;
+case KC_C: return KC_D;
+case KC_D: return KC_U;
+case KC_E: return KC_L;
+case KC_F: return KC_T;
+case KC_G: return KC_GRV;
+case KC_H: return KC_SCOLON;
+case KC_I: return KC_P;
+case KC_J: return KC_B;
+case KC_K: return KC_Q;
+case KC_L: return KC_R;
+case KC_M: return KC_K;
+case KC_N: return KC_V;
+case KC_O: return KC_Y;
+case KC_P: return KC_J;
+case KC_Q: return KC_G;
+case KC_R: return KC_H;
+case KC_S: return KC_C;
+case KC_T: return KC_N;
+case KC_U: return KC_E;
+case KC_V: return KC_A;
+case KC_W: return KC_LBRC;
+case KC_X: return KC_W;
+case KC_Y: return KC_X;
+case KC_Z: return KC_I;
+case KC_COMM: return KC_O;
+case KC_SCOLON: return KC_RBRC;
+case KC_LBRC: return KC_S;
+case KC_RBRC: return KC_M;
+case KC_QUOT: return KC_QUOT;
+case KC_DOT: return KC_DOT;
+case KC_GRV: return KC_Z;
+        }
+        break;
+    
+      }
+  
+  return 0;
+}
 
-  return code;
+uint8_t map_code (uint8_t keycode) {
+  switch (zored_os) {
+    case OS_MACOS:
+      switch (keycode) {
+        case KC_LCTRL:
+          return KC_LGUI;
+        case KC_RCTRL:
+          return KC_RGUI;
+        case KC_LGUI:
+          return KC_LCTRL;
+        case KC_RGUI:
+          return KC_RCTRL;
+        case KC_MEDIA_PREV_TRACK:
+          return KC_MEDIA_REWIND;
+        case KC_MEDIA_NEXT_TRACK:
+          return KC_MEDIA_FAST_FORWARD;
+      }
+    case OS_WINDOWS:
+      break;
+  }
+
+  keycode = map_code8_hash(keycode);
+
+  return keycode;
 }
 
 void code_down(uint8_t code) {
@@ -1016,6 +1069,17 @@ void matrix_init_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
+
+  uint16_t newKeycode = map_code16_hash(keycode);
+  if (newKeycode > 0) {
+    if (pressed) {
+      register_code(newKeycode);
+    } else {
+      unregister_code(newKeycode);
+    }
+    return false;
+  }
+
   if (!pressed) {
     return true;
   }

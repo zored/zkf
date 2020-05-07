@@ -541,7 +541,7 @@ function getMappings(mappings, keyFactory){
     return `
       case ${mappingIndex+1}:
         // Mapping "${name}":
-        switch(code) {
+        switch(keycode) {
           ${cases}
         }
         break;

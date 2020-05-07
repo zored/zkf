@@ -36,12 +36,20 @@ enum operating_systems {
 {{#mappings}}
 uint8_t mappingIndex = 0;
 uint8_t mappingIndexMax = {{{mappings.maxIndex}}};
+uint8_t map_code8_hash (uint8_t keycode) {
+  {{{mappings.code}}}
+  return keycode;
+}
+uint8_t map_code16_hash (uint16_t keycode) {
+  {{{mappings.code}}}
+  return 0;
+}
 {{/mappings}}
 
-uint8_t map_code (uint8_t code) {
+uint8_t map_code (uint8_t keycode) {
   switch (zored_os) {
     case OS_MACOS:
-      switch (code) {
+      switch (keycode) {
         case KC_LCTRL:
           return KC_LGUI;
         case KC_RCTRL:
@@ -60,10 +68,10 @@ uint8_t map_code (uint8_t code) {
   }
 
   {{#mappings}}
-  {{{mappings.code}}}
+  keycode = map_code8_hash(keycode);
   {{/mappings}}
 
-  return code;
+  return keycode;
 }
 
 void code_down(uint8_t code) {
@@ -416,6 +424,19 @@ void matrix_scan_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
+
+  {{#mappings}}
+  uint16_t newKeycode = map_code16_hash(keycode);
+  if (newKeycode > 0) {
+    if (pressed) {
+      register_code(newKeycode);
+    } else {
+      unregister_code(newKeycode);
+    }
+    return false;
+  }
+  {{/mappings}}
+
   if (!pressed) {
     return true;
   }
