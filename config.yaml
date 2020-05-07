@@ -272,7 +272,7 @@ keyboards:
         KEY_LOCK_ENABLE: 'no'
         LEADER_ENABLE: 'no'
         NKRO_ENABLE: 'no'
-        TAP_DANCE_ENABLE: 'no'
+        RGBLIGHT_ENABLE: 'yes'
         UNICODEMAP_ENABLE: 'no'
       config:
         <<: *config
@@ -282,42 +282,33 @@ keyboards:
         keys:
             - [ymd1Dance,ymd2Dance,ymd3Dance]
             - [ymd4Dance,ymd5Dance,ymd6Dance]
-            - [ymd7Dance,ymd8Dance,enterBootloader]
-      one:
+            - [ymd7Dance,ymd8Dance,ymd9Dance]
+      color:
         keys:
-            - [a,b,c]
-            - [d,e,f]
-            - [g,h,i]
+            - [~,rgbHueDown,rgbHueUp]
+            - [~,rgbBriDown,rgbBriUp]
+            - [enterBootloader,rgbToggle,rgbNext]
 keys:
   ymd1Dance:
-    tap:
-    - [1]
+    tap: [[1],[0],[space]]
     hold:
-    - [holdOne]
+    - [holdColor]
   ymd2Dance:
-    tap:
-    - [2]
+      tap: [[2],[a],[b],[c]]
   ymd3Dance:
-    tap:
-    - [3]
+      tap: [[3],[d],[e],[f]]
   ymd4Dance:
-    tap:
-    - [4]
+      tap: [[4],[g],[h],[i]]
   ymd5Dance:
-    tap:
-    - [5]
+      tap: [[5],[j],[k],[l]]
   ymd6Dance:
-    tap:
-    - [6]
+      tap: [[6],[m],[n],[o]]
   ymd7Dance:
-    tap:
-    - [7]
+      tap: [[7],[p],[q],[r],[s]]
   ymd8Dance:
-    tap:
-    - [8]
+      tap: [[8],[t],[u],[v]]
   ymd9Dance:
-    tap:
-    - [9]
+      tap: [[9],[w],[x],[y],[z]]
   tabDance:
     tap:
     - [tab]

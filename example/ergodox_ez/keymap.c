@@ -718,7 +718,7 @@ void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
 
   switch(dance_key) {
     
-// Enemies modifiers #0
+// Enemies 0 #0
 case DANCE_KC_ZDANCE:
 case DANCE_KC_XDANCE:
 case DANCE_KC_CDANCE:
@@ -732,7 +732,7 @@ dance_key_states[DANCE_KC_SLASHDANCE] == 0
     break;
 
 
-// Enemies modifiers #1
+// Enemies 0 #1
 case DANCE_KC_COMMADANCE:
 case DANCE_KC_DOTDANCE:
 case DANCE_KC_SLASHDANCE:

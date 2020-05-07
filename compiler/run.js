@@ -463,7 +463,7 @@ function getDanceTemplateData (layers, danceEnemies, keyFactory) {
     .filter(key => key !== null)
   const actionNames = glueEnum(actionKeys)
   const actions = keys.map(key => `[${key.codeName}] = DANCE_MODIFIER()`).join(ARRAY_GLUE + INDENT)
-  const enemies = getDanceEnemiesCases(danceEnemies, keyFactory)
+  const enemies = getDanceEnemiesCases(keys, danceEnemies, keyFactory)
   const counts = keys.map(k => `
     case ${k.codeName}:
       if (state->count <= ${k.maxActionCount}) {
@@ -525,9 +525,18 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
   return { comboCount }
 }
 
-function getDanceEnemiesCases(danceEnemies, keyFactory) {
+function getDanceEnemiesCases(keys, danceEnemies, keyFactory) {
   const getCodeName = k => keyFactory.create(k).codeName;
-  return _.flatMap(danceEnemies, ([a,b], name) => [[a,b],[b,a]].flatMap(([left,right], i) => `
+  const keyNames = keys.map(key => key.name)
+  const actualEnemies = _.filter(
+    danceEnemies,
+    ([a,b]) => a.concat(b).filter(key => keyNames.indexOf(key) === -1).length === 0
+  );
+  console.log('XXX', actualEnemies);
+
+  return _.flatMap(
+    actualEnemies,
+    ([a,b], name) => [[a,b],[b,a]].flatMap(([left,right], i) => `
 // Enemies ${name} #${i}
 ${left.map(getCodeName).map(c => `case ${c}:`).join('\n')}
     if (

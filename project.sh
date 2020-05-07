@@ -2,12 +2,12 @@
 # Contains helper code for easy work.
 set -ex
 
-keyboards="ergodox_ez planck"
+keyboards="ergodox_ez planck/ez ymdk/ymd09"
 case $2 in
   planck|planck/ez|p|2)
     keyboard=planck/ez
     ;;
-  ymd09|ymdk/ymd09|y|2)
+  ymd09|ymdk/ymd09|y|3)
     keyboard=ymdk/ymd09
     ;;
   *)
