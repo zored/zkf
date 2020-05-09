@@ -11,7 +11,7 @@ deploy:
   file:
   - firmwares/ergodox_ez.hex
   - firmwares/planck.bin
-  - firmwares/ymd09.bin
+  - firmwares/ymd09.hex
   skip_cleanup: true
   on:
     repo: zored/zkf
