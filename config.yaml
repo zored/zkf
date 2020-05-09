@@ -303,7 +303,7 @@ keyboards:
         keys:
         - [9,~,0]
         - ['-',esc,'=']
-        - [backspace,space,tab]
+        - [backspace,space,enter]
       layer3:
         keys:
         - [windowsMode,macosMode,~]
