@@ -16,12 +16,12 @@ function main () {
   const layerStructure = new LayerStructure(flatternStructure(layersConfig.default.keys))
   const keyFactory = new KeyFactory(config.keys, config.map.keys, config.map.prefixes)
   const layers = new LayerCollection(
-    _.map(layersConfig, ({ keys, lights, enable_combos }, name) => new Layer(
-      name, 
-      keyFactory.createFromObject(keys), 
-      layerStructure, 
+    _.map(layersConfig, ({ keys, lights, enableCombos }, name) => new Layer(
+      name,
+      keyFactory.createFromObject(keys),
+      layerStructure,
       lights,
-      enable_combos || false,
+      enableCombos || false
     ))
   )
   const files = new KeymapFiles(keyboard)
@@ -199,6 +199,7 @@ class DoKey extends Key {
   constructor (action) {
     action = _.snakeCase(action).toUpperCase()
     super(action)
+    this.doName = action
   }
   get downCode () {
     return ''
@@ -223,7 +224,7 @@ class DanceKey extends Key {
   get actions () {
     return this.tapAction.allActionsRecursive.concat(this.holdAction.allActionsRecursive)
   }
-  get maxActionCount() {
+  get maxActionCount () {
     return Math.max(this.tapAction.actionsCount, this.holdAction.actionsCount)
   }
   get onDanceCode () {
@@ -407,7 +408,7 @@ class TapDanceAction extends Action {
         `.trimRight('\n')
 
       case 'none':
-        return '';
+        return ''
 
       case 'repeatFirst':
         action = _.first(this.actions)
@@ -452,7 +453,7 @@ function ltrim (value) {
 function getDanceTemplateData (layers, danceEnemies, keyFactory) {
   const keys = layers.allKeys.filter(key => key instanceof DanceKey)
   if (keys.length === 0) {
-    return null;
+    return null
   }
   const names = glueEnum(keys.map(key => key.codeName))
   const onDance = keys.map(key => key.onDanceCode).join('')
@@ -479,7 +480,7 @@ function getDanceTemplateData (layers, danceEnemies, keyFactory) {
     onDanceReset,
     actions,
     enemies,
-    counts,
+    counts
   }
 }
 
@@ -506,7 +507,35 @@ function getLayersTemplateData (layers, keyboard) {
 
   const names = glueEnum(layers.all.map(layer => layer.codeName), 0)
 
-  return { keys, names }
+  const doKeys = getDoKeys(layers.allKeys)
+
+  return { keys, names, doKeys }
+}
+
+function getDoKeys (layersKeys) {
+  const doKeys = layersKeys
+    .filter(key => key instanceof DoKey)
+    .reduce((unique, key) => {
+      const prev = unique.find(({codeName}) => codeName === key.codeName);
+      if (prev === undefined) {
+        unique.push(key)
+      }
+      return unique
+    }, [])
+  if (doKeys.length === 0) {
+    throw new Error(`Add bootloader button to your layout.`)
+  }
+
+  const names = doKeys
+    .map(({ codeName }) => codeName + ',\n')
+    .join('')
+  const cases = '// Do keys:\n' + doKeys.map(key => `
+      case ${key.codeName}:
+        run_advanced(${key.doName});
+        break;
+  `).join('')
+
+  return { cases, names }
 }
 
 function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
@@ -519,15 +548,15 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
     layers: getLayersTemplateData(layers, keyboard),
     functions: getFunctions(),
     combos,
-    mappings: getMappings(keyboard.config.mappings, keyFactory),
+    mappings: getMappings(keyboard.config.mappings, keyFactory)
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 
   return { comboCount }
 }
 
-function getMappings(mappings, keyFactory){
-  const mappingsArray = Object.entries(mappings || {});
+function getMappings (mappings, keyFactory) {
+  const mappingsArray = Object.entries(mappings || {})
   const cases = mappingsArray.map(([name, [beforeString, afterString]], mappingIndex) => {
     if (beforeString.length !== afterString.length) {
       throw new Error(`Invalid mappings: "${name}", "${beforeString}" "${afterString}".`)
@@ -535,21 +564,21 @@ function getMappings(mappings, keyFactory){
 
     const cases = beforeString.split('').map((beforeK, index) => [
       keyFactory.create(beforeK).codeName,
-      keyFactory.create(afterString[index]).codeName,
+      keyFactory.create(afterString[index]).codeName
     ]).map(([before, after]) => `case ${before}: return ${after};`).join('\n')
 
     return `
-      case ${mappingIndex+1}:
+      case ${mappingIndex + 1}:
         // Mapping "${name}":
         switch(keycode) {
           ${cases}
         }
         break;
     `
-  }).join('\n');
+  }).join('\n')
 
   if (cases.length === 0) {
-    return null;
+    return null
   }
 
   return {
@@ -560,21 +589,21 @@ function getMappings(mappings, keyFactory){
         ${cases}
       }
   `,
-  maxIndex: mappingsArray.length,
-};
+    maxIndex: mappingsArray.length
+  }
 }
 
-function getDanceEnemiesCases(keys, danceEnemies, keyFactory) {
-  const getCodeName = k => keyFactory.create(k).codeName;
+function getDanceEnemiesCases (keys, danceEnemies, keyFactory) {
+  const getCodeName = k => keyFactory.create(k).codeName
   const keyNames = keys.map(key => key.name)
   const actualEnemies = _.filter(
     danceEnemies,
-    ([a,b]) => a.concat(b).filter(key => keyNames.indexOf(key) === -1).length === 0
-  );
+    ([a, b]) => a.concat(b).filter(key => keyNames.indexOf(key) === -1).length === 0
+  )
 
   return _.flatMap(
     actualEnemies,
-    ([a,b], name) => [[a,b],[b,a]].flatMap(([left,right], i) => `
+    ([a, b], name) => [[a, b], [b, a]].flatMap(([left, right], i) => `
 // Enemies ${name} #${i}
 ${left.map(getCodeName).map(c => `case ${c}:`).join('\n')}
     if (
@@ -596,7 +625,7 @@ function getCombos (combosConfig, keyFactory) {
   const combos = combosConfig.flatMap(
     (row, x) => row
       .map((value, y) => [KEYS[x][y], value])
-      .filter(([,value]) => value !== null)
+      .filter(([, value]) => value !== null)
   )
     .map(([key, value]) => [
       key,
@@ -614,7 +643,7 @@ function getCombos (combosConfig, keyFactory) {
     }))
 
   if (combos.length === 0) {
-    return '';
+    return ''
   }
   const definitions = (() => {
     const combosDefinitions = combos.map(({ name, keyButtons }) =>
@@ -762,7 +791,7 @@ class KeymapFiles {
   }
   _checkDir (dir) {
     fs.existsSync(dir) || fs.mkdirSync(dir, {
-      recursive: true,
+      recursive: true
     })
     return dir
   }
@@ -774,7 +803,7 @@ class Keyboard {
   get configName () {
     throw new Error(`No keyboard config defined`)
   }
-  get templateKey() {
+  get templateKey () {
     return this.configName
   }
   get layoutCodeName () {
@@ -783,8 +812,8 @@ class Keyboard {
   getTemplateData (layers) {
     const onLayerOn = layers.all.map(layer => `
       case ${layer.codeName}:
-        ` + (layer.enableCombos ? 'combo_enable(); ' : 'combo_disable(); ')
-          + layer.lights.map(light => this.getLightCode(light)).join(' ') + `
+        ` + (layer.enableCombos ? 'combo_enable(); ' : 'combo_disable(); ') +
+          layer.lights.map(light => this.getLightCode(light)).join(' ') + `
         break;
     `).join('')
 
@@ -812,7 +841,7 @@ class ErgodoxEz extends Keyboard {
   get layoutCodeName () {
     return 'LAYOUT_ergodox'
   }
-  get templateKey() {
+  get templateKey () {
     return 'ergodox'
   }
   getLightCode (light) {
@@ -873,7 +902,7 @@ class KeyFactory {
   constructor (perKeyConfig, nameMap, prefixes) {
     this.perKeyConfig = perKeyConfig
     this.nameMap = nameMap || {}
-    this.noPrefixPattern = new RegExp(`^(${prefixes.join('|')})_`)
+    this.noPrefixPattern = new RegExp(`^(${prefixes.join('|')})[_(]`)
   }
 
   create (value) {

@@ -2,7 +2,7 @@ keyboards:
   ergodox_ez:
     layers:
       default:
-        enable_combos: true
+        enableCombos: true
         lights: []
         keys:
           left:
@@ -33,7 +33,7 @@ keyboards:
             - [tab, ~, ~, ~, ~, ~, ~]
             - [capsLock, ~, ~, ~, ~, ~]
             - [lShift, z, x, c, ~, ~, ~]
-            - [lCtrl, lAlt, lgui, ~, ~]
+            - [lCtrl, lAlt, lGui, ~, ~]
           left-thumb:
             - [~, ~]
             - [~]
@@ -102,7 +102,7 @@ keyboards:
             - [~, happyDance, sadDance, strangeDance, ~, ~, ~]
             - [~, coolDance, okDance, loveDance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~]
-            - [enterBootloader, ~, ~, ~, ~]
+            - [doBootloader, ~, ~, ~, ~]
           left-thumb:
             - [~, ~]
             - [~]
@@ -185,7 +185,8 @@ keyboards:
         NO_ACTION_FUNCTION: ''
         NO_DEBUG: ''
         NO_PRINT: ''
-        NO_ACTION_ONESHOT: ''
+        ONESHOT_TAP_TOGGLE: 5
+        ONESHOT_TIMEOUT: 4000
 
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
       rules: &rules
@@ -220,7 +221,7 @@ keyboards:
     combos: *combos
     layers:
       default:
-        enable_combos: true
+        enableCombos: true
         lights: []
         keys:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
@@ -254,14 +255,14 @@ keyboards:
             - [~, happyDance, sadDance, strangeDance, ~, ~, ~, F7Dance, F8Dance, F9Dance, ~, ~]
             - [~, coolDance, okDance, loveDance, ~, ~, ~, F4Dance, F5Dance, F6Dance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
-            - [enterBootloader, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~] 
+            - [doBootloader, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~] 
       game:
         lights: [2]
         keys:
             - [~, ~, ~, ~, ~, ~, ~, ~, ~, up, ~, ~]
             - [tab, ~, ~, ~, ~, ~, ~, ~, left, down, right, ~]
             - [lShift, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [lCtrl, lAlt, lgui, keyLock, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
+            - [lCtrl, lAlt, lGui, keyLock, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
   ymd09:
     settings:
       rules:
@@ -281,89 +282,85 @@ keyboards:
       ru:
       - "abcdefghijklmnopqrstuvwxyz,;[]'.`"
       - "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+      en_fast:
+      - "abcdefghijklmnopqrstuvwxyz,;[]'.`"
+      - "nshetaoriqmwdlcfuvxkgypjbz[`.,;]'"
+      ru_fast:
+      - "abcdefghijklmnopqrstuvwxyz,;[]'.`"
+      - "тсроеаивнжпулкмядбхчыьгйзшюъщэфцё"
     layers:
       default:
-        keys: # a-f
-            - [yADance,yBDance,yCDance]
-            - [yDDance,yEDance,yFDance]
-            - [yCtrlDance,yAltDance,yGuiDance]
-                             # a b c    а б в
-                             # d e f    г д е
-                             # 
-      layerA:
-        keys: # g-n
-            - [~,g,yHDance]  #   g h      ё ж
-            - [i,j,k]        # i j k    з и й
-            - [l,m,n]        # l m n    к л м
-      layerB:
-        keys: # o-v
-            - [o,~,p]        # o   p    н   о
-            - [q,r,s]        # q r s    п р с
-            - [t,u,v]        # t u v    т у ф
-      layerC:
-        keys: # w-z
-            - [w,x,~]        # w x      х ц  
-            - [y,z,',']      # y z ,    ч ш щ
-            - [';','[',']']  # ; [ ]    ъ ы ь 
-      layerD:
+        keys: 
+        - [y1Dance,y2Dance,y3Dance]
+        - [y4Dance,y5Dance,y6Dance]
+        - [y7Dance,y8Dance,y9Dance]
+      layer1:
         keys:
-            - ["'",'.','`']  # ' . `    э ю я
-            - [~,'/','\']    #   \ /      \ .
-            - [esc,tab,delete] 
-      layerE:
+        - [~,1,2]
+        - [3,4,5]
+        - [6,7,8]
+      layer2:
         keys:
-            - [1,2,3]
-            - [4,~,6]
-            - [7,8,9]
-      layerF: # Привет 
-
+        - [9,~,0]
+        - ['-',esc,'=']
+        - [backspace,space,tab]
+      layer3:
         keys:
-            - ['-',toggleNavigation,'=']
-            - [0,5,~]
-            - [windowsMode,macosMode,yMappingDance]
+        - [windowsMode,macosMode,~]
+        - [mappingDance,languageDance,~]
+        - [doBootloader,~,~]
+      layer4:
+        keys:
+        - [j,k,l]
+        - [~,m,n]
+        - [o,p,q]
+      layer5:
+        keys:
+        - [r,s,t]
+        - [u,~,v]
+        - [w,x,y]
+      layer6:
+        keys:
+        - [z,',',';']
+        - ['[',']',~]
+        - ["'",'.','`']
+      layer7:
+        keys:
+        - [toggleNavigation,pageUp,esc]
+        - [doOneShotCtrl,doOneShotAlt,doOneShotGui]
+        - [~,pageDown,doOneShotShift]
+      layer8:
+        keys:
+        - [rgbBriDown,rgbToggle,rgbBriUp]
+        - [rgbHueDown,rgbNext,rgbHueUp]
+        - [rgbSatDown,~,rgbSatUp]
+      layer9:
+        keys:
+        - ["'",'.','`']  
+        - ['/','\',delete]
+        - [esc,tab,~]
       navigation:
         keys:
-            - [pageDown, toggleNavigation, pageUp]
-            - [mouseLeftButton, mouseUp, mouseRightButton]
-            - [mouseLeft, mouseDown, mouseRight]
-      color:
+        - [toggleNavigation, pageDown, pageUp]
+        - [mouseLeftButton, mouseUp, mouseRightButton]
+        - [mouseLeft, mouseDown, mouseRight]
+      arrows: 
         keys:
-            - [~,rgbToggle,~]
-            - [rgbNext,rgbBriDown,rgbBriUp]
-            - [enterBootloader,rgbHueDown,rgbHueUp]
+        - [esc,enter,~]
+        - [pageDown, up, pageUp]
+        - [left, down, right]
 keys:
-  yADance:
-    tap:  [[a]]
-    hold: [[holdLayerA]]
-  yBDance:
-    tap:  [[b]]
-    hold: [[holdLayerB]]
-  yCDance:
-    tap:  [[c]]
-    hold: [[holdLayerC]]
-  yDDance:
-    tap:  [[d]]
-    hold: [[holdLayerD]]
-  yEDance:
-    tap:  [[e]]
-    hold: [[holdLayerE]]
-  yFDance:
-    tap:  [[f]]
-    hold: [[holdLayerF]]
-  yCtrlDance:
-    tap:  [[backspace]]
-    hold: [[lCtrl], [lShift]]
-  yAltDance:
-    tap:  [[space]]
-    hold: [[lAlt]]
-  yGuiDance:
-    tap:  [[enter]]
-    hold: [[lGui], [rShift]]
-  yHDance:
-    tap:  [[h]]
-    hold: [[holdColor]]
-  yMappingDance:
-    tap: [[doNextMapping]]
+  y1Dance: {tap: [[a]], hold: [[holdLayer1],[holdNavigation]]}
+  y2Dance: {tap: [[b]], hold: [[holdLayer2]]}
+  y3Dance: {tap: [[c]], hold: [[holdLayer3],[holdArrows]]}
+  y4Dance: {tap: [[d]], hold: [[holdLayer4],[lCtrl]]}
+  y5Dance: {tap: [[e]], hold: [[holdLayer5],[lAlt]]}
+  y6Dance: {tap: [[f]], hold: [[holdLayer6],[lGui]]}
+  y7Dance: {tap: [[g]], hold: [[holdLayer7],[lShift]]}
+  y8Dance: {tap: [[h]], hold: [[holdLayer8]]}
+  y9Dance: {tap: [[i]], hold: [[holdLayer9],[rShift]]}
+  mappingDance:  {tap: [[doNextMapping]]}
+  languageDance: {tap: [[doNextLanguage]]}
   tabDance:
     tap:
     - [tab]
@@ -403,8 +400,8 @@ keys:
   cDance:
     tap: [[c]]
     hold: &lGuiDance
-    - [lgui]
-    - [lgui, lShift]
+    - [lGui]
+    - [lGui, lShift]
   percentDance:
     tap: [['lShift', 5]] # %
     hold: *lCtrlDance
@@ -515,7 +512,6 @@ map:
     down: DOWN
     enter: ENT
     keyLock: LOCK
-    enterBootloader: ZKC_BTL
     left: LEFT
     leader: LEAD
     mediaNext: MEDIA_NEXT_TRACK
@@ -539,6 +535,7 @@ map:
     rgbHueDown: RGB_HUD
     rgbHueUp: RGB_HUI
     rgbNext: RGB_MOD
+    rgbPrev: RGB_RMOD
     rgbSatDown: RGB_SAD
     rgbSatUp: RGB_SAI
     rgbToggle: RGB_TOG
@@ -609,3 +606,4 @@ map:
     - UC
     - ZKC
     - DO
+    - OSM

@@ -22,10 +22,31 @@ enum operating_systems {
   OS_WINDOWS,
 } zored_os = OS_WINDOWS;
 
-uint8_t map_windows_keycode (uint8_t windowsKeycode) {
+
+uint8_t map_mod (uint8_t mod) {
   switch (zored_os) {
     case OS_MACOS:
-      switch (windowsKeycode) {
+      switch (mod) {
+        case MOD_LCTL:
+          return MOD_LGUI;
+        case MOD_LGUI:
+          return MOD_LCTL;
+      }
+    case OS_WINDOWS:
+      break;
+  }
+
+  return mod;
+}
+
+void do_one_shot (uint8_t keycode) {
+  set_oneshot_mods(map_mod(keycode));
+}
+
+uint8_t map_code (uint8_t keycode) {
+  switch (zored_os) {
+    case OS_MACOS:
+      switch (keycode) {
         case KC_LCTRL:
           return KC_LGUI;
         case KC_RCTRL:
@@ -43,27 +64,28 @@ uint8_t map_windows_keycode (uint8_t windowsKeycode) {
       break;
   }
 
-  return windowsKeycode;
+
+  return keycode;
 }
 
 void code_down(uint8_t code) {
-  register_code(map_windows_keycode(code));
+  register_code(map_code(code));
 }
 
 void code_up(uint8_t code) {
-  unregister_code(map_windows_keycode(code));
+  unregister_code(map_code(code));
 }
 
 // Helper functions:
 
 void code_down_2(uint8_t code1, uint8_t code2) {
-  register_code(map_windows_keycode(code1));
-  register_code(map_windows_keycode(code2));
+  register_code(map_code(code1));
+  register_code(map_code(code2));
 }
 
 void code_up_2(uint8_t code1, uint8_t code2) {
-  unregister_code(map_windows_keycode(code1));
-  unregister_code(map_windows_keycode(code2));
+  unregister_code(map_code(code1));
+  unregister_code(map_code(code2));
 }
 
 
@@ -84,6 +106,11 @@ enum do_command {
   DO_NOT_EQUALS,
   DO_EMOJI_PANEL,
   DO_AMPERSAND,
+  DO_NEXT_MAPPING,
+  DO_ONE_SHOT_CTRL,
+  DO_ONE_SHOT_ALT,
+  DO_ONE_SHOT_GUI,
+  DO_ONE_SHOT_SHIFT,
 };
 
 // Advanced commands.
@@ -102,11 +129,26 @@ void run_advanced (uint8_t command) {
     case DO_FIND_END:
       tap_code(KC_ENTER);
       break;
+    case DO_ONE_SHOT_CTRL:
+      do_one_shot(MOD_LCTL);
+      break;
+    case DO_ONE_SHOT_ALT:
+      do_one_shot(MOD_LALT);
+      break;
+    case DO_ONE_SHOT_GUI:
+      do_one_shot(MOD_LGUI);
+      break;
+    case DO_ONE_SHOT_SHIFT:
+      do_one_shot(MOD_LSFT);
+      break;
+    case DO_NEXT_MAPPING:
+      run_advanced(DO_NEXT_LANGUAGE);  
+      break;
     case DO_NEXT_LANGUAGE:
       ; // empty statement.
       uint8_t hold = 0;
       uint8_t tap = 0;
-      uint32_t timeout = 40;
+      uint32_t timeout = 100;
 
       switch (zored_os) {
         case OS_WINDOWS:
@@ -2094,6 +2136,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE,
+  KC_DO_NEXT_LANGUAGE,
+KC_DO_BOOTLOADER,
+
 
   // At the end:
   DYNAMIC_MACRO_RANGE,
@@ -2191,7 +2236,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-1 */ _______,TD(DANCE_KC_HAPPYDANCE),TD(DANCE_KC_SADDANCE),TD(DANCE_KC_STRANGEDANCE),_______,_______,_______,
 /* left-2 */ _______,TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,
 /* left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-4 */ ZKC_BTL,_______,_______,_______,_______,
+/* left-4 */ KC_DO_BOOTLOADER,_______,_______,_______,_______,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
 /* left-thumb-2 */ _______,_______,_______,
@@ -2263,17 +2308,14 @@ void matrix_scan_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  bool complete = false;
   bool pressed = record->event.pressed;
 
-  switch (keycode) {
-    case ZKC_BTL:
-      if (pressed) {
-        run_advanced(DO_BOOTLOADER);
-        complete = true;
-      }
-      break;
 
+  if (!pressed) {
+    return true;
+  }
+
+  switch (keycode) {
     case UC_M_OS:
       zored_os = OS_MACOS;
       break;
@@ -2281,16 +2323,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case UC_M_WC:
       zored_os = OS_WINDOWS;
       break;
-  }
 
-  if (complete) {
-    return false;
-  }
+    // Do keys:
 
+      case KC_DO_NEXT_LANGUAGE:
+        run_advanced(DO_NEXT_LANGUAGE);
+        break;
+  
+      case KC_DO_BOOTLOADER:
+        run_advanced(DO_BOOTLOADER);
+        break;
   
 
-  return true;
-};
+    default:
+      return true;
+  }
+
+  return false;
+}
 
 
 uint32_t layer_state_set_user(uint32_t state) {

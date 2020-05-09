@@ -46,6 +46,26 @@ uint8_t map_code16_hash (uint16_t keycode) {
 }
 {{/mappings}}
 
+uint8_t map_mod (uint8_t mod) {
+  switch (zored_os) {
+    case OS_MACOS:
+      switch (mod) {
+        case MOD_LCTL:
+          return MOD_LGUI;
+        case MOD_LGUI:
+          return MOD_LCTL;
+      }
+    case OS_WINDOWS:
+      break;
+  }
+
+  return mod;
+}
+
+void do_one_shot (uint8_t keycode) {
+  set_oneshot_mods(map_mod(keycode));
+}
+
 uint8_t map_code (uint8_t keycode) {
   switch (zored_os) {
     case OS_MACOS:
@@ -103,6 +123,10 @@ enum do_command {
   DO_EMOJI_PANEL,
   DO_AMPERSAND,
   DO_NEXT_MAPPING,
+  DO_ONE_SHOT_CTRL,
+  DO_ONE_SHOT_ALT,
+  DO_ONE_SHOT_GUI,
+  DO_ONE_SHOT_SHIFT,
 };
 
 // Advanced commands.
@@ -120,6 +144,18 @@ void run_advanced (uint8_t command) {
       break;
     case DO_FIND_END:
       tap_code(KC_ENTER);
+      break;
+    case DO_ONE_SHOT_CTRL:
+      do_one_shot(MOD_LCTL);
+      break;
+    case DO_ONE_SHOT_ALT:
+      do_one_shot(MOD_LALT);
+      break;
+    case DO_ONE_SHOT_GUI:
+      do_one_shot(MOD_LGUI);
+      break;
+    case DO_ONE_SHOT_SHIFT:
+      do_one_shot(MOD_LSFT);
       break;
     case DO_NEXT_MAPPING:
       run_advanced(DO_NEXT_LANGUAGE);  
@@ -363,6 +399,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE,
+  {{{layers.doKeys.names}}}
 
   // At the end:
   DYNAMIC_MACRO_RANGE,
@@ -444,10 +481,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case ZKC_BTL:
-      run_advanced(DO_BOOTLOADER);
-      break;
-
     case UC_M_OS:
       zored_os = OS_MACOS;
       break;
@@ -455,6 +488,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case UC_M_WC:
       zored_os = OS_WINDOWS;
       break;
+
+    {{{layers.doKeys.cases}}}
 
     default:
       return true;
