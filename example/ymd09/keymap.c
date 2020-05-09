@@ -511,17 +511,18 @@ void process_combo_event(uint8_t combo_index, bool pressed) {
 
 enum layers {
 LAYER_DEFAULT = 0,
-  LAYER_LAYER1,
+  LAYER_LAYER1A,
+  LAYER_LAYER1B,
   LAYER_LAYER2,
   LAYER_LAYER3,
+  LAYER_LAYER3B,
   LAYER_LAYER4,
   LAYER_LAYER5,
   LAYER_LAYER6,
   LAYER_LAYER7,
-  LAYER_LAYER8,
-  LAYER_LAYER9,
-  LAYER_NAVIGATION,
-  LAYER_ARROWS
+  LAYER_LAYER8A,
+  LAYER_LAYER8B,
+  LAYER_LAYER9
 };
 
 enum dance_keys {
@@ -539,13 +540,13 @@ enum dance_keys {
 };
 enum dance_action_names {
   ACTION_SEQ__A_1 = 1,
-  ACTION_SEQ__HOLD_LAYER_LAYER1_3,
-  ACTION_SEQ__HOLD_LAYER_NAVIGATION_4,
+  ACTION_SEQ__HOLD_LAYER_LAYER1A_3,
+  ACTION_SEQ__HOLD_LAYER_LAYER1B_4,
   ACTION_SEQ__B_6,
   ACTION_SEQ__HOLD_LAYER_LAYER2_8,
   ACTION_SEQ__C_10,
   ACTION_SEQ__HOLD_LAYER_LAYER3_12,
-  ACTION_SEQ__HOLD_LAYER_ARROWS_13,
+  ACTION_SEQ__HOLD_LAYER_LAYER3B_13,
   ACTION_SEQ__D_15,
   ACTION_SEQ__HOLD_LAYER_LAYER4_17,
   ACTION_SEQ__LCTRL_18,
@@ -559,15 +560,16 @@ enum dance_action_names {
   ACTION_SEQ__HOLD_LAYER_LAYER7_32,
   ACTION_SEQ__LSHIFT_33,
   ACTION_SEQ__H_35,
-  ACTION_SEQ__HOLD_LAYER_LAYER8_37,
-  ACTION_SEQ__I_39,
-  ACTION_SEQ__HOLD_LAYER_LAYER9_41,
-  ACTION_SEQ__RSHIFT_42,
-  ACTION_SEQ__DO_NEXT_MAPPING_44,
-  ACTION_SEQ__DO_NEXT_LANGUAGE_47
+  ACTION_SEQ__HOLD_LAYER_LAYER8A_37,
+  ACTION_SEQ__HOLD_LAYER_LAYER8B_38,
+  ACTION_SEQ__I_40,
+  ACTION_SEQ__HOLD_LAYER_LAYER9_42,
+  ACTION_SEQ__RSHIFT_43,
+  ACTION_SEQ__DO_NEXT_MAPPING_45,
+  ACTION_SEQ__DO_NEXT_LANGUAGE_48
 };
 
-static int dance_key_states[27] = {0};
+static int dance_key_states[28] = {0};
 
 void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
   if (state->count == 0) {
@@ -627,7 +629,7 @@ void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
  
 
     case DANCE_KC_Y8DANCE:
-      if (state->count <= 1) {
+      if (state->count <= 2) {
         return;
       }
       break;
@@ -696,15 +698,15 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         // Hold actions:
         switch (state->count) {
           case 1:
-            layer_on(LAYER_LAYER1);
+            layer_on(LAYER_LAYER1A);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER1_3;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER1A_3;
             return;
       
           case 2:
-            layer_on(LAYER_NAVIGATION);
+            layer_on(LAYER_LAYER1B);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_NAVIGATION_4;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER1B_4;
             return;
       
           default:
@@ -776,9 +778,9 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
             return;
       
           case 2:
-            layer_on(LAYER_ARROWS);
+            layer_on(LAYER_LAYER3B);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_ARROWS_13;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER3B_13;
             return;
       
           default:
@@ -966,9 +968,15 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         // Hold actions:
         switch (state->count) {
           case 1:
-            layer_on(LAYER_LAYER8);
+            layer_on(LAYER_LAYER8A);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER8_37;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER8A_37;
+            return;
+      
+          case 2:
+            layer_on(LAYER_LAYER8B);
+    
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER8B_38;
             return;
       
           default:
@@ -1002,12 +1010,12 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
           case 1:
             layer_on(LAYER_LAYER9);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER9_41;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER9_42;
             return;
       
           case 2:
             code_down(KC_RSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__RSHIFT_42;
+            dance_key_states[dance_key] = ACTION_SEQ__RSHIFT_43;
             return;
       
           default:
@@ -1020,13 +1028,13 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         switch (state->count) {
           case 1:
             code_down(KC_I);
-            dance_key_states[dance_key] = ACTION_SEQ__I_39;
+            dance_key_states[dance_key] = ACTION_SEQ__I_40;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
               code_down(KC_I);
-            dance_key_states[dance_key] = ACTION_SEQ__I_39;
+            dance_key_states[dance_key] = ACTION_SEQ__I_40;
               code_up(KC_I);
             }
             return;
@@ -1043,12 +1051,12 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         // Tap actions:
         switch (state->count) {
           case 1:
-            dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_MAPPING_44;
+            dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_MAPPING_45;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
-              dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_MAPPING_44;
+              dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_MAPPING_45;
               run_advanced(DO_NEXT_MAPPING);
             }
             return;
@@ -1065,12 +1073,12 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         // Tap actions:
         switch (state->count) {
           case 1:
-            dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_47;
+            dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_48;
             return;
       
           default:
             for (int i=0; i < state->count; i++) {
-              dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_47;
+              dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_48;
               run_advanced(DO_NEXT_LANGUAGE);
             }
             return;
@@ -1084,12 +1092,12 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
 void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
   uint16_t dance_key = state->keycode - QK_TAP_DANCE;
   switch (dance_key_states[dance_key]) {
-    case ACTION_SEQ__HOLD_LAYER_LAYER1_3:
-            layer_off(LAYER_LAYER1);
+    case ACTION_SEQ__HOLD_LAYER_LAYER1A_3:
+            layer_off(LAYER_LAYER1A);
             break;
     
-          case ACTION_SEQ__HOLD_LAYER_NAVIGATION_4:
-            layer_off(LAYER_NAVIGATION);
+          case ACTION_SEQ__HOLD_LAYER_LAYER1B_4:
+            layer_off(LAYER_LAYER1B);
             break;
         case ACTION_SEQ__A_1:
             code_up(KC_A);
@@ -1106,8 +1114,8 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             layer_off(LAYER_LAYER3);
             break;
     
-          case ACTION_SEQ__HOLD_LAYER_ARROWS_13:
-            layer_off(LAYER_ARROWS);
+          case ACTION_SEQ__HOLD_LAYER_LAYER3B_13:
+            layer_off(LAYER_LAYER3B);
             break;
         case ACTION_SEQ__C_10:
             code_up(KC_C);
@@ -1157,31 +1165,35 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             code_up(KC_G);
             break;
     
-        case ACTION_SEQ__HOLD_LAYER_LAYER8_37:
-            layer_off(LAYER_LAYER8);
+        case ACTION_SEQ__HOLD_LAYER_LAYER8A_37:
+            layer_off(LAYER_LAYER8A);
+            break;
+    
+          case ACTION_SEQ__HOLD_LAYER_LAYER8B_38:
+            layer_off(LAYER_LAYER8B);
             break;
         case ACTION_SEQ__H_35:
             code_up(KC_H);
             break;
     
-        case ACTION_SEQ__HOLD_LAYER_LAYER9_41:
+        case ACTION_SEQ__HOLD_LAYER_LAYER9_42:
             layer_off(LAYER_LAYER9);
             break;
     
-          case ACTION_SEQ__RSHIFT_42:
+          case ACTION_SEQ__RSHIFT_43:
             code_up(KC_RSHIFT);
             break;
-        case ACTION_SEQ__I_39:
+        case ACTION_SEQ__I_40:
             code_up(KC_I);
             break;
     
         
-        case ACTION_SEQ__DO_NEXT_MAPPING_44:
+        case ACTION_SEQ__DO_NEXT_MAPPING_45:
             run_advanced(DO_NEXT_MAPPING);
             break;
     
         
-        case ACTION_SEQ__DO_NEXT_LANGUAGE_47:
+        case ACTION_SEQ__DO_NEXT_LANGUAGE_48:
             run_advanced(DO_NEXT_LANGUAGE);
             break;
     
@@ -1238,7 +1250,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
   ,
 
-[LAYER_LAYER1] = LAYOUT(
+[LAYER_LAYER1A] = LAYOUT(
   
 /* 0 */ _______,KC_1,KC_2,
 /* 1 */ KC_3,KC_4,KC_5,
@@ -1246,11 +1258,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
   ,
 
+[LAYER_LAYER1B] = LAYOUT(
+  
+/* 0 */ TG(LAYER_LAYER1B),KC_PGDN,KC_PGUP,
+/* 1 */ KC_BTN1,KC_MS_U,KC_BTN2,
+/* 2 */ KC_MS_L,KC_MS_D,KC_MS_R
+)
+  ,
+
 [LAYER_LAYER2] = LAYOUT(
   
-/* 0 */ KC_9,_______,KC_0,
-/* 1 */ KC_MINS,KC_ESC,KC_EQL,
-/* 2 */ KC_BSPC,KC_SPC,KC_TAB
+/* 0 */ KC_MINS,_______,KC_PPLS,
+/* 1 */ KC_9,KC_ENT,KC_0,
+/* 2 */ KC_SLSH,KC_EQL,KC_PAST
 )
   ,
 
@@ -1259,6 +1279,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* 0 */ UC_M_WC,UC_M_OS,_______,
 /* 1 */ TD(DANCE_KC_MAPPINGDANCE),TD(DANCE_KC_LANGUAGEDANCE),_______,
 /* 2 */ KC_DO_BOOTLOADER,_______,_______
+)
+  ,
+
+[LAYER_LAYER3B] = LAYOUT(
+  
+/* 0 */ KC_ESC,KC_ENT,TG(LAYER_LAYER3B),
+/* 1 */ KC_PGDN,KC_UP,KC_PGUP,
+/* 2 */ KC_LEFT,KC_DOWN,KC_RGHT
 )
   ,
 
@@ -1288,17 +1316,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_LAYER7] = LAYOUT(
   
-/* 0 */ TG(LAYER_NAVIGATION),KC_PGUP,KC_ESC,
+/* 0 */ KC_BSPC,KC_SPC,KC_ENT,
 /* 1 */ KC_DO_ONE_SHOT_CTRL,KC_DO_ONE_SHOT_ALT,KC_DO_ONE_SHOT_GUI,
 /* 2 */ _______,KC_PGDN,KC_DO_ONE_SHOT_SHIFT
 )
   ,
 
-[LAYER_LAYER8] = LAYOUT(
+[LAYER_LAYER8A] = LAYOUT(
   
 /* 0 */ RGB_VAD,RGB_TOG,RGB_VAI,
 /* 1 */ RGB_HUD,RGB_MOD,RGB_HUI,
 /* 2 */ RGB_SAD,_______,RGB_SAI
+)
+  ,
+
+[LAYER_LAYER8B] = LAYOUT(
+  
+/* 0 */ TG(LAYER_LAYER1B),_______,TG(LAYER_LAYER3B),
+/* 1 */ _______,_______,_______,
+/* 2 */ _______,_______,_______
 )
   ,
 
@@ -1307,22 +1343,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* 0 */ KC_QUOT,KC_DOT,KC_GRV,
 /* 1 */ KC_SLSH,KC_BSLS,KC_DELETE,
 /* 2 */ KC_ESC,KC_TAB,_______
-)
-  ,
-
-[LAYER_NAVIGATION] = LAYOUT(
-  
-/* 0 */ TG(LAYER_NAVIGATION),KC_PGDN,KC_PGUP,
-/* 1 */ KC_BTN1,KC_MS_U,KC_BTN2,
-/* 2 */ KC_MS_L,KC_MS_D,KC_MS_R
-)
-  ,
-
-[LAYER_ARROWS] = LAYOUT(
-  
-/* 0 */ KC_ESC,KC_ENT,_______,
-/* 1 */ KC_PGDN,KC_UP,KC_PGUP,
-/* 2 */ KC_LEFT,KC_DOWN,KC_RGHT
 )
   
 };

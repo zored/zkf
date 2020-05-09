@@ -294,21 +294,31 @@ keyboards:
         - [y1Dance,y2Dance,y3Dance]
         - [y4Dance,y5Dance,y6Dance]
         - [y7Dance,y8Dance,y9Dance]
-      layer1:
+      layer1A:
         keys:
         - [~,1,2]
         - [3,4,5]
         - [6,7,8]
+      layer1B:
+        keys:
+        - [toggleLayer1B, pageDown, pageUp]
+        - [mouseLeftButton, mouseUp, mouseRightButton]
+        - [mouseLeft, mouseDown, mouseRight]
       layer2:
         keys:
-        - [9,~,0]
-        - ['-',esc,'=']
-        - [backspace,space,enter]
-      layer3:
+        - ['-',~,'+']
+        - [9,enter,0]
+        - ['/','=','*']
+      layer3A:
         keys:
         - [windowsMode,macosMode,~]
         - [mappingDance,languageDance,~]
         - [doBootloader,~,~]
+      layer3B:
+        keys:
+        - [esc,enter,toggleLayer3B]
+        - [pageDown, up, pageUp]
+        - [left, down, right]
       layer4:
         keys:
         - [j,k,l]
@@ -326,39 +336,34 @@ keyboards:
         - ["'",'.','`']
       layer7:
         keys:
-        - [toggleNavigation,pageUp,esc]
+        - [backspace, space, enter]
         - [doOneShotCtrl,doOneShotAlt,doOneShotGui]
         - [~,pageDown,doOneShotShift]
-      layer8:
+      layer8A:
         keys:
         - [rgbBriDown,rgbToggle,rgbBriUp]
         - [rgbHueDown,rgbNext,rgbHueUp]
         - [rgbSatDown,~,rgbSatUp]
+      layer8B:
+        keys:
+        - [toggleLayer1B,~,toggleLayer3B]
+        - [~,~,~]
+        - [~,~,~]
       layer9:
         keys:
         - ["'",'.','`']  
         - ['/','\',delete]
         - [esc,tab,~]
-      navigation:
-        keys:
-        - [toggleNavigation, pageDown, pageUp]
-        - [mouseLeftButton, mouseUp, mouseRightButton]
-        - [mouseLeft, mouseDown, mouseRight]
-      arrows: 
-        keys:
-        - [esc,enter,~]
-        - [pageDown, up, pageUp]
-        - [left, down, right]
 keys:
-  y1Dance: {tap: [[a]], hold: [[holdLayer1],[holdNavigation]]}
+  y1Dance: {tap: [[a]], hold: [[holdLayer1A],[holdLayer1B]]}
   y2Dance: {tap: [[b]], hold: [[holdLayer2]]}
-  y3Dance: {tap: [[c]], hold: [[holdLayer3],[holdArrows]]}
-  y4Dance: {tap: [[d]], hold: [[holdLayer4],[lCtrl]]}
-  y5Dance: {tap: [[e]], hold: [[holdLayer5],[lAlt]]}
-  y6Dance: {tap: [[f]], hold: [[holdLayer6],[lGui]]}
-  y7Dance: {tap: [[g]], hold: [[holdLayer7],[lShift]]}
-  y8Dance: {tap: [[h]], hold: [[holdLayer8]]}
-  y9Dance: {tap: [[i]], hold: [[holdLayer9],[rShift]]}
+  y3Dance: {tap: [[c]], hold: [[holdLayer3A],[holdLayer3B]]}
+  y4Dance: {tap: [[d]], hold: [[holdLayer4], [lCtrl]]}
+  y5Dance: {tap: [[e]], hold: [[holdLayer5], [lAlt]]}
+  y6Dance: {tap: [[f]], hold: [[holdLayer6], [lGui]]}
+  y7Dance: {tap: [[g]], hold: [[holdLayer7], [lShift]]}
+  y8Dance: {tap: [[h]], hold: [[holdLayer8A],[holdLayer8B]]}
+  y9Dance: {tap: [[i]], hold: [[holdLayer9], [rShift]]}
   mappingDance:  {tap: [[doNextMapping]]}
   languageDance: {tap: [[doNextLanguage]]}
   tabDance:
