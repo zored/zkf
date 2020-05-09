@@ -1,6 +1,25 @@
 .key {
 	display: inline-block;
-	width: 30px;
+	width: 80px;
+	overflow: hidden;
+}
+
+.keys-row {
+	white-space: nowrap;
+}
+
+.key-dance {
+	background-color: #0f0;
+	display: block;
+	cursor: pointer;
+}
+
+.key-dance:hover{
+	background-color: #afa;
+}
+
+.key:hover{
+	background-color: #fff;
 }
 
 .layer {

@@ -312,7 +312,7 @@ keyboards:
       layer3A:
         keys:
         - [windowsMode,macosMode,~]
-        - [mappingDance,languageDance,~]
+        - [doNextMapping,doNextLanguage,~]
         - [doBootloader,~,~]
       layer3B:
         keys:
@@ -364,8 +364,6 @@ keys:
   y7Dance: {tap: [[g]], hold: [[holdLayer7], [lShift]]}
   y8Dance: {tap: [[h]], hold: [[holdLayer8A],[holdLayer8B]]}
   y9Dance: {tap: [[i]], hold: [[holdLayer9], [rShift]]}
-  mappingDance:  {tap: [[doNextMapping]]}
-  languageDance: {tap: [[doNextLanguage]]}
   tabDance:
     tap:
     - [tab]

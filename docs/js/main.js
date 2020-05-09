@@ -1,52 +1,195 @@
+const createDiv = (css, children) => {
+  const div = document.createElement('div');
+  children.forEach(c => div.appendChild(c));
+  div.className = css;
+  return div;
+}
+
+const createHeading = (depth, name) => {
+   const h = document.createElement('h' + (depth + 1));
+   h.innerText = name;
+   return h;
+}
+
 window.onload = async () => {
   const config = await loadConfig();
-  document.getElementById('content').innerHTML = wrap(
-    '<div class="keybaords block"><h2>My keybaords</h2>',
-    '</div>',
-    config.keyboards,
-    (keyboard, keybaordName) => wrap(
-      `<div class="keybaord block"><h3 id="${keybaordName}">Keyboard "${keybaordName}"</h2>`,
-      '</div>',
-      keyboard.layers,
-      (layer, layerName) => wrap(
-        `<div class="layer block"><h4 id="${keybaordName}-${layerName}">Layer "${layerName}"</h3>`,
-        '</div>',
-        layer.keys,
-        (keys, keysName) => Number.isInteger(keysName)
-          ? keyRowCallback(keys, keysName)
-          : keyBlockCallback(keys, keysName, keyboard + '-' + layerName),
+  const byId = id => document.getElementById(id);
+  const $keyboard = byId('keyboard');
+  const $layer = byId('layer');
+  const $mapping = byId('mapping');
+  let hashInput = location.hash.length > 1 &&
+    JSON.parse(decodeURIComponent(location.hash.substring(1)))
+  const getInput = () => {
+    const getValue = ($e, o) => {
+      o = o || {};
+
+      let value = null;
+      if ($e.selectedIndex >= 0) {
+        value = $e.options[$e.selectedIndex].value;
+      }
+      
+      if (value && o[value]) {
+        return value
+      }
+
+      if (value == 'all') {
+        return value
+      }
+
+
+      const valueHolders = toArray(o);
+      if (valueHolders.length === 0) {
+        value = 'all'
+      } else {
+        value = valueHolders.map(([k]) => k)[0]; 
+      }
+
+      if (hashInput) {
+        debugger
+        value = hashInput[$e.id]
+      }
+
+      $e.value = value;
+      return value;
+    };
+
+    const keyboards = config.keyboards
+    const keyboard = getValue($keyboard, keyboards)
+
+    const layers = keyboards[keyboard]?.layers;
+    const layer = getValue($layer, layers);
+
+    const mappings = keyboards[keyboard]?.mappings;
+    const mapping = getValue($mapping, mappings);
+
+    const getOption = (name, selected) => `
+      <option value="${name}" ${selected ? 'selected="selected"' : ''} >${name}</option>
+    `;
+
+    const setOptions = ($e, configs, value) => {
+      const data = toArray(configs);
+      $e.style.display = (data.length === 0)
+        ? 'none'
+        : 'inline';
+
+      data.unshift([['all']])
+      if (!value && data.length) {
+        value = 'all'
+      }
+      $e.innerHTML = data
+        .map(([v]) => getOption(v, value === v));
+    }
+
+    setOptions($keyboard, keyboards, keyboard);
+    setOptions($layer, layers, layer);
+    setOptions($mapping, mappings, mapping);
+
+    const result = {keyboard, layer, mapping};
+    location.hash = JSON.stringify(result);
+    return result;
+  }
+  const refresh = () => {
+    const input = getInput();
+    const filter = (o, k) => {
+      if (k === 'all') {
+        return o;
+      }
+      return {[k]: o[k]};
+    };
+
+
+
+    const content = wrap(
+      createDiv('keyboards block', []),
+      filter(config.keyboards, input.keyboard),
+      (keyboard, keyboardName) => wrap(
+        createDiv('keyboard block', [createHeading(1, keyboardName)]),
+        filter(keyboard.layers, input.layer),
+        (layer, layerName) => wrap(
+          createDiv('layer block', [createHeading(2, layerName)]),
+          layer.keys,
+          (keys, keysName) => {
+            const mapping = input.mapping && input.mapping !== 'all' && keyboard.mappings[input.mapping];
+            return Number.isInteger(keysName)
+              ? keyRowCallback(keys, keysName, mapping, config.keys)
+              : keyBlockCallback(keys, keysName, keyboard + '-' + layerName, mapping, config.keys)
+          }
+        ),
       ),
-    ),
-  );
+    );
+
+    byId('content').innerHTML = ''
+    byId('content').appendChild(content)
+  }
+  refresh();
+  hashInput = null;
+
+  [$keyboard, $layer, $mapping].forEach($e => $e.addEventListener('change', refresh));
+  return;
 };
 
-function keyBlockCallback(keys, blockName, idPrefix) {
+function toArray(o) {
+  return Object.entries(o || {});
+}
+
+function keyBlockCallback(keys, blockName, idPrefix, mapping, dance) {
   return wrap(
-    `<div class="keys-block block"><h5 id="${idPrefix}+${blockName}">Block ${blockName}</h4>`,
-    '</div>',
+    createDiv('keys-block block', [createHeading(3, blockName)]),
     keys,
-    keyRowCallback,
+    (r, n) => keyRowCallback(r, n, mapping, dance),
   );
 }
 
-function keyRowCallback(row) {
+function keyRowCallback(row, name, mapping, dance) {
   return wrap(
-    '<div class="keys-row">',
-    '</div>',
+    createDiv('keys-row', []),
     row,
-    key => `<span class="key" title="${key}">${((key || '~') + '').substring(0, 3)}</span>`,
+    key => getKey(key, mapping, dance),
   );
 }
 
-function wrap(left, right, inside, map) {
-  if (map !== undefined) {
-    inside = _.map(inside, map);
+function getKey(key, mapping, danceKeys) {
+  if (mapping) {
+    const indexOne = mapping[0].indexOf(key)
+    if (indexOne >= 0) {
+      key = mapping[1][indexOne];
+    }
   }
+  
+  let $key = document.createTextNode((key || '~') + '');
+  const danceKey = danceKeys[key];
+  if (danceKey) {
+     $key = createSpan('key-dance', 'Dance key', [
+        document.createTextNode(danceKey.tap[[0]])
+     ]);
+     const info = [
+       [danceKey.tap.slice(1), 'Tap'],
+       [danceKey.hold, 'Hold'],
+     ].flatMap(
+       ([keys, name]) => (keys || []).map(
+         (actions, i) => `- ${name} #${i+1}: ${actions.join(' + ')}`
+       )
+     ).join('\n') || 'Only one click action';
+     $key.addEventListener('click', () => alert(info))
+  }
+  return createSpan('key', key, [$key])
+}
 
-  if (Array.isArray(inside)) {
-    inside = inside.join('');
+function createSpan(css, title, children) {
+  const span = document.createElement('span')
+  span.className = css;
+  span.title = title;
+  children.forEach(c => span.appendChild(c))
+  return span;
+}
+
+function wrap(parent, child, map) {
+  if (map !== undefined) {
+    child = _.map(child, map);
   }
-  return left + inside + right;
+  const children = Array.isArray(child) ? child : [child];
+  children.map(e => parent.appendChild(e));
+  return parent;
 }
 
 async function loadConfig() {
