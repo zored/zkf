@@ -33,7 +33,7 @@ keyboards:
             - [tab, ~, ~, ~, ~, ~, ~]
             - [capsLock, ~, ~, ~, ~, ~]
             - [lShift, z, x, c, ~, ~, ~]
-            - [lCtrl, lAlt, lGui, ~, ~]
+            - [lCtrl, lAlt, lGui, holdGameRight, holdGameNumbers]
           left-thumb:
             - [~, ~]
             - [~]
@@ -48,6 +48,52 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, tab, ~]
+      gameNumbers:
+        lights: [2,3]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, 1, 2, 3, ~, ~, ~]
+            - [~, 4, 5, 6, ~, ~]
+            - [~, 7, 8, 9, ~, ~, ~]
+            - [~, ~, 0, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [   ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+      gameRight:
+        lights: [2,3]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, y, u, i, o, p, ~]
+            - [~, h, j, k, l, ';']
+            - [~, n, m, ',', '.', '/', ~]
+            - [~, ~, 0, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [   ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
       symbol:
         lights: [2]
         keys:
@@ -380,6 +426,7 @@ keys:
     hold: &lCtrlDance
     - [lCtrl]
     - [lCtrl, lShift]
+    - [lCtrl, lAlt, lGui]
   xDance:
     tap: [[x]]
     hold: &lAltDance

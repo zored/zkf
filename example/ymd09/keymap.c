@@ -514,7 +514,7 @@ LAYER_DEFAULT = 0,
   LAYER_LAYER1A,
   LAYER_LAYER1B,
   LAYER_LAYER2,
-  LAYER_LAYER3,
+  LAYER_LAYER3A,
   LAYER_LAYER3B,
   LAYER_LAYER4,
   LAYER_LAYER5,
@@ -534,9 +534,7 @@ enum dance_keys {
   DANCE_KC_Y6DANCE,
   DANCE_KC_Y7DANCE,
   DANCE_KC_Y8DANCE,
-  DANCE_KC_Y9DANCE,
-  DANCE_KC_MAPPINGDANCE,
-  DANCE_KC_LANGUAGEDANCE
+  DANCE_KC_Y9DANCE
 };
 enum dance_action_names {
   ACTION_SEQ__A_1 = 1,
@@ -545,7 +543,7 @@ enum dance_action_names {
   ACTION_SEQ__B_6,
   ACTION_SEQ__HOLD_LAYER_LAYER2_8,
   ACTION_SEQ__C_10,
-  ACTION_SEQ__HOLD_LAYER_LAYER3_12,
+  ACTION_SEQ__HOLD_LAYER_LAYER3A_12,
   ACTION_SEQ__HOLD_LAYER_LAYER3B_13,
   ACTION_SEQ__D_15,
   ACTION_SEQ__HOLD_LAYER_LAYER4_17,
@@ -564,12 +562,10 @@ enum dance_action_names {
   ACTION_SEQ__HOLD_LAYER_LAYER8B_38,
   ACTION_SEQ__I_40,
   ACTION_SEQ__HOLD_LAYER_LAYER9_42,
-  ACTION_SEQ__RSHIFT_43,
-  ACTION_SEQ__DO_NEXT_MAPPING_45,
-  ACTION_SEQ__DO_NEXT_LANGUAGE_48
+  ACTION_SEQ__RSHIFT_43
 };
 
-static int dance_key_states[28] = {0};
+static int dance_key_states[26] = {0};
 
 void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
   if (state->count == 0) {
@@ -637,20 +633,6 @@ void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
 
     case DANCE_KC_Y9DANCE:
       if (state->count <= 2) {
-        return;
-      }
-      break;
- 
-
-    case DANCE_KC_MAPPINGDANCE:
-      if (state->count <= 1) {
-        return;
-      }
-      break;
- 
-
-    case DANCE_KC_LANGUAGEDANCE:
-      if (state->count <= 1) {
         return;
       }
       break;
@@ -772,9 +754,9 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
         // Hold actions:
         switch (state->count) {
           case 1:
-            layer_on(LAYER_LAYER3);
+            layer_on(LAYER_LAYER3A);
     
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER3_12;
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_LAYER3A_12;
             return;
       
           case 2:
@@ -1042,50 +1024,6 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
       }
       break;
     
-    case DANCE_KC_MAPPINGDANCE:
-      if (state->pressed) {
-        // Hold actions:
-        return;
-      }
-      else {
-        // Tap actions:
-        switch (state->count) {
-          case 1:
-            dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_MAPPING_45;
-            return;
-      
-          default:
-            for (int i=0; i < state->count; i++) {
-              dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_MAPPING_45;
-              run_advanced(DO_NEXT_MAPPING);
-            }
-            return;
-        }
-      }
-      break;
-    
-    case DANCE_KC_LANGUAGEDANCE:
-      if (state->pressed) {
-        // Hold actions:
-        return;
-      }
-      else {
-        // Tap actions:
-        switch (state->count) {
-          case 1:
-            dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_48;
-            return;
-      
-          default:
-            for (int i=0; i < state->count; i++) {
-              dance_key_states[dance_key] = ACTION_SEQ__DO_NEXT_LANGUAGE_48;
-              run_advanced(DO_NEXT_LANGUAGE);
-            }
-            return;
-        }
-      }
-      break;
-    
   }
 }
 
@@ -1110,8 +1048,8 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             code_up(KC_B);
             break;
     
-        case ACTION_SEQ__HOLD_LAYER_LAYER3_12:
-            layer_off(LAYER_LAYER3);
+        case ACTION_SEQ__HOLD_LAYER_LAYER3A_12:
+            layer_off(LAYER_LAYER3A);
             break;
     
           case ACTION_SEQ__HOLD_LAYER_LAYER3B_13:
@@ -1187,16 +1125,6 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             code_up(KC_I);
             break;
     
-        
-        case ACTION_SEQ__DO_NEXT_MAPPING_45:
-            run_advanced(DO_NEXT_MAPPING);
-            break;
-    
-        
-        case ACTION_SEQ__DO_NEXT_LANGUAGE_48:
-            run_advanced(DO_NEXT_LANGUAGE);
-            break;
-    
   }
 
   dance_key_states[dance_key] = 0;
@@ -1220,9 +1148,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [DANCE_KC_Y6DANCE] = DANCE_MODIFIER(),
   [DANCE_KC_Y7DANCE] = DANCE_MODIFIER(),
   [DANCE_KC_Y8DANCE] = DANCE_MODIFIER(),
-  [DANCE_KC_Y9DANCE] = DANCE_MODIFIER(),
-  [DANCE_KC_MAPPINGDANCE] = DANCE_MODIFIER(),
-  [DANCE_KC_LANGUAGEDANCE] = DANCE_MODIFIER()
+  [DANCE_KC_Y9DANCE] = DANCE_MODIFIER()
 };
 
 enum custom_keycodes {
@@ -1274,10 +1200,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
   ,
 
-[LAYER_LAYER3] = LAYOUT(
+[LAYER_LAYER3A] = LAYOUT(
   
 /* 0 */ UC_M_WC,UC_M_OS,_______,
-/* 1 */ TD(DANCE_KC_MAPPINGDANCE),TD(DANCE_KC_LANGUAGEDANCE),_______,
+/* 1 */ KC_DO_NEXT_MAPPING,KC_DO_NEXT_LANGUAGE,_______,
 /* 2 */ KC_DO_BOOTLOADER,_______,_______
 )
   ,
