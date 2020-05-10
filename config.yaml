@@ -350,11 +350,21 @@ keyboards:
         - [toggleLayer1B, pageDown, pageUp]
         - [mouseLeftButton, mouseUp, mouseRightButton]
         - [mouseLeft, mouseDown, mouseRight]
-      layer2:
+      layer2A:
         keys:
         - ['-',~,'+']
         - [9,enter,0]
         - ['/','=','*']
+      layer2B:
+        keys:
+        - [F1Dance,~,F2Dance]
+        - [F3Dance,F4Dance,F5Dance]
+        - [F6Dance,F7Dance,F8Dance]
+      layer2C:
+        keys:
+        - [esc,~,~]
+        - [F9Dance,~,F10Dance]
+        - [home,insert,end]
       layer3A:
         keys:
         - [windowsMode,macosMode,~]
@@ -402,7 +412,7 @@ keyboards:
         - [esc,tab,~]
 keys:
   y1Dance: {tap: [[a]], hold: [[holdLayer1A],[holdLayer1B]]}
-  y2Dance: {tap: [[b]], hold: [[holdLayer2]]}
+  y2Dance: {tap: [[b]], hold: [[holdLayer2A]]}
   y3Dance: {tap: [[c]], hold: [[holdLayer3A],[holdLayer3B]]}
   y4Dance: {tap: [[d]], hold: [[holdLayer4], [lCtrl]]}
   y5Dance: {tap: [[e]], hold: [[holdLayer5], [lAlt]]}
