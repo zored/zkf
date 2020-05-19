@@ -33,7 +33,7 @@ keyboards:
             - [tab, ~, ~, ~, ~, ~, ~]
             - [capsLock, ~, ~, ~, ~, ~]
             - [lShift, z, x, c, ~, ~, ~]
-            - [lCtrl, lAlt, lGui, holdGameRight, holdGameNumbers]
+            - [lCtrl, lAlt, lGui, holdGameMirror, holdGameNumbers]
           left-thumb:
             - [~, ~]
             - [~]
@@ -43,7 +43,7 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~]
             - [   ~, ~, ~, ~, ';', "'"]
             - [~, ~, ~, ',', '.', '/', rShift]
-            - [~, ~, ~, ~, ~]
+            - [toggleGameMouse, ~, ~, ~, ~]
           right-thumb:
             - [~, ~]
             - [~]
@@ -71,7 +71,30 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
-      gameRight:
+      gameMouse:
+        lights: [1,3]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, 0, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, mouseLeftButton, mouseUp, mouseRightButton, ~, ~]
+            - [   ~, mouseLeft,mouseDown,mouseRight, ~, ~]
+            - [~, ~, wheelDown, wheelClick, wheelUp, ~, ~]
+            - [toggleGameMouse, ~, ~, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+      gameMirror:
         lights: [2,3]
         keys:
           left:
@@ -83,7 +106,7 @@ keyboards:
           left-thumb:
             - [~, ~]
             - [~]
-            - [~, ~, ~]
+            - [enter, delete, ~]
           right:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~]
@@ -498,7 +521,7 @@ keys:
     hold:
     - [holdEmoji]
     - [holdEmoji, lCtrl]
-    - [holdEmoji, lCtrl, lAlt]
+    - [toggleEmoji]
 dance_enemies: # holding one group means you must tap the other one.
   modifiers:
     - [zDance, xDance, cDance]
@@ -583,6 +606,7 @@ map:
     mouseLeftButton: BTN1
     mouseRight: MS_R
     mouseRightButton: BTN2
+    wheelClick: BTN3
     mouseUp: MS_U
     pageDown: PGDN
     pageUp: PGUP

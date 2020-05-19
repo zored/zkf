@@ -157,26 +157,7 @@ void run_advanced (uint8_t command) {
       run_advanced(DO_NEXT_LANGUAGE);  
       break;
     case DO_NEXT_LANGUAGE:
-      ; // empty statement.
-      uint8_t hold = 0;
-      uint8_t tap = 0;
-      uint32_t timeout = 100;
-
-      switch (zored_os) {
-        case OS_WINDOWS:
-          hold = KC_LALT;
-          tap = KC_LSHIFT;
-          break;
-        case OS_MACOS:
-          hold = KC_LGUI;
-          tap = KC_SPC;
-          break;
-      }
-      register_code(hold);
-      wait_ms(timeout);
-      tap_code(tap);
-      wait_ms(timeout);
-      unregister_code(hold);
+      tap_code(KC_CAPSLOCK);
       break;
     case DO_EMOJI_PANEL:
       switch (zored_os) {
@@ -423,7 +404,8 @@ enum layers {
 LAYER_DEFAULT = 0,
   LAYER_GAME,
   LAYER_GAMENUMBERS,
-  LAYER_GAMERIGHT,
+  LAYER_GAMEMOUSE,
+  LAYER_GAMEMIRROR,
   LAYER_SYMBOL,
   LAYER_NAVIGATION,
   LAYER_EMOJI,
@@ -482,7 +464,7 @@ enum dance_action_names {
   ACTION_SEQ__QUOT_28,
   ACTION_SEQ__HOLD_LAYER_EMOJI_30,
   ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_31,
-  ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_32,
+  ACTION_SEQ__TOGGLE_LAYER_EMOJI_32,
   ACTION_SEQ__COMM_34,
   ACTION_SEQ__RGUI_36,
   ACTION_SEQ__RGUI__RSHIFT_37,
@@ -1043,9 +1025,8 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
             return;
       
           case 3:
-            layer_on(LAYER_EMOJI);
-    code_down_2(KC_LCTRL, KC_LALT);
-            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_32;
+            layer_invert(LAYER_EMOJI);
+            dance_key_states[dance_key] = ACTION_SEQ__TOGGLE_LAYER_EMOJI_32;
             return;
       
           default:
@@ -1947,10 +1928,6 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
           case ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL_31:
             layer_off(LAYER_EMOJI);code_up(KC_LCTRL);
             break;
-    
-          case ACTION_SEQ__HOLD_LAYER_EMOJI__LCTRL__LALT_32:
-            layer_off(LAYER_EMOJI);code_up_2(KC_LCTRL, KC_LALT);
-            break;
         case ACTION_SEQ__QUOT_28:
             code_up(KC_QUOT);
             break;
@@ -2207,7 +2184,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,
 /* left-2 */ KC_CAPSLOCK,_______,_______,_______,_______,_______,
 /* left-3 */ KC_LSHIFT,KC_Z,KC_X,KC_C,_______,_______,_______,
-/* left-4 */ KC_LCTRL,KC_LALT,KC_LGUI,MO(LAYER_GAMERIGHT),MO(LAYER_GAMENUMBERS),
+/* left-4 */ KC_LCTRL,KC_LALT,KC_LGUI,MO(LAYER_GAMEMIRROR),MO(LAYER_GAMENUMBERS),
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
 /* left-thumb-2 */ _______,_______,KC_LOCK,
@@ -2215,7 +2192,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* right-1 */ _______,_______,_______,_______,_______,_______,_______,
 /* right-2 */ _______,_______,_______,_______,KC_SCOLON,KC_QUOT,
 /* right-3 */ _______,_______,_______,KC_COMM,KC_DOT,KC_SLSH,KC_RSHIFT,
-/* right-4 */ _______,_______,_______,_______,_______,
+/* right-4 */ TG(LAYER_GAMEMOUSE),_______,_______,_______,_______,
 /* right-thumb-0 */ _______,_______,
 /* right-thumb-1 */ _______,
 /* right-thumb-2 */ _______,KC_TAB,_______
@@ -2243,7 +2220,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
   ,
 
-[LAYER_GAMERIGHT] = LAYOUT_ergodox(
+[LAYER_GAMEMOUSE] = LAYOUT_ergodox(
+  
+/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-1 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-2 */ _______,_______,_______,_______,_______,_______,
+/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-4 */ _______,_______,KC_0,_______,_______,
+/* left-thumb-0 */ _______,_______,
+/* left-thumb-1 */ _______,
+/* left-thumb-2 */ _______,_______,_______,
+/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* right-1 */ _______,_______,KC_BTN1,KC_MS_U,KC_BTN2,_______,_______,
+/* right-2 */ _______,KC_MS_L,KC_MS_D,KC_MS_R,_______,_______,
+/* right-3 */ _______,_______,KC_WH_D,KC_BTN3,KC_WH_U,_______,_______,
+/* right-4 */ TG(LAYER_GAMEMOUSE),_______,_______,_______,_______,
+/* right-thumb-0 */ _______,_______,
+/* right-thumb-1 */ _______,
+/* right-thumb-2 */ _______,_______,_______
+)
+  ,
+
+[LAYER_GAMEMIRROR] = LAYOUT_ergodox(
   
 /* left-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* left-1 */ _______,KC_Y,KC_U,KC_I,KC_O,KC_P,_______,
@@ -2252,7 +2250,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-4 */ _______,_______,KC_0,_______,_______,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
-/* left-thumb-2 */ _______,_______,_______,
+/* left-thumb-2 */ KC_ENT,KC_DELETE,_______,
 /* right-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* right-1 */ _______,_______,_______,_______,_______,_______,_______,
 /* right-2 */ _______,_______,_______,_______,_______,_______,
@@ -2437,7 +2435,11 @@ uint32_t layer_state_set_user(uint32_t state) {
         combo_disable(); ergodox_right_led_on(2); ergodox_right_led_on(3);
         break;
     
-      case LAYER_GAMERIGHT:
+      case LAYER_GAMEMOUSE:
+        combo_disable(); ergodox_right_led_on(1); ergodox_right_led_on(3);
+        break;
+    
+      case LAYER_GAMEMIRROR:
         combo_disable(); ergodox_right_led_on(2); ergodox_right_led_on(3);
         break;
     
