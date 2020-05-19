@@ -102,6 +102,12 @@ void code_up(uint8_t code) {
   unregister_code(map_code(code));
 }
 
+void code_hold_ms(uint8_t code, uint32_t timeout) {
+  code_down(KC_CAPSLOCK);
+  wait_ms(timeout);
+  code_up(KC_CAPSLOCK);
+}
+
 // Helper functions:
 {{functions}}
 
@@ -167,7 +173,26 @@ void run_advanced (uint8_t command) {
 {{/mappings}}
       break;
     case DO_NEXT_LANGUAGE:
-      tap_code(KC_CAPSLOCK);
+      ; // empty statement for declarations
+      uint8_t hold = 0;
+      uint8_t tap = 0;
+      uint32_t timeout = 50;
+
+      switch (zored_os) {
+        case OS_WINDOWS:
+          hold = KC_LALT;
+          tap = KC_LSHIFT;
+          break;
+        case OS_MACOS:
+          hold = KC_LGUI;
+          tap = KC_SPC;
+          break;
+      }
+      register_code(hold);
+      wait_ms(timeout);
+      tap_code(tap);
+      wait_ms(timeout);
+      unregister_code(hold);
       break;
     case DO_EMOJI_PANEL:
       switch (zored_os) {

@@ -31,7 +31,7 @@ keyboards:
           left:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [tab, ~, ~, ~, ~, ~, ~]
-            - [capsLock, ~, ~, ~, ~, ~]
+            - [capslock, ~, ~, ~, ~, ~]
             - [lShift, z, x, c, ~, ~, ~]
             - [lCtrl, lAlt, lGui, holdGameMirror, holdGameNumbers]
           left-thumb:
@@ -450,7 +450,7 @@ keys:
     - [holdSymbol]
   capsDance:
     tap:
-    - [capsLock]
+    - [doNextLanguage]
     hold:
     - [holdSymbol]
     - [holdSymbol, lCtrl]
