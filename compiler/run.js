@@ -516,7 +516,7 @@ function getDoKeys (layersKeys) {
   const doKeys = layersKeys
     .filter(key => key instanceof DoKey)
     .reduce((unique, key) => {
-      const prev = unique.find(({codeName}) => codeName === key.codeName);
+      const prev = unique.find(({ codeName }) => codeName === key.codeName)
       if (prev === undefined) {
         unique.push(key)
       }
@@ -548,11 +548,17 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
     layers: getLayersTemplateData(layers, keyboard),
     functions: getFunctions(),
     combos,
-    mappings: getMappings(keyboard.config.mappings, keyFactory)
+    mappings: getMappings(keyboard.config.mappings, keyFactory),
+    keyGroups: getKeyGroups(layers)
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 
   return { comboCount }
+}
+
+function getKeyGroups (layers) {
+  const appSwitch = layers.allKeys.filter(key => key.codeName.match(/^KC_DO_.*_(APP|WINDOW)$/i)).length >= 4
+  return { appSwitch }
 }
 
 function getMappings (mappings, keyFactory) {

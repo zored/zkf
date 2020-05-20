@@ -10,13 +10,6 @@
  #include "keymap_steno.h"
 #endif
 
-#define LCGS(code) LCTL(LGUI(LSFT(code)))
-#define LCS(code) LCTL(LSFT(code))
-
-#define SLT(kc) (QK_LSFT | QK_LALT | (kc))
-#define ALT_TAB LALT(KC_TAB)
-#define SLT_TAB SLT(KC_TAB)
-
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
@@ -337,6 +330,12 @@ void code_up(uint8_t code) {
   unregister_code(map_code(code));
 }
 
+void code_hold_ms(uint8_t code, uint32_t timeout) {
+  code_down(KC_CAPSLOCK);
+  wait_ms(timeout);
+  code_up(KC_CAPSLOCK);
+}
+
 // Helper functions:
 
 
@@ -362,7 +361,11 @@ enum do_command {
   DO_ONE_SHOT_ALT,
   DO_ONE_SHOT_GUI,
   DO_ONE_SHOT_SHIFT,
+  DO_PREV_CHANGE, DO_NEXT_CHANGE,
+  DO_PREV_TAB, DO_NEXT_TAB,
 };
+
+
 
 // Advanced commands.
 void run_advanced (uint8_t command) {
@@ -392,6 +395,46 @@ void run_advanced (uint8_t command) {
     case DO_ONE_SHOT_SHIFT:
       do_one_shot(MOD_LSFT);
       break;
+    case DO_PREV_TAB:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(S(KC_LBRACKET)));
+          break;
+        case OS_WINDOWS:
+          tap_code16(A(KC_LEFT));
+          break;
+      }
+      break;
+    case DO_NEXT_TAB:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(S(KC_RBRACKET)));
+          break;
+        case OS_WINDOWS:
+          tap_code16(A(KC_RIGHT));
+          break;
+      }
+      break;
+    case DO_PREV_CHANGE:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_LBRACKET));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(A(KC_LEFT)));
+          break;
+      }
+      break;
+    case DO_NEXT_CHANGE:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_RBRACKET));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(A(KC_RIGHT)));
+          break;
+      }
+      break;
     case DO_NEXT_MAPPING:
       run_advanced(DO_NEXT_LANGUAGE);  
       mappingIndex++;
@@ -400,10 +443,10 @@ void run_advanced (uint8_t command) {
       }
       break;
     case DO_NEXT_LANGUAGE:
-      ; // empty statement.
+      ; // empty statement for declarations
       uint8_t hold = 0;
       uint8_t tap = 0;
-      uint32_t timeout = 100;
+      uint32_t timeout = 50;
 
       switch (zored_os) {
         case OS_WINDOWS:
@@ -1790,6 +1833,8 @@ void matrix_init_user(void) {
 
 }
 
+void matrix_scan_user(void) {
+}
 
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -1808,6 +1853,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (!pressed) {
     return true;
   }
+
 
   switch (keycode) {
     case UC_M_OS:

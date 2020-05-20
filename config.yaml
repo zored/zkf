@@ -9,8 +9,8 @@ keyboards:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [esc, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
-            - ['shift(', zDance, xDance, cDance, v, b, ~]
-            - [leader, toggleNavigation, ~, left, right]
+            - ['shift(', zDance, xDance, cDance, v, b, doPrevApp]
+            - [leader, toggleNavigation, ~, doPrevTab, doNextTab]
           left-thumb:
             - [esc, ~]
             - [home]
@@ -19,7 +19,7 @@ keyboards:
             - [~, 6, 7, 8, 9, 0, ~]
             - [~, y, u, i, o, p, \]
             - [   h, j, k, l, semicolonDance, quoteDance]
-            - [~, n, m, commaDance, dotDance, slashDance, 'shift)']
+            - [doNextApp, n, m, commaDance, dotDance, slashDance, 'shift)']
             - ['[', ']', ~, ~, toggleGame]
           right-thumb:
             - [esc, ~]
@@ -125,7 +125,7 @@ keyboards:
             - [~, '!', '#', '{', '}', '/', ~]
             - [~, '@', '$', '(', ')', '`']
             - [~, percentDance, circumflexDance, leftSquareBracketDance, ']', '~', ~]
-            - [~, ~, ~, ~, ~]
+            - [~, ~, ~, doPrevChange, doNextChange]
           left-thumb:
             - [~, ~]
             - [~]
@@ -147,8 +147,8 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~]
             - [~, ~, mouseLeft, mouseDown, mouseRight, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, ~, ~]
+            - [~, ~, ~, doPrevWindow, doNextWindow, ~, ~]
+            - [~, ~, ~, doPrevApp, doNextApp]
           left-thumb:
             - [~, ~]
             - [~]
@@ -170,8 +170,8 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, happyDance, sadDance, strangeDance, ~, ~, ~]
             - [~, coolDance, okDance, loveDance, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [doBootloader, ~, ~, ~, ~]
+            - [~, ~, ~, doPrevWindow, doNextWindow, ~, ~]
+            - [doBootloader, ~, ~, doPrevApp, doNextApp]
           left-thumb:
             - [~, ~]
             - [~]
@@ -247,15 +247,17 @@ keyboards:
         MOUSEKEY_WHEEL_DELAY: 0
         MOUSEKEY_WHEEL_MAX_SPEED: 4
         MOUSEKEY_WHEEL_TIME_TO_MAX: 180
-        TAPPING_TERM: 110
-        TAPPING_TERM_TAP_DANCE: 270
-        UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
-        NO_ACTION_MACRO: ''
         NO_ACTION_FUNCTION: ''
+        NO_ACTION_MACRO: ''
+        APP_SWITCH_TIMEOUT: 500
         NO_DEBUG: ''
         NO_PRINT: ''
         ONESHOT_TAP_TOGGLE: 5
         ONESHOT_TIMEOUT: 4000
+        TAPPING_TERM: 110
+        TAPPING_TERM_TAP_DANCE: 270
+        UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
+
 
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
       rules: &rules

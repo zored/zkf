@@ -10,13 +10,6 @@
  #include "keymap_steno.h"
 #endif
 
-#define LCGS(code) LCTL(LGUI(LSFT(code)))
-#define LCS(code) LCTL(LSFT(code))
-
-#define SLT(kc) (QK_LSFT | QK_LALT | (kc))
-#define ALT_TAB LALT(KC_TAB)
-#define SLT_TAB SLT(KC_TAB)
-
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
@@ -129,7 +122,70 @@ enum do_command {
   DO_ONE_SHOT_ALT,
   DO_ONE_SHOT_GUI,
   DO_ONE_SHOT_SHIFT,
+  DO_PREV_CHANGE, DO_NEXT_CHANGE,
+  DO_PREV_TAB, DO_NEXT_TAB,
+  DO_PREV_APP, DO_NEXT_APP,
+  DO_PREV_WINDOW, DO_NEXT_WINDOW,
 };
+
+
+typedef struct {
+  bool active;
+  uint16_t timer;
+  uint8_t holdCode;
+  bool isApp;
+} AppSwitch;
+AppSwitch appSwitch = {.active = false, .timer = 0};
+void appSwitchDeactivate(void) {
+  if (!appSwitch.active) {
+    return;
+  }
+
+  unregister_code(appSwitch.holdCode);
+  appSwitch.active = false;
+}
+void appSwitchRun(bool next, bool isApp) {
+  // Deactivate on new switch type:
+  if (appSwitch.active && appSwitch.isApp != isApp) {
+    appSwitchDeactivate();
+  }
+
+  // Activate:
+  if (!appSwitch.active) {
+    switch (zored_os) {
+      case OS_MACOS:
+        if (isApp) {
+          appSwitch.holdCode = KC_LGUI;
+        } else {
+          appSwitch.holdCode = KC_LCTRL;
+        }
+        break;
+      default:
+        appSwitch.holdCode = KC_LALT;
+        break;
+    }
+    register_code(appSwitch.holdCode);
+  }
+
+  uint16_t tap = KC_TAB;
+  if (!next) {
+    tap = S(tap);
+  }
+  tap_code16(tap);
+
+  appSwitch.timer = timer_read(); // - there may be more switches.
+  appSwitch.active = true;
+  appSwitch.isApp = isApp;
+}
+void appSwitchTimeout(void) {
+  if (!appSwitch.active) {
+    return;
+  }
+  if (timer_elapsed(appSwitch.timer) <= APP_SWITCH_TIMEOUT) {
+    return;
+  }
+  appSwitchDeactivate();
+}
 
 // Advanced commands.
 void run_advanced (uint8_t command) {
@@ -158,6 +214,58 @@ void run_advanced (uint8_t command) {
       break;
     case DO_ONE_SHOT_SHIFT:
       do_one_shot(MOD_LSFT);
+      break;
+    case DO_NEXT_APP:
+      appSwitchRun(true, true);
+      break;
+    case DO_PREV_APP:
+      appSwitchRun(false, true);
+      break;
+    case DO_NEXT_WINDOW:
+      appSwitchRun(true, false);
+      break;
+    case DO_PREV_WINDOW:
+      appSwitchRun(false, false);
+      break;
+    case DO_PREV_TAB:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(S(KC_LBRACKET)));
+          break;
+        case OS_WINDOWS:
+          tap_code16(A(KC_LEFT));
+          break;
+      }
+      break;
+    case DO_NEXT_TAB:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(S(KC_RBRACKET)));
+          break;
+        case OS_WINDOWS:
+          tap_code16(A(KC_RIGHT));
+          break;
+      }
+      break;
+    case DO_PREV_CHANGE:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_LBRACKET));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(A(KC_LEFT)));
+          break;
+      }
+      break;
+    case DO_NEXT_CHANGE:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_RBRACKET));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(A(KC_RIGHT)));
+          break;
+      }
       break;
     case DO_NEXT_MAPPING:
       run_advanced(DO_NEXT_LANGUAGE);  
@@ -2173,6 +2281,14 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE,
   KC_DO_NEXT_LANGUAGE,
+KC_DO_PREV_APP,
+KC_DO_PREV_TAB,
+KC_DO_NEXT_TAB,
+KC_DO_NEXT_APP,
+KC_DO_PREV_CHANGE,
+KC_DO_NEXT_CHANGE,
+KC_DO_PREV_WINDOW,
+KC_DO_NEXT_WINDOW,
 KC_DO_BOOTLOADER,
 
 
@@ -2187,15 +2303,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
 /* left-1 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
 /* left-2 */ TD(DANCE_KC_CAPSDANCE),KC_A,KC_S,KC_D,KC_F,KC_G,
-/* left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,_______,
-/* left-4 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_LEFT,KC_RGHT,
+/* left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,KC_DO_PREV_APP,
+/* left-4 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DO_PREV_TAB,KC_DO_NEXT_TAB,
 /* left-thumb-0 */ KC_ESC,_______,
 /* left-thumb-1 */ KC_HOME,
 /* left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
 /* right-0 */ _______,KC_6,KC_7,KC_8,KC_9,KC_0,_______,
 /* right-1 */ _______,KC_Y,KC_U,KC_I,KC_O,KC_P,KC_BSLS,
 /* right-2 */ KC_H,KC_J,KC_K,KC_L,TD(DANCE_KC_SEMICOLONDANCE),TD(DANCE_KC_QUOTEDANCE),
-/* right-3 */ _______,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),KC_RSPC,
+/* right-3 */ KC_DO_NEXT_APP,KC_N,KC_M,TD(DANCE_KC_COMMADANCE),TD(DANCE_KC_DOTDANCE),TD(DANCE_KC_SLASHDANCE),KC_RSPC,
 /* right-4 */ KC_LBRC,KC_RBRC,_______,_______,TG(LAYER_GAME),
 /* right-thumb-0 */ KC_ESC,_______,
 /* right-thumb-1 */ KC_PGUP,
@@ -2293,7 +2409,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-1 */ _______,KC_EXLM,KC_HASH,KC_LCBR,KC_RCBR,KC_SLSH,_______,
 /* left-2 */ _______,KC_AT,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,
 /* left-3 */ _______,TD(DANCE_KC_PERCENTDANCE),TD(DANCE_KC_CIRCUMFLEXDANCE),TD(DANCE_KC_LEFTSQUAREBRACKETDANCE),KC_RBRC,KC_TILD,_______,
-/* left-4 */ _______,_______,_______,_______,_______,
+/* left-4 */ _______,_______,_______,KC_DO_PREV_CHANGE,KC_DO_NEXT_CHANGE,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
 /* left-thumb-2 */ _______,KC_DELETE,_______,
@@ -2313,8 +2429,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
 /* left-2 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,
-/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-4 */ _______,_______,_______,_______,_______,
+/* left-3 */ _______,_______,_______,KC_DO_PREV_WINDOW,KC_DO_NEXT_WINDOW,_______,_______,
+/* left-4 */ _______,_______,_______,KC_DO_PREV_APP,KC_DO_NEXT_APP,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
 /* left-thumb-2 */ _______,_______,_______,
@@ -2334,8 +2450,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* left-1 */ _______,TD(DANCE_KC_HAPPYDANCE),TD(DANCE_KC_SADDANCE),TD(DANCE_KC_STRANGEDANCE),_______,_______,_______,
 /* left-2 */ _______,TD(DANCE_KC_COOLDANCE),TD(DANCE_KC_OKDANCE),TD(DANCE_KC_LOVEDANCE),_______,_______,
-/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-4 */ KC_DO_BOOTLOADER,_______,_______,_______,_______,
+/* left-3 */ _______,_______,_______,KC_DO_PREV_WINDOW,KC_DO_NEXT_WINDOW,_______,_______,
+/* left-4 */ KC_DO_BOOTLOADER,_______,_______,KC_DO_PREV_APP,KC_DO_NEXT_APP,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
 /* left-thumb-2 */ _______,_______,_______,
@@ -2382,15 +2498,9 @@ void matrix_init_user(void) {
   ergodox_led_all_set(LED_BRIGHTNESS_LO);
 }
 
-void keyboard_post_init_user(void) {
-  switch (get_unicode_input_mode()) {
-    case UC_OSX:
-      zored_os = OS_MACOS;
-  }
-}
-
 LEADER_EXTERNS();
 void matrix_scan_user(void) {
+  appSwitchTimeout();
   LEADER_DICTIONARY() {
     leading = false;
     leader_end();
@@ -2406,12 +2516,29 @@ void matrix_scan_user(void) {
   }
 }
 
+void keyboard_post_init_user(void) {
+  switch (get_unicode_input_mode()) {
+    case UC_OSX:
+      zored_os = OS_MACOS;
+  }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
 
 
   if (!pressed) {
     return true;
+  }
+
+  switch (keycode) {
+    case KC_DO_NEXT_APP: break;
+    case KC_DO_PREV_APP: break;
+    case KC_DO_NEXT_WINDOW: break;
+    case KC_DO_PREV_WINDOW: break;
+    default:
+      appSwitchDeactivate();
+      break;
   }
 
   switch (keycode) {
@@ -2427,6 +2554,38 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
       case KC_DO_NEXT_LANGUAGE:
         run_advanced(DO_NEXT_LANGUAGE);
+        break;
+  
+      case KC_DO_PREV_APP:
+        run_advanced(DO_PREV_APP);
+        break;
+  
+      case KC_DO_PREV_TAB:
+        run_advanced(DO_PREV_TAB);
+        break;
+  
+      case KC_DO_NEXT_TAB:
+        run_advanced(DO_NEXT_TAB);
+        break;
+  
+      case KC_DO_NEXT_APP:
+        run_advanced(DO_NEXT_APP);
+        break;
+  
+      case KC_DO_PREV_CHANGE:
+        run_advanced(DO_PREV_CHANGE);
+        break;
+  
+      case KC_DO_NEXT_CHANGE:
+        run_advanced(DO_NEXT_CHANGE);
+        break;
+  
+      case KC_DO_PREV_WINDOW:
+        run_advanced(DO_PREV_WINDOW);
+        break;
+  
+      case KC_DO_NEXT_WINDOW:
+        run_advanced(DO_NEXT_WINDOW);
         break;
   
       case KC_DO_BOOTLOADER:
