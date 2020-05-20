@@ -146,8 +146,8 @@ keyboards:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~]
-            - [~, ~, mouseLeft, mouseDown, mouseRight, ~]
-            - [~, ~, ~, doPrevWindow, doNextWindow, ~, ~]
+            - [~, doMouseFast, mouseLeft, mouseDown, mouseRight, ~]
+            - [~, doMouseSlow, ~, doPrevWindow, doNextWindow, ~, ~]
             - [~, ~, ~, doPrevApp, doNextApp]
           left-thumb:
             - [~, ~]
@@ -240,13 +240,33 @@ keyboards:
         ENCODER_RESOLUTION: 4
         FORCE_NKRO: ''
         LEADER_TIMEOUT: 300
+
+        # MK_3_SPEED: ''
+        # # Cursor:
+        # MK_C_OFFSET_0: 8
+        # MK_C_OFFSET_1: 16
+        # MK_C_OFFSET_2: 32
+        # MK_C_INTERVAL_0: 16
+        # MK_C_INTERVAL_1: 16
+        # MK_C_INTERVAL_2: 16
+        # # Wheel:
+        # MK_W_OFFSET_0: 1
+        # MK_W_OFFSET_1: 2
+        # MK_W_OFFSET_2: 4
+        # MK_W_INTERVAL_0: 20
+        # MK_W_INTERVAL_1: 20
+        # MK_W_INTERVAL_2: 20
+
         MOUSEKEY_DELAY: 0
         MOUSEKEY_INTERVAL: 16
         MOUSEKEY_MAX_SPEED: 16
+        MOUSEKEY_SLOW_SPEED: 1
+        MOUSEKEY_FAST_SPEED: 7
         MOUSEKEY_TIME_TO_MAX: 80
         MOUSEKEY_WHEEL_DELAY: 0
         MOUSEKEY_WHEEL_MAX_SPEED: 4
         MOUSEKEY_WHEEL_TIME_TO_MAX: 180
+
         NO_ACTION_FUNCTION: ''
         NO_ACTION_MACRO: ''
         APP_SWITCH_TIMEOUT: 500
@@ -612,6 +632,9 @@ map:
     mouseLeftButton: BTN1
     mouseRight: MS_R
     mouseRightButton: BTN2
+    mouseSlow: MS_ACCEL0 
+    mouseNormal: MS_ACCEL1
+    mouseFast: MS_ACCEL2
     wheelClick: BTN3
     mouseUp: MS_U
     pageDown: PGDN

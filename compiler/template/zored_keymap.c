@@ -132,6 +132,7 @@ enum do_command {
   DO_PREV_APP, DO_NEXT_APP,
   DO_PREV_WINDOW, DO_NEXT_WINDOW,
   {{/keyGroups.appSwitch}}
+  DO_MOUSE_SLOW, DO_MOUSE_FAST,
 };
 
 
@@ -194,6 +195,35 @@ void appSwitchTimeout(void) {
   appSwitchDeactivate();
 }
 {{/keyGroups.appSwitch}}
+
+
+extern uint8_t mk_max_speed;
+void mousekey_on(uint8_t code);
+void mousekey_off(uint8_t code);
+uint8_t mouseSpeed = 1;
+void setMouseSpeed(uint8_t newMouseSpeed) {
+  // Turn off:
+  if (mouseSpeed == newMouseSpeed || newMouseSpeed == 1) {
+    mouseSpeed = 1;
+    mousekey_off(KC_MS_ACCEL2);
+    mk_max_speed = MOUSEKEY_MAX_SPEED;  
+    return;
+  }
+
+  mouseSpeed = newMouseSpeed;
+  mousekey_on(KC_MS_ACCEL2); // - make mk_max_speed the real mouse speed.
+
+  switch (mouseSpeed) {
+    case 0:
+      mk_max_speed = MOUSEKEY_SLOW_SPEED;
+      break;
+    case 2:
+      mk_max_speed = MOUSEKEY_FAST_SPEED;
+      break;
+  }
+  mouseSpeed = newMouseSpeed;
+
+}
 
 // Advanced commands.
 void run_advanced (uint8_t command) {
@@ -379,6 +409,12 @@ void run_advanced (uint8_t command) {
           tap_code16(G(KC_Q));
           break;
       }
+      break;
+    case DO_MOUSE_SLOW:
+      setMouseSpeed(0);
+      break;
+    case DO_MOUSE_FAST:
+      setMouseSpeed(2);
       break;
   }
 }

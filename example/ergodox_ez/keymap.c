@@ -126,6 +126,7 @@ enum do_command {
   DO_PREV_TAB, DO_NEXT_TAB,
   DO_PREV_APP, DO_NEXT_APP,
   DO_PREV_WINDOW, DO_NEXT_WINDOW,
+  DO_MOUSE_SLOW, DO_MOUSE_FAST,
 };
 
 
@@ -185,6 +186,35 @@ void appSwitchTimeout(void) {
     return;
   }
   appSwitchDeactivate();
+}
+
+
+extern uint8_t mk_max_speed;
+void mousekey_on(uint8_t code);
+void mousekey_off(uint8_t code);
+uint8_t mouseSpeed = 1;
+void setMouseSpeed(uint8_t newMouseSpeed) {
+  // Turn off:
+  if (mouseSpeed == newMouseSpeed || newMouseSpeed == 1) {
+    mouseSpeed = 1;
+    mousekey_off(KC_MS_ACCEL2);
+    mk_max_speed = MOUSEKEY_MAX_SPEED;  
+    return;
+  }
+
+  mouseSpeed = newMouseSpeed;
+  mousekey_on(KC_MS_ACCEL2); // - make mk_max_speed the real mouse speed.
+
+  switch (mouseSpeed) {
+    case 0:
+      mk_max_speed = MOUSEKEY_SLOW_SPEED;
+      break;
+    case 2:
+      mk_max_speed = MOUSEKEY_FAST_SPEED;
+      break;
+  }
+  mouseSpeed = newMouseSpeed;
+
 }
 
 // Advanced commands.
@@ -363,6 +393,12 @@ void run_advanced (uint8_t command) {
           tap_code16(G(KC_Q));
           break;
       }
+      break;
+    case DO_MOUSE_SLOW:
+      setMouseSpeed(0);
+      break;
+    case DO_MOUSE_FAST:
+      setMouseSpeed(2);
       break;
   }
 }
@@ -2287,6 +2323,8 @@ KC_DO_NEXT_TAB,
 KC_DO_NEXT_APP,
 KC_DO_PREV_CHANGE,
 KC_DO_NEXT_CHANGE,
+KC_DO_MOUSE_FAST,
+KC_DO_MOUSE_SLOW,
 KC_DO_PREV_WINDOW,
 KC_DO_NEXT_WINDOW,
 KC_DO_BOOTLOADER,
@@ -2428,8 +2466,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
 /* left-0 */ _______,_______,_______,_______,_______,_______,_______,
 /* left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
-/* left-2 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,
-/* left-3 */ _______,_______,_______,KC_DO_PREV_WINDOW,KC_DO_NEXT_WINDOW,_______,_______,
+/* left-2 */ _______,KC_DO_MOUSE_FAST,KC_MS_L,KC_MS_D,KC_MS_R,_______,
+/* left-3 */ _______,KC_DO_MOUSE_SLOW,_______,KC_DO_PREV_WINDOW,KC_DO_NEXT_WINDOW,_______,_______,
 /* left-4 */ _______,_______,_______,KC_DO_PREV_APP,KC_DO_NEXT_APP,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
@@ -2578,6 +2616,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   
       case KC_DO_NEXT_CHANGE:
         run_advanced(DO_NEXT_CHANGE);
+        break;
+  
+      case KC_DO_MOUSE_FAST:
+        run_advanced(DO_MOUSE_FAST);
+        break;
+  
+      case KC_DO_MOUSE_SLOW:
+        run_advanced(DO_MOUSE_SLOW);
         break;
   
       case KC_DO_PREV_WINDOW:
