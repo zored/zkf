@@ -37,7 +37,7 @@ keyboards:
           left-thumb:
             - [~, ~]
             - [~]
-            - [~, ~, keyLock]
+            - [~, ~, ~]
           right:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~]
@@ -262,16 +262,20 @@ keyboards:
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
       rules: &rules
         AUDIO_ENABLE: 'no'
+        AUTO_SHIFT_ENABLE: 'no'
+        BACKLIGHT_ENABLE: 'no'
         BOOTMAGIC_ENABLE: 'no'
         COMBO_ENABLE: 'yes'
         COMMAND_ENABLE: 'no'
+        CONSOLE_ENABLE: 'no'
+        DYNAMIC_MACRO_ENABLE: 'no'
         EXTRAKEY_ENABLE: 'yes'
-        DYNAMIC_MACRO_ENABLE: 'yes'
-        NKRO_ENABLE: 'yes'
-        KEY_LOCK_ENABLE: 'yes'
+        KEY_LOCK_ENABLE: 'no'
         LEADER_ENABLE: 'yes'
         LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
+        NKRO_ENABLE: 'yes'
         RGBLIGHT_ENABLE: 'no'
+        SLEEP_LED_ENABLE: 'no'
         STENO_ENABLE: 'no'
         TAP_DANCE_ENABLE: 'yes'
         UNICODE_ENABLE: 'no'
@@ -333,7 +337,7 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~, ~, ~, up, ~, ~]
             - [tab, ~, ~, ~, ~, ~, ~, ~, left, down, right, ~]
             - [lShift, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [lCtrl, lAlt, lGui, keyLock, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
+            - [lCtrl, lAlt, lGui, ~, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
   ymd09:
     settings:
       rules:
