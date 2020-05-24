@@ -145,9 +145,9 @@ keyboards:
         keys:
           left:
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~]
-            - [~, doMouseFast, mouseLeft, mouseDown, mouseRight, ~]
-            - [~, doMouseSlow, ~, doPrevWindow, doNextWindow, ~, ~]
+            - [~, doMouseFast, mouseRightButton, mouseUp, mouseLeftButton, ~, ~]
+            - [~, doMouseSlow, mouseLeft, mouseDown, mouseRight, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
             - [~, ~, ~, doPrevApp, doNextApp]
           left-thumb:
             - [~, ~]

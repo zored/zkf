@@ -2465,9 +2465,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_NAVIGATION] = LAYOUT_ergodox(
   
 /* left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
-/* left-2 */ _______,KC_DO_MOUSE_FAST,KC_MS_L,KC_MS_D,KC_MS_R,_______,
-/* left-3 */ _______,KC_DO_MOUSE_SLOW,_______,KC_DO_PREV_WINDOW,KC_DO_NEXT_WINDOW,_______,_______,
+/* left-1 */ _______,KC_DO_MOUSE_FAST,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
+/* left-2 */ _______,KC_DO_MOUSE_SLOW,KC_MS_L,KC_MS_D,KC_MS_R,_______,
+/* left-3 */ _______,_______,_______,_______,_______,_______,_______,
 /* left-4 */ _______,_______,_______,KC_DO_PREV_APP,KC_DO_NEXT_APP,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
