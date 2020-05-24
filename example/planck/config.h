@@ -47,13 +47,8 @@
 #undef NO_ACTION_MACRO
 #define NO_ACTION_MACRO 
 
-<<<<<<< HEAD
 #undef APP_SWITCH_TIMEOUT
 #define APP_SWITCH_TIMEOUT 500
-=======
-#undef NO_ACTION_ONESHOT
-#define NO_ACTION_ONESHOT 
->>>>>>> 4ec22ef... feature-11 Remove useless lights
 
 #undef NO_DEBUG
 #define NO_DEBUG 
@@ -61,15 +56,12 @@
 #undef NO_PRINT
 #define NO_PRINT 
 
-<<<<<<< HEAD
 #undef ONESHOT_TAP_TOGGLE
 #define ONESHOT_TAP_TOGGLE 5
 
 #undef ONESHOT_TIMEOUT
 #define ONESHOT_TIMEOUT 4000
 
-=======
->>>>>>> 4ec22ef... feature-11 Remove useless lights
 #undef TAPPING_TERM
 #define TAPPING_TERM 110
 
