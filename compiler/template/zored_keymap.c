@@ -1,6 +1,6 @@
 {{! Keymap template for all of my keymaps. Has a lot of common code. }}
 
-{{! This guy should be before RGB. }}
+#include "keymap.h"
 
 {{#ergodox}}
 #include "ergodox_ez.h"
@@ -23,10 +23,7 @@
  #include "keymap_steno.h"
 #endif
 
-enum operating_systems {
-  OS_MACOS = 1,
-  OS_WINDOWS,
-} zored_os = OS_WINDOWS;
+operating_systems zored_os = OS_WINDOWS;
 
 {{#mappings}}
 uint8_t mappingIndex = 0;
