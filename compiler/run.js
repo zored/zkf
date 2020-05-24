@@ -551,7 +551,7 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
     mappings: getMappings(keyboard.config.mappings, keyFactory),
     keyGroups: getKeyGroups(layers)
   }, keyboard.getTemplateData(layers));
-  [['zored_keymap.h','keymap.h'],['zored_keymap.c','keymap.c']].forEach(([from, to]) => 
+  [['zored_keymap.h','keymap_zored.h'],['zored_keymap.c','keymap.c']].forEach(([from, to]) => 
     files.add(to, Mustache.render(fs.readFileSync(`compiler/template/${from}`, 'utf8'), config))
   );
 

@@ -1,5 +1,5 @@
 
-#include "keymap.h"
+#include "keymap_zored.h"
 
 
 #include QMK_KEYBOARD_H

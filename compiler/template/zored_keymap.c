@@ -1,6 +1,6 @@
 {{! Keymap template for all of my keymaps. Has a lot of common code. }}
 
-#include "keymap.h"
+#include "keymap_zored.h"
 
 {{#ergodox}}
 #include "ergodox_ez.h"

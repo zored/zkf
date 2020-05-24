@@ -2,7 +2,7 @@
 RGB_MATRIX_EFFECT(zored_effect)
 
 #ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
-#include "keymap.h"
+#include "keymap_zored.h"
 
 static bool zored_effect(effect_params_t* params) {
   RGB_MATRIX_USE_LIMITS(led_min, led_max);
