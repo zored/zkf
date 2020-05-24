@@ -233,7 +233,7 @@ keyboards:
       #       - [~]
       #       - [~, sE, sU]
     settings:
-      # https://docs.qmk.fm/#/config_options?id=the-configh-file
+      # `config.h`: https://docs.qmk.fm/#/config_options?id=the-configh-file
       config: &config
         COMBO_COUNT: 0 # - overriden by *combos.
         COMBO_TERM: 80
@@ -278,8 +278,7 @@ keyboards:
         TAPPING_TERM_TAP_DANCE: 270
         UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
 
-
-      # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
+      # `rules.mk`: https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
       rules: &rules
         AUDIO_ENABLE: 'no'
         AUTO_SHIFT_ENABLE: 'no'
@@ -313,6 +312,47 @@ keyboards:
         <<: *config
         AUDIO_CLICKY: ''
         STARTUP_SONG: SONG(NO_SOUND)
+        RGB_MATRIX_STARTUP_MODE: 'RGB_MATRIX_CYCLE_LEFT_RIGHT'
+        RGB_MATRIX_CUSTOM_USER: ''
+        DISABLE_RGB_MATRIX_SOLID_COLOR: ''
+        DISABLE_RGB_MATRIX_ALPHAS_MODS: ''
+        DISABLE_RGB_MATRIX_BAND_PINWHEEL_SAT: ''
+        DISABLE_RGB_MATRIX_BAND_PINWHEEL_VAL: ''
+        DISABLE_RGB_MATRIX_BAND_SAT: ''
+        DISABLE_RGB_MATRIX_BAND_SPIRAL_SAT: ''
+        DISABLE_RGB_MATRIX_BAND_SPIRAL_VAL: ''
+        DISABLE_RGB_MATRIX_BAND_VAL: ''
+        DISABLE_RGB_MATRIX_BREATHING: ''
+        DISABLE_RGB_MATRIX_CYCLE_ALL: ''
+        # DISABLE_RGB_MATRIX_CYCLE_LEFT_RIGHT: ''
+        DISABLE_RGB_MATRIX_CYCLE_OUT_IN: ''
+        DISABLE_RGB_MATRIX_CYCLE_OUT_IN_DUAL: ''
+        DISABLE_RGB_MATRIX_CYCLE_PINWHEEL: ''
+        DISABLE_RGB_MATRIX_CYCLE_SPIRAL: ''
+        DISABLE_RGB_MATRIX_CYCLE_UP_DOWN: ''
+        DISABLE_RGB_MATRIX_DIGITAL_RAIN: ''
+        DISABLE_RGB_MATRIX_DUAL_BEACON: ''
+        DISABLE_RGB_MATRIX_GRADIENT_UP_DOWN: ''
+        DISABLE_RGB_MATRIX_JELLYBEAN_RAINDROPS: ''
+        DISABLE_RGB_MATRIX_MULTISPLASH: ''
+        DISABLE_RGB_MATRIX_RAINBOW_BEACON: ''
+        DISABLE_RGB_MATRIX_RAINBOW_MOVING_CHEVRON: ''
+        DISABLE_RGB_MATRIX_RAINBOW_PINWHEELS: ''
+        DISABLE_RGB_MATRIX_RAINDROPS: ''
+        DISABLE_RGB_MATRIX_SOLID_MULTISPLASH: ''
+        DISABLE_RGB_MATRIX_SOLID_REACTIVE: ''
+        # DISABLE_RGB_MATRIX_SOLID_REACTIVE_CROSS: ''
+        DISABLE_RGB_MATRIX_SOLID_REACTIVE_MULTICROSS: ''
+        DISABLE_RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS: ''
+        DISABLE_RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE: ''
+        DISABLE_RGB_MATRIX_SOLID_REACTIVE_NEXUS: ''
+        DISABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE: ''
+        DISABLE_RGB_MATRIX_SOLID_REACTIVE_WIDE: ''
+        DISABLE_RGB_MATRIX_SOLID_SPLASH: ''
+        DISABLE_RGB_MATRIX_SPLASH: ''
+        DISABLE_RGB_MATRIX_TYPING_HEATMAP: ''
+        # DISABLE_RGB_MATRIX_ZORED_EFFECT: ''
+        RGB_MATRIX_FRAMEBUFFER_EFFECTS: ''
     combos: *combos
     layers:
       default:

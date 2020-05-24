@@ -1,4 +1,6 @@
 
+#include "keymap_zored.h"
+
 
 #include QMK_KEYBOARD_H
 #include "muse.h"
@@ -12,10 +14,7 @@
  #include "keymap_steno.h"
 #endif
 
-enum operating_systems {
-  OS_MACOS = 1,
-  OS_WINDOWS,
-} zored_os = OS_WINDOWS;
+operating_systems zored_os = OS_WINDOWS;
 
 
 uint8_t map_mod (uint8_t mod) {

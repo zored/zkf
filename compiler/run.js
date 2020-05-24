@@ -26,7 +26,7 @@ function main () {
   )
   const files = new KeymapFiles(keyboard)
 
-  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies, config)
+  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies)
   compileSettings(keyboard, files, {
     COMBO_COUNT: comboCount
   })
@@ -542,7 +542,7 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
   const Mustache = require('mustache')
 
   const { combos, comboCount } = getCombos(keyboard.config.combos, keyFactory)
-  const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
+  const config = _.merge({
     dance: getDanceTemplateData(layers, danceEnemies, keyFactory),
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers, keyboard),
@@ -550,8 +550,10 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
     combos,
     mappings: getMappings(keyboard.config.mappings, keyFactory),
     keyGroups: getKeyGroups(layers)
-  }, keyboard.getTemplateData(layers)))
-  files.add('keymap.c', result)
+  }, keyboard.getTemplateData(layers));
+  [['zored_keymap.h','keymap_zored.h'],['zored_keymap.c','keymap.c']].forEach(([from, to]) => 
+    files.add(to, Mustache.render(fs.readFileSync(`compiler/template/${from}`, 'utf8'), config))
+  );
 
   return { comboCount }
 }
@@ -735,6 +737,10 @@ function compileSettings (keyboard, files, override) {
   files.add('rules.mk', _.map(rules, (value, name) => `
 ${name} = ${value}
 `).join(''))
+
+  if (config.RGB_MATRIX_CUSTOM_USER === '') {
+    files.add('rgb_matrix_user.inc', fs.readFileSync('compiler/template/rgb_matrix_user.inc', 'utf8'))
+  }
 }
 
 // general
