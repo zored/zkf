@@ -149,13 +149,6 @@ function keyRowCallback(row, name, mapping, dance) {
 }
 
 function getKey(key, mapping, danceKeys) {
-  if (mapping) {
-    const indexOne = mapping[0].indexOf(key)
-    if (indexOne >= 0) {
-      key = mapping[1][indexOne];
-    }
-  }
-  
   let $key = document.createTextNode((key || '~') + '');
   const danceKey = danceKeys[key];
   if (danceKey) {
@@ -172,6 +165,14 @@ function getKey(key, mapping, danceKeys) {
      ).join('\n') || 'Only one click action';
      $key.addEventListener('click', () => alert(info))
   }
+
+  if (mapping) {
+    const indexOne = mapping[0].indexOf(key)
+    if (indexOne >= 0) {
+      key = mapping[1][indexOne];
+    }
+  }
+
   return createSpan('key', key, [$key])
 }
 
