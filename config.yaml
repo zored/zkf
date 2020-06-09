@@ -9,8 +9,8 @@ keyboards:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [esc, q, w, e, r, t, ~]
             - [capsDance, a, s, d, f, g]
-            - ['shift(', zDance, xDance, cDance, v, b, doPrevApp]
-            - [leader, toggleNavigation, ~, doPrevTab, doNextTab]
+            - ['shift(', zDance, xDance, cDance, v, b, doFutureApp]
+            - [leader, toggleNavigation, ~, doFutureTab, doPastTab]
           left-thumb:
             - [esc, ~]
             - [home]
@@ -19,8 +19,8 @@ keyboards:
             - [~, 6, 7, 8, 9, 0, ~]
             - [~, y, u, i, o, p, \]
             - [   h, j, k, l, semicolonDance, quoteDance]
-            - [doNextApp, n, m, commaDance, dotDance, slashDance, 'shift)']
-            - ['[', ']', ~, ~, toggleGame]
+            - [doPastApp, n, m, commaDance, dotDance, slashDance, 'shift)']
+            - ['[', ']', doPastWindow, doFutureWindow, toggleGame]
           right-thumb:
             - [esc, ~]
             - [pageUp]
@@ -125,7 +125,7 @@ keyboards:
             - [~, '!', '#', '{', '}', '/', ~]
             - [~, '@', '$', '(', ')', '`']
             - [~, percentDance, circumflexDance, leftSquareBracketDance, ']', '~', ~]
-            - [~, ~, ~, doPrevChange, doNextChange]
+            - [~, ~, ~, doPast, doFuture]
           left-thumb:
             - [~, ~]
             - [~]
@@ -148,7 +148,7 @@ keyboards:
             - [~, doMouseFast, mouseRightButton, mouseUp, mouseLeftButton, ~, ~]
             - [~, doMouseSlow, mouseLeft, mouseDown, mouseRight, ~]
             - [~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, ~, doPrevApp, doNextApp]
+            - [~, ~, ~, doFutureApp, doPastApp]
           left-thumb:
             - [~, ~]
             - [~]
@@ -170,8 +170,8 @@ keyboards:
             - [~, ~, ~, ~, ~, ~, ~]
             - [~, happyDance, sadDance, strangeDance, ~, ~, ~]
             - [~, coolDance, okDance, loveDance, ~, ~]
-            - [~, ~, ~, doPrevWindow, doNextWindow, ~, ~]
-            - [doBootloader, ~, ~, doPrevApp, doNextApp]
+            - [~, ~, ~, doFutureWindow, doPastWindow, ~, ~]
+            - [doBootloader, ~, ~, doFutureApp, doPastApp]
           left-thumb:
             - [~, ~]
             - [~]
@@ -320,7 +320,7 @@ keyboards:
         lights: []
         keys:
             - [esc, q, w, e, r, t, y, u, i, o, p, \]
-            - [capsDance, a, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
+            - [capsDance, aDance, s, d, f, g, h, j, k, l, semicolonDance, quoteDance]
             - ['shift(', zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, 'shift)']
             - [leader, toggleNavigation, ~, delete, backspace, space, ~, tabDance, enter, '[', ']', toggleGame]
       symbol:
@@ -351,6 +351,13 @@ keyboards:
             - [~, coolDance, okDance, loveDance, ~, ~, ~, F4Dance, F5Dance, F6Dance, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, F1Dance, F2Dance, F3Dance, ~, ~]
             - [doBootloader, ~, ~, ~, ~, ~, ~, ~, F10Dance, ~, ~, ~] 
+      history:
+        lights: [1,2]
+        keys:
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, home, pageDown, pageUp, end, doFutureApp, doFutureTab, doPastTab, doPastApp, ~, ~]
+            - [~, ~, ~, ~, ~, ~, doFutureWindow, doFuture, doPast, doPastWindow, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
       game:
         lights: [2]
         keys:
@@ -480,6 +487,10 @@ keys:
     hold:
     - [holdSymbol]
     - [holdSymbol, lCtrl]
+  aDance:
+    tap: [[a]]
+    hold: &aDance
+    - [holdHistory]
   zDance:
     tap: [[z]]
     hold: &lCtrlDance

@@ -126,11 +126,12 @@ enum do_command {
   DO_ONE_SHOT_ALT,
   DO_ONE_SHOT_GUI,
   DO_ONE_SHOT_SHIFT,
-  DO_PREV_CHANGE, DO_NEXT_CHANGE,
+  DO_PAST, DO_FUTURE,
   DO_PREV_TAB, DO_NEXT_TAB,
   {{#keyGroups.appSwitch}}
-  DO_PREV_APP, DO_NEXT_APP,
-  DO_PREV_WINDOW, DO_NEXT_WINDOW,
+  DO_FUTURE_TAB, DO_PAST_TAB,
+  DO_FUTURE_APP, DO_PAST_APP,
+  DO_FUTURE_WINDOW, DO_PAST_WINDOW,
   {{/keyGroups.appSwitch}}
   DO_MOUSE_SLOW, DO_MOUSE_FAST,
 };
@@ -140,8 +141,9 @@ enum do_command {
 typedef struct {
   bool active;
   uint16_t timer;
-  uint8_t holdCode;
-  bool isApp;
+  uint8_t hold1;
+  uint8_t hold2;
+  uint8_t target;
 } AppSwitch;
 AppSwitch appSwitch = {.active = false, .timer = 0};
 void appSwitchDeactivate(void) {
@@ -149,41 +151,93 @@ void appSwitchDeactivate(void) {
     return;
   }
 
-  unregister_code(appSwitch.holdCode);
+  unregister_code(appSwitch.hold1);
+  if (appSwitch.hold2 > 0) {
+    unregister_code(appSwitch.hold2);
+  }
   appSwitch.active = false;
 }
-void appSwitchRun(bool next, bool isApp) {
+
+enum target {
+  TARGET_APP = 1,
+  TARGET_WINDOW,
+  TARGET_TAB
+};
+
+void appSwitchRun(bool past, uint8_t target) {
   // Deactivate on new switch type:
-  if (appSwitch.active && appSwitch.isApp != isApp) {
+  if (appSwitch.active && appSwitch.target != target) {
     appSwitchDeactivate();
   }
 
   // Activate:
   if (!appSwitch.active) {
+    appSwitch.hold2 = 0;
     switch (zored_os) {
       case OS_MACOS:
-        if (isApp) {
-          appSwitch.holdCode = KC_LGUI;
-        } else {
-          appSwitch.holdCode = KC_LCTRL;
+        switch (target) {
+          case TARGET_APP:
+          case TARGET_WINDOW:
+            appSwitch.hold1 = KC_LGUI;
+            break;
+          case TARGET_TAB:
+            appSwitch.hold1 = KC_LCTRL;
+            break;
         }
         break;
       default:
-        appSwitch.holdCode = KC_LALT;
+        switch (target) {
+          case TARGET_APP:
+          case TARGET_WINDOW:
+            appSwitch.hold1 = KC_LALT;
+            break;
+          case TARGET_TAB:
+            appSwitch.hold1 = KC_LCTRL;
+            appSwitch.hold2 = KC_LALT;
+            break;
+        }
         break;
     }
-    register_code(appSwitch.holdCode);
+    register_code(appSwitch.hold1);
+    if (appSwitch.hold2 > 0) {
+      register_code(appSwitch.hold2);
+    }
   }
 
+
   uint16_t tap = KC_TAB;
-  if (!next) {
+  switch (zored_os) {
+    case OS_MACOS:
+      switch (target) {
+        case TARGET_WINDOW:
+          tap = KC_TILDE;
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      switch (target) {
+        case TARGET_TAB:
+          if (past) {
+            tap = KC_RIGHT;
+          } else {
+            tap = KC_LEFT;
+          }
+          break;
+        default:
+          break;
+      }
+      break;
+  }
+  if (!past && tap != KC_RIGHT && tap != KC_LEFT) {
     tap = S(tap);
   }
   tap_code16(tap);
 
   appSwitch.timer = timer_read(); // - there may be more switches.
   appSwitch.active = true;
-  appSwitch.isApp = isApp;
+  appSwitch.target = target;
 }
 void appSwitchTimeout(void) {
   if (!appSwitch.active) {
@@ -254,28 +308,23 @@ void run_advanced (uint8_t command) {
       do_one_shot(MOD_LSFT);
       break;
     {{#keyGroups.appSwitch}}
-    case DO_NEXT_APP:
-      appSwitchRun(true, true);
+    case DO_PAST_APP:
+      appSwitchRun(true, TARGET_APP);
       break;
-    case DO_PREV_APP:
-      appSwitchRun(false, true);
+    case DO_FUTURE_APP:
+      appSwitchRun(false, TARGET_APP);
       break;
-    case DO_NEXT_WINDOW:
-      appSwitchRun(true, false);
+    case DO_PAST_WINDOW:
+      appSwitchRun(true, TARGET_WINDOW);
       break;
-    case DO_PREV_WINDOW:
-      appSwitchRun(false, false);
+    case DO_FUTURE_WINDOW:
+      appSwitchRun(false, TARGET_WINDOW);
       break;
-    {{/keyGroups.appSwitch}}
-    case DO_PREV_TAB:
-      switch (zored_os) {
-        case OS_MACOS:
-          tap_code16(G(S(KC_LBRACKET)));
-          break;
-        case OS_WINDOWS:
-          tap_code16(A(KC_LEFT));
-          break;
-      }
+    case DO_FUTURE_TAB:
+      appSwitchRun(false, TARGET_TAB);
+      break;
+    case DO_PAST_TAB:
+      appSwitchRun(true, TARGET_TAB);
       break;
     case DO_NEXT_TAB:
       switch (zored_os) {
@@ -286,24 +335,37 @@ void run_advanced (uint8_t command) {
           tap_code16(A(KC_RIGHT));
           break;
       }
-      break;
-    case DO_PREV_CHANGE:
+    case DO_PREV_TAB:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(KC_LBRACKET));
+          tap_code16(G(S(KC_LBRACKET)));
           break;
         case OS_WINDOWS:
-          tap_code16(C(A(KC_LEFT)));
+          tap_code16(A(KC_LEFT));
+          break;
+      }
+    {{/keyGroups.appSwitch}}
+    case DO_FUTURE:
+      switch (zored_os) {
+        case OS_MACOS:
+          register_code(KC_LGUI);
+          tap_code(KC_LBRACKET);
+          unregister_code(KC_LGUI);
+          break;
+        case OS_WINDOWS:
+          tap_code16(A(KC_LEFT));
           break;
       }
       break;
-    case DO_NEXT_CHANGE:
+    case DO_PAST:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(KC_RBRACKET));
+          register_code(KC_LGUI);
+          tap_code(KC_RBRACKET);
+          unregister_code(KC_LGUI);
           break;
         case OS_WINDOWS:
-          tap_code16(C(A(KC_RIGHT)));
+          tap_code16(A(KC_LEFT));
           break;
       }
       break;
@@ -643,10 +705,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   {{#keyGroups.appSwitch}}
   switch (keycode) {
-    case KC_DO_NEXT_APP: break;
-    case KC_DO_PREV_APP: break;
-    case KC_DO_NEXT_WINDOW: break;
-    case KC_DO_PREV_WINDOW: break;
+    case KC_DO_PAST_APP: break;
+    case KC_DO_FUTURE_APP: break;
+    case KC_DO_PAST_WINDOW: break;
+    case KC_DO_FUTURE_WINDOW: break;
+    case KC_DO_PAST_TAB: break;
+    case KC_DO_FUTURE_TAB: break;
     default:
       appSwitchDeactivate();
       break;
