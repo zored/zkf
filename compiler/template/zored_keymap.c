@@ -332,7 +332,7 @@ void run_advanced (uint8_t command) {
           tap_code16(G(S(KC_RBRACKET)));
           break;
         case OS_WINDOWS:
-          tap_code16(A(KC_RIGHT));
+          tap_code16(C(A(KC_RIGHT)));
           break;
       }
     case DO_PREV_TAB:
@@ -341,16 +341,14 @@ void run_advanced (uint8_t command) {
           tap_code16(G(S(KC_LBRACKET)));
           break;
         case OS_WINDOWS:
-          tap_code16(A(KC_LEFT));
+          tap_code16(C(A(KC_LEFT)));
           break;
       }
     {{/keyGroups.appSwitch}}
     case DO_FUTURE:
       switch (zored_os) {
         case OS_MACOS:
-          register_code(KC_LGUI);
-          tap_code(KC_LBRACKET);
-          unregister_code(KC_LGUI);
+          tap_code16(G(KC_LBRACKET));
           break;
         case OS_WINDOWS:
           tap_code16(A(KC_LEFT));
@@ -360,12 +358,10 @@ void run_advanced (uint8_t command) {
     case DO_PAST:
       switch (zored_os) {
         case OS_MACOS:
-          register_code(KC_LGUI);
-          tap_code(KC_RBRACKET);
-          unregister_code(KC_LGUI);
+          tap_code16(G(KC_RBRACKET));
           break;
         case OS_WINDOWS:
-          tap_code16(A(KC_LEFT));
+          tap_code16(A(KC_RIGHT));
           break;
       }
       break;

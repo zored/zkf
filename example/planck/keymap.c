@@ -325,7 +325,7 @@ void run_advanced (uint8_t command) {
           tap_code16(G(S(KC_RBRACKET)));
           break;
         case OS_WINDOWS:
-          tap_code16(A(KC_RIGHT));
+          tap_code16(C(A(KC_RIGHT)));
           break;
       }
     case DO_PREV_TAB:
@@ -334,15 +334,13 @@ void run_advanced (uint8_t command) {
           tap_code16(G(S(KC_LBRACKET)));
           break;
         case OS_WINDOWS:
-          tap_code16(A(KC_LEFT));
+          tap_code16(C(A(KC_LEFT)));
           break;
       }
     case DO_FUTURE:
       switch (zored_os) {
         case OS_MACOS:
-          register_code(KC_LGUI);
-          tap_code(KC_LBRACKET);
-          unregister_code(KC_LGUI);
+          tap_code16(G(KC_LBRACKET));
           break;
         case OS_WINDOWS:
           tap_code16(A(KC_LEFT));
@@ -352,12 +350,10 @@ void run_advanced (uint8_t command) {
     case DO_PAST:
       switch (zored_os) {
         case OS_MACOS:
-          register_code(KC_LGUI);
-          tap_code(KC_RBRACKET);
-          unregister_code(KC_LGUI);
+          tap_code16(G(KC_RBRACKET));
           break;
         case OS_WINDOWS:
-          tap_code16(A(KC_LEFT));
+          tap_code16(A(KC_RIGHT));
           break;
       }
       break;
@@ -2432,10 +2428,10 @@ enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE,
   KC_DO_NEXT_LANGUAGE,
 KC_DO_BOOTLOADER,
-KC_DO_FUTURE_APP,
 KC_DO_FUTURE_TAB,
-KC_DO_PAST_TAB,
+KC_DO_FUTURE_APP,
 KC_DO_PAST_APP,
+KC_DO_PAST_TAB,
 KC_DO_FUTURE_WINDOW,
 KC_DO_FUTURE,
 KC_DO_PAST,
@@ -2496,7 +2492,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_HISTORY] = LAYOUT_planck_grid(
   
 /* 0 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-/* 1 */ _______,_______,KC_HOME,KC_PGDN,KC_PGUP,KC_END,KC_DO_FUTURE_APP,KC_DO_FUTURE_TAB,KC_DO_PAST_TAB,KC_DO_PAST_APP,_______,_______,
+/* 1 */ _______,_______,KC_HOME,KC_PGDN,KC_PGUP,KC_END,KC_DO_FUTURE_TAB,KC_DO_FUTURE_APP,KC_DO_PAST_APP,KC_DO_PAST_TAB,_______,_______,
 /* 2 */ _______,_______,_______,_______,_______,_______,KC_DO_FUTURE_WINDOW,KC_DO_FUTURE,KC_DO_PAST,KC_DO_PAST_WINDOW,_______,_______,
 /* 3 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______
 )
@@ -2593,20 +2589,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         run_advanced(DO_BOOTLOADER);
         break;
   
-      case KC_DO_FUTURE_APP:
-        run_advanced(DO_FUTURE_APP);
-        break;
-  
       case KC_DO_FUTURE_TAB:
         run_advanced(DO_FUTURE_TAB);
         break;
   
-      case KC_DO_PAST_TAB:
-        run_advanced(DO_PAST_TAB);
+      case KC_DO_FUTURE_APP:
+        run_advanced(DO_FUTURE_APP);
         break;
   
       case KC_DO_PAST_APP:
         run_advanced(DO_PAST_APP);
+        break;
+  
+      case KC_DO_PAST_TAB:
+        run_advanced(DO_PAST_TAB);
         break;
   
       case KC_DO_FUTURE_WINDOW:

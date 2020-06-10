@@ -269,7 +269,7 @@ keyboards:
 
         NO_ACTION_FUNCTION: ''
         NO_ACTION_MACRO: ''
-        APP_SWITCH_TIMEOUT: 500
+        APP_SWITCH_TIMEOUT: 250
         NO_DEBUG: ''
         NO_PRINT: ''
         ONESHOT_TAP_TOGGLE: 5
@@ -355,7 +355,7 @@ keyboards:
         lights: [1,2]
         keys:
             - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [~, ~, home, pageDown, pageUp, end, doFutureApp, doFutureTab, doPastTab, doPastApp, ~, ~]
+            - [~, ~, home, pageDown, pageUp, end, doFutureTab, doFutureApp, doPastApp, doPastTab, ~, ~]
             - [~, ~, ~, ~, ~, ~, doFutureWindow, doFuture, doPast, doPastWindow, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
       game:
