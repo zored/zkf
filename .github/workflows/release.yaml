@@ -10,7 +10,8 @@ jobs:
     - run: ./project.sh build-all
     - uses: softprops/action-gh-release@v1
       if: "startsWith(github.ref, 'refs/tags/v')"
-      env: { GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: |
           firmwares/ergodox_ez.hex
