@@ -193,7 +193,6 @@ void appSwitchRun(bool past, uint8_t target) {
             break;
           case TARGET_TAB:
             appSwitch.hold1 = KC_LCTRL;
-            appSwitch.hold2 = KC_LALT;
             break;
         }
         break;
@@ -217,17 +216,6 @@ void appSwitchRun(bool past, uint8_t target) {
       }
       break;
     default:
-      switch (target) {
-        case TARGET_TAB:
-          if (past) {
-            tap = KC_RIGHT;
-          } else {
-            tap = KC_LEFT;
-          }
-          break;
-        default:
-          break;
-      }
       break;
   }
   if (!past && tap != KC_RIGHT && tap != KC_LEFT) {

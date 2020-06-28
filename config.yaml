@@ -8,7 +8,7 @@ keyboards:
           left:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [esc, q, w, e, r, t, ~]
-            - [capsDance, a, s, d, f, g]
+            - [capsDance, aDance, s, d, f, g]
             - ['shift(', zDance, xDance, cDance, v, b, doFutureApp]
             - [leader, toggleNavigation, ~, doFutureTab, doPastTab]
           left-thumb:
@@ -31,7 +31,7 @@ keyboards:
           left:
             - [esc, 1, 2, 3, 4, 5, ~]
             - [tab, ~, ~, ~, ~, ~, ~]
-            - [capslock, ~, ~, ~, ~, ~]
+            - [capslock, a, ~, ~, ~, ~]
             - [lShift, z, x, c, ~, ~, ~]
             - [lCtrl, lAlt, lGui, holdGameMirror, holdGameNumbers]
           left-thumb:
@@ -209,6 +209,52 @@ keyboards:
             - [~, ~]
             - [~]
             - [~, ~, ~]
+      history:
+        lights: [3]
+        keys:
+          left:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, home, pageDown, pageUp, end]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~]
+          left-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+          right:
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~]
+            - [    doFutureTab, doFutureApp, doPastApp, doPastTab, ~, ~]
+            - [~, doFutureWindow, doFuture, doPast, doPastWindow, ~, ~]
+            - [~, ~, ~, ~, ~]
+          right-thumb:
+            - [~, ~]
+            - [~]
+            - [~, ~, ~]
+      # template:
+      #   lights: [1,2,3]
+      #   keys:
+      #     left:
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [~, ~, ~, ~, ~, ~]
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [~, ~, ~, ~, ~]
+      #     left-thumb:
+      #       - [~, ~]
+      #       - [~]
+      #       - [~, ~, ~]
+      #     right:
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [   ~, ~, ~, ~, ~, ~]
+      #       - [~, ~, ~, ~, ~, ~, ~]
+      #       - [~, ~, ~, ~, ~]
+      #     right-thumb:
+      #       - [~, ~]
+      #       - [~]
+      #       - [~, ~, ~]
       # steno:
       #   lights: [3]
       #   keys:
@@ -329,7 +375,7 @@ keyboards:
             - [~, '!', '#', '{', '}','/', '=', 7, 8, 9, '&', '|']
             - [~, '@', '$', '(', ')', '`', '+', 4, 5, 6, '*', ~]
             - [~, percentDance, circumflexDance, leftSquareBracketDance, ']', '~', '-', 1, 2, 3, '/', ~]
-            - [~, ~, ~, ~, ~, ~, ~, ~, 0, '.', ~, ~]
+            - [~, ~, ~, ~, delete, ~, ~, ~, 0, '.', ~, ~]
       navigation:
         lights: [2]
         keys:

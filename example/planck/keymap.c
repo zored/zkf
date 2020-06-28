@@ -188,7 +188,6 @@ void appSwitchRun(bool past, uint8_t target) {
             break;
           case TARGET_TAB:
             appSwitch.hold1 = KC_LCTRL;
-            appSwitch.hold2 = KC_LALT;
             break;
         }
         break;
@@ -212,17 +211,6 @@ void appSwitchRun(bool past, uint8_t target) {
       }
       break;
     default:
-      switch (target) {
-        case TARGET_TAB:
-          if (past) {
-            tap = KC_RIGHT;
-          } else {
-            tap = KC_LEFT;
-          }
-          break;
-        default:
-          break;
-      }
       break;
   }
   if (!past && tap != KC_RIGHT && tap != KC_LEFT) {
@@ -2458,7 +2446,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* 0 */ _______,KC_EXLM,KC_HASH,KC_LCBR,KC_RCBR,KC_SLSH,KC_EQL,KC_7,KC_8,KC_9,KC_AMPR,KC_PIPE,
 /* 1 */ _______,KC_AT,KC_DLR,KC_LPRN,KC_RPRN,KC_GRV,KC_PPLS,KC_4,KC_5,KC_6,KC_PAST,_______,
 /* 2 */ _______,TD(DANCE_KC_PERCENTDANCE),TD(DANCE_KC_CIRCUMFLEXDANCE),TD(DANCE_KC_LEFTSQUAREBRACKETDANCE),KC_RBRC,KC_TILD,KC_MINS,KC_1,KC_2,KC_3,KC_SLSH,_______,
-/* 3 */ _______,_______,_______,_______,_______,_______,_______,_______,KC_0,KC_DOT,_______,_______
+/* 3 */ _______,_______,_______,_______,KC_DELETE,_______,_______,_______,KC_0,KC_DOT,_______,_______
 )
   ,
 

@@ -48,7 +48,7 @@
 #define NO_ACTION_MACRO 
 
 #undef APP_SWITCH_TIMEOUT
-#define APP_SWITCH_TIMEOUT 500
+#define APP_SWITCH_TIMEOUT 250
 
 #undef NO_DEBUG
 #define NO_DEBUG 
