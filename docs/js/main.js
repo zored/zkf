@@ -6,9 +6,9 @@ const createDiv = (css, children) => {
 }
 
 const createHeading = (depth, name) => {
-   const h = document.createElement('h' + (depth + 1));
-   h.innerText = name;
-   return h;
+  const h = document.createElement('h' + (depth + 1));
+  h.innerText = name;
+  return h;
 }
 
 window.onload = async () => {
@@ -27,7 +27,7 @@ window.onload = async () => {
       if ($e.selectedIndex >= 0) {
         value = $e.options[$e.selectedIndex].value;
       }
-      
+
       if (value && o[value]) {
         return value
       }
@@ -41,11 +41,10 @@ window.onload = async () => {
       if (valueHolders.length === 0) {
         value = 'all'
       } else {
-        value = valueHolders.map(([k]) => k)[0]; 
+        value = valueHolders.map(([k]) => k)[0];
       }
 
       if (hashInput) {
-        debugger
         value = hashInput[$e.id]
       }
 
@@ -68,11 +67,13 @@ window.onload = async () => {
 
     const setOptions = ($e, configs, value) => {
       const data = toArray(configs);
-      $e.style.display = (data.length === 0)
-        ? 'none'
-        : 'inline';
+      $e.style.display = (data.length === 0) ?
+        'none' :
+        'inline';
 
-      data.unshift([['all']])
+      data.unshift([
+        ['all']
+      ])
       if (!value && data.length) {
         value = 'all'
       }
@@ -84,7 +85,11 @@ window.onload = async () => {
     setOptions($layer, layers, layer);
     setOptions($mapping, mappings, mapping);
 
-    const result = {keyboard, layer, mapping};
+    const result = {
+      keyboard,
+      layer,
+      mapping
+    };
     location.hash = JSON.stringify(result);
     return result;
   }
@@ -94,7 +99,9 @@ window.onload = async () => {
       if (k === 'all') {
         return o;
       }
-      return {[k]: o[k]};
+      return {
+        [k]: o[k]
+      };
     };
 
 
@@ -110,9 +117,9 @@ window.onload = async () => {
           layer.keys,
           (keys, keysName) => {
             const mapping = input.mapping && input.mapping !== 'all' && keyboard.mappings[input.mapping];
-            return Number.isInteger(keysName)
-              ? keyRowCallback(keys, keysName, mapping, config.keys)
-              : keyBlockCallback(keys, keysName, keyboard + '-' + layerName, mapping, config.keys)
+            return Number.isInteger(keysName) ?
+              keyRowCallback(keys, keysName, mapping, config.keys) :
+              keyBlockCallback(keys, keysName, keyboard + '-' + layerName, mapping, config.keys)
           }
         ),
       ),
@@ -149,28 +156,30 @@ function keyRowCallback(row, name, mapping, dance) {
 }
 
 function getKey(key, mapping, danceKeys) {
-  let $key = document.createTextNode((key || '~') + '');
   const danceKey = danceKeys[key];
-  if (danceKey) {
-     $key = createSpan('key-dance', 'Dance key', [
-        document.createTextNode(danceKey.tap[[0]])
-     ]);
-     const info = [
-       [danceKey.tap.slice(1), 'Tap'],
-       [danceKey.hold, 'Hold'],
-     ].flatMap(
-       ([keys, name]) => (keys || []).map(
-         (actions, i) => `- ${name} #${i+1}: ${actions.join(' + ')}`
-       )
-     ).join('\n') || 'Only one click action';
-     $key.addEventListener('click', () => alert(info))
+  let keyText = danceKey ? danceKey.tap[[0]][0] : key;
+  if (mapping) {
+    const indexOne = mapping[0].indexOf(keyText)
+    console.log({indexOne})
+    if (indexOne >= 0) {
+      keyText = mapping[1][indexOne];
+    }
   }
 
-  if (mapping) {
-    const indexOne = mapping[0].indexOf(key)
-    if (indexOne >= 0) {
-      key = mapping[1][indexOne];
-    }
+  let $key = document.createTextNode((keyText || '~') + '');
+  if (danceKey) {
+    $key = createSpan('key-dance', 'Dance key', [
+      document.createTextNode(keyText)
+    ]);
+    const info = [
+      [danceKey.tap.slice(1), 'Tap'],
+      [danceKey.hold, 'Hold'],
+    ].flatMap(
+      ([keys, name]) => (keys || []).map(
+        (actions, i) => `- ${name} #${i+1}: ${actions.join(' + ')}`
+      )
+    ).join('\n') || 'Only one click action';
+    $key.addEventListener('click', () => alert(info))
   }
 
   return createSpan('key', key, [$key])
