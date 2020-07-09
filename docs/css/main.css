@@ -1,7 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+body {
+	font-family: 'PT Sans', sans-serif;
+	font-size: 20px;
+}
 .key {
 	display: inline-block;
 	width: 80px;
 	overflow: hidden;
+}
+.keys-block {
+	display: inline-block;
+	margin: 80px;
+	margin-top: 0;
+	margin-left:0;
+	vertical-align: top;
 }
 
 .keys-row {
@@ -9,21 +21,27 @@
 }
 
 .key-dance {
-	background-color: #0f0;
+	border-radius: 5px;
+	font-weight: bold;
+	text-decoration: underline;
 	display: block;
 	cursor: pointer;
 }
 
 .key-dance:hover{
-	background-color: #afa;
+	color: #55f;
+	text-decoration: none;
 }
 
 .key:hover{
 	background-color: #fff;
 }
-
 .layer {
 	margin-bottom: 20px;
+	display: inline-block;
+	margin: 100px;
+	margin-top: 0;
+	margin-left: 0;
 }
 
 .block {

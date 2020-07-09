@@ -18,7 +18,7 @@ window.onload = async () => {
   const $layer = byId('layer');
   const $mapping = byId('mapping');
   let hashInput = location.hash.length > 1 &&
-    JSON.parse(decodeURIComponent(location.hash.substring(1)))
+    JSON.parse(atob(location.hash.substring(1)))
   const getInput = () => {
     const getValue = ($e, o) => {
       o = o || {};
@@ -90,7 +90,7 @@ window.onload = async () => {
       layer,
       mapping
     };
-    location.hash = JSON.stringify(result);
+    location.hash = btoa(JSON.stringify(result));
     return result;
   }
   const refresh = () => {
