@@ -361,7 +361,7 @@ enum do_command {
   DO_ONE_SHOT_ALT,
   DO_ONE_SHOT_GUI,
   DO_ONE_SHOT_SHIFT,
-  DO_PREV_CHANGE, DO_NEXT_CHANGE,
+  DO_PAST, DO_FUTURE,
   DO_PREV_TAB, DO_NEXT_TAB,
   DO_MOUSE_SLOW, DO_MOUSE_FAST,
 };
@@ -425,43 +425,23 @@ void run_advanced (uint8_t command) {
     case DO_ONE_SHOT_SHIFT:
       do_one_shot(MOD_LSFT);
       break;
-    case DO_PREV_TAB:
+    case DO_FUTURE:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(S(KC_LBRACKET)));
+          tap_code16(G(KC_LBRACKET));
           break;
         case OS_WINDOWS:
           tap_code16(A(KC_LEFT));
           break;
       }
       break;
-    case DO_NEXT_TAB:
-      switch (zored_os) {
-        case OS_MACOS:
-          tap_code16(G(S(KC_RBRACKET)));
-          break;
-        case OS_WINDOWS:
-          tap_code16(A(KC_RIGHT));
-          break;
-      }
-      break;
-    case DO_PREV_CHANGE:
-      switch (zored_os) {
-        case OS_MACOS:
-          tap_code16(G(KC_LBRACKET));
-          break;
-        case OS_WINDOWS:
-          tap_code16(C(A(KC_LEFT)));
-          break;
-      }
-      break;
-    case DO_NEXT_CHANGE:
+    case DO_PAST:
       switch (zored_os) {
         case OS_MACOS:
           tap_code16(G(KC_RBRACKET));
           break;
         case OS_WINDOWS:
-          tap_code16(C(A(KC_RIGHT)));
+          tap_code16(A(KC_RIGHT));
           break;
       }
       break;

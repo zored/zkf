@@ -2424,8 +2424,6 @@ KC_DO_PAST_WINDOW,
 KC_DO_FUTURE_WINDOW,
 KC_DO_PAST,
 KC_DO_FUTURE,
-KC_DO_MOUSE_FAST,
-KC_DO_MOUSE_SLOW,
 KC_DO_BOOTLOADER,
 
 
@@ -2460,7 +2458,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
 /* left-0 */ KC_ESC,KC_1,KC_2,KC_3,KC_4,KC_5,_______,
 /* left-1 */ KC_TAB,_______,_______,_______,_______,_______,_______,
-/* left-2 */ KC_CAPSLOCK,_______,_______,_______,_______,_______,
+/* left-2 */ KC_CAPSLOCK,KC_A,_______,_______,_______,_______,
 /* left-3 */ KC_LSHIFT,KC_Z,KC_X,KC_C,_______,_______,_______,
 /* left-4 */ KC_LCTRL,KC_LALT,KC_LGUI,MO(LAYER_GAMEMIRROR),MO(LAYER_GAMENUMBERS),
 /* left-thumb-0 */ _______,_______,
@@ -2564,8 +2562,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_NAVIGATION] = LAYOUT_ergodox(
   
 /* left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-1 */ _______,KC_DO_MOUSE_FAST,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
-/* left-2 */ _______,KC_DO_MOUSE_SLOW,KC_MS_L,KC_MS_D,KC_MS_R,_______,
+/* left-1 */ _______,_______,KC_BTN2,KC_MS_U,KC_BTN1,_______,_______,
+/* left-2 */ _______,_______,KC_MS_L,KC_MS_D,KC_MS_R,_______,
 /* left-3 */ _______,_______,_______,_______,_______,_______,_______,
 /* left-4 */ _______,_______,_______,KC_DO_FUTURE_APP,KC_DO_PAST_APP,
 /* left-thumb-0 */ _______,_______,
@@ -2746,14 +2744,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   
       case KC_DO_FUTURE:
         run_advanced(DO_FUTURE);
-        break;
-  
-      case KC_DO_MOUSE_FAST:
-        run_advanced(DO_MOUSE_FAST);
-        break;
-  
-      case KC_DO_MOUSE_SLOW:
-        run_advanced(DO_MOUSE_SLOW);
         break;
   
       case KC_DO_BOOTLOADER:
