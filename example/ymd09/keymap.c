@@ -10,6 +10,21 @@
  #include "keymap_steno.h"
 #endif
 
+enum custom_keycodes {
+  ZKC_BTL = SAFE_RANGE,
+  KC_DO_NEXT_MAPPING,
+KC_DO_NEXT_LANGUAGE,
+KC_DO_BOOTLOADER,
+KC_DO_ONE_SHOT_CTRL,
+KC_DO_ONE_SHOT_ALT,
+KC_DO_ONE_SHOT_GUI,
+KC_DO_ONE_SHOT_SHIFT,
+
+
+  // At the end:
+  DYNAMIC_MACRO_RANGE,
+};
+
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
@@ -365,6 +380,8 @@ enum do_command {
   DO_PREV_TAB, DO_NEXT_TAB,
   DO_MOUSE_SLOW, DO_MOUSE_FAST,
 };
+
+
 
 
 
@@ -1702,21 +1719,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [DANCE_KC_F10DANCE] = DANCE_MODIFIER()
 };
 
-enum custom_keycodes {
-  ZKC_BTL = SAFE_RANGE,
-  KC_DO_NEXT_MAPPING,
-KC_DO_NEXT_LANGUAGE,
-KC_DO_BOOTLOADER,
-KC_DO_ONE_SHOT_CTRL,
-KC_DO_ONE_SHOT_ALT,
-KC_DO_ONE_SHOT_GUI,
-KC_DO_ONE_SHOT_SHIFT,
-
-
-  // At the end:
-  DYNAMIC_MACRO_RANGE,
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_DEFAULT] = LAYOUT(
@@ -1850,11 +1852,14 @@ void matrix_init_user(void) {
 }
 
 void matrix_scan_user(void) {
+
+
 }
 
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
+
 
   uint16_t newKeycode = map_code16_hash(keycode);
   if (newKeycode > 0) {

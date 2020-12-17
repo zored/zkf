@@ -21,6 +21,14 @@
  #include "keymap_steno.h"
 #endif
 
+enum custom_keycodes {
+  ZKC_BTL = SAFE_RANGE,
+  {{{layers.doKeys.names}}}
+
+  // At the end:
+  DYNAMIC_MACRO_RANGE,
+};
+
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
@@ -126,15 +134,78 @@ enum do_command {
   DO_ONE_SHOT_ALT,
   DO_ONE_SHOT_GUI,
   DO_ONE_SHOT_SHIFT,
+{{#keyGroups.turbo}}
+  DO_ONE_SHOT_TURBO,
+{{/keyGroups.turbo}}
   DO_PAST, DO_FUTURE,
   DO_PREV_TAB, DO_NEXT_TAB,
-  {{#keyGroups.appSwitch}}
+{{#keyGroups.appSwitch}}
   DO_FUTURE_TAB, DO_PAST_TAB,
   DO_FUTURE_APP, DO_PAST_APP,
   DO_FUTURE_WINDOW, DO_PAST_WINDOW,
-  {{/keyGroups.appSwitch}}
+{{/keyGroups.appSwitch}}
   DO_MOUSE_SLOW, DO_MOUSE_FAST,
 };
+
+
+{{#keyGroups.turbo}}
+typedef struct {
+  bool waiting;
+  uint16_t keycode;
+  bool fingerPressing;
+  bool signalActive;
+  uint16_t signalTimer;
+} Turbo;
+Turbo turbo = {.waiting = false, .keycode = 0, .fingerPressing = false, .signalActive = false, .signalTimer = 0};
+void turboWaitEnable(void) {
+  turbo.waiting = true;
+}
+void turboSendSignal(void) {
+  turbo.signalTimer = timer_read();
+  if (turbo.signalActive) {
+    register_code16(turbo.keycode);
+    return;
+  }
+  unregister_code16(turbo.keycode);
+}
+void turboEnable(uint16_t code) {
+  turbo.waiting = false;
+  if (code == KC_DO_ONE_SHOT_TURBO) {
+    turbo.keycode = 0;
+    return;
+  }
+  turbo.keycode = code;
+  turboSendSignal();
+}
+bool turboHandlePress(uint16_t code, bool pressed) {
+  if (turbo.waiting && pressed) {
+    turboEnable(code);
+    return true;
+  }
+  if (code == turbo.keycode) {
+    turbo.fingerPressing = pressed;
+    turbo.signalActive = pressed;
+    turboSendSignal();
+    return true;
+  }
+  return false;
+}
+inline void turboTick(void) {
+  if (!turbo.fingerPressing || turbo.keycode == 0) {
+    return;
+  }
+  uint16_t signalMs = timer_elapsed(turbo.signalTimer);
+  uint16_t timeoutMs = TURBO_NO_SIGNAL_TIMEOUT;
+  if (turbo.signalActive) {
+    timeoutMs = TURBO_SIGNAL_TIMEOUT;
+  }
+  if (signalMs <= timeoutMs) {
+    return;
+  }
+  turbo.signalActive = !turbo.signalActive;
+  turboSendSignal();
+}
+{{/keyGroups.turbo}}
 
 
 {{#keyGroups.appSwitch}}
@@ -227,7 +298,7 @@ void appSwitchRun(bool past, uint8_t target) {
   appSwitch.active = true;
   appSwitch.target = target;
 }
-void appSwitchTimeout(void) {
+inline void appSwitchTimeout(void) {
   if (!appSwitch.active) {
     return;
   }
@@ -295,6 +366,11 @@ void run_advanced (uint8_t command) {
     case DO_ONE_SHOT_SHIFT:
       do_one_shot(MOD_LSFT);
       break;
+    {{#keyGroups.turbo}}
+    case DO_ONE_SHOT_TURBO:
+      turboWaitEnable();
+      break;
+    {{/keyGroups.turbo}}
     {{#keyGroups.appSwitch}}
     case DO_PAST_APP:
       appSwitchRun(true, TARGET_APP);
@@ -599,14 +675,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 };
 {{/dance}}
 
-enum custom_keycodes {
-  ZKC_BTL = SAFE_RANGE,
-  {{{layers.doKeys.names}}}
-
-  // At the end:
-  DYNAMIC_MACRO_RANGE,
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 {{{layers.keys}}}
 };
@@ -639,9 +707,14 @@ void matrix_init_user(void) {
 LEADER_EXTERNS();
 {{/ymd09}}
 void matrix_scan_user(void) {
-  {{#keyGroups.appSwitch}}
+{{#keyGroups.turbo}}
+  turboTick();
+{{/keyGroups.turbo}}
+
+{{#keyGroups.appSwitch}}
   appSwitchTimeout();
-  {{/keyGroups.appSwitch}}
+{{/keyGroups.appSwitch}}
+
 {{^ymd09}}
   LEADER_DICTIONARY() {
     leading = false;
@@ -671,7 +744,13 @@ void keyboard_post_init_user(void) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
 
-  {{#mappings}}
+{{#keyGroups.turbo}}
+  if (turboHandlePress(keycode, pressed)) {
+    return false;
+  }
+{{/keyGroups.turbo}}
+
+{{#mappings}}
   uint16_t newKeycode = map_code16_hash(keycode);
   if (newKeycode > 0) {
     if (pressed) {
@@ -681,13 +760,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return false;
   }
-  {{/mappings}}
+{{/mappings}}
 
   if (!pressed) {
     return true;
   }
 
-  {{#keyGroups.appSwitch}}
+{{#keyGroups.appSwitch}}
   switch (keycode) {
     case KC_DO_PAST_APP: break;
     case KC_DO_FUTURE_APP: break;
@@ -699,7 +778,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       appSwitchDeactivate();
       break;
   }
-  {{/keyGroups.appSwitch}}
+{{/keyGroups.appSwitch}}
 
   switch (keycode) {
     case UC_M_OS:

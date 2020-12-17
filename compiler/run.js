@@ -558,7 +558,8 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
 
 function getKeyGroups (layers) {
   const appSwitch = layers.allKeys.filter(key => key.codeName.match(/^KC_DO_.*_(APP|WINDOW)$/i)).length >= 4
-  return { appSwitch }
+  const turbo = layers.allKeys.some(key => key.codeName === 'KC_DO_ONE_SHOT_TURBO')
+  return { appSwitch, turbo }
 }
 
 function getMappings (mappings, keyFactory) {

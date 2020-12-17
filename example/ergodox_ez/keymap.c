@@ -10,6 +10,25 @@
  #include "keymap_steno.h"
 #endif
 
+enum custom_keycodes {
+  ZKC_BTL = SAFE_RANGE,
+  KC_DO_NEXT_LANGUAGE,
+KC_DO_FUTURE_APP,
+KC_DO_FUTURE_TAB,
+KC_DO_PAST_TAB,
+KC_DO_ONE_SHOT_TURBO,
+KC_DO_PAST_APP,
+KC_DO_PAST_WINDOW,
+KC_DO_FUTURE_WINDOW,
+KC_DO_PAST,
+KC_DO_FUTURE,
+KC_DO_BOOTLOADER,
+
+
+  // At the end:
+  DYNAMIC_MACRO_RANGE,
+};
+
 enum operating_systems {
   OS_MACOS = 1,
   OS_WINDOWS,
@@ -122,6 +141,7 @@ enum do_command {
   DO_ONE_SHOT_ALT,
   DO_ONE_SHOT_GUI,
   DO_ONE_SHOT_SHIFT,
+  DO_ONE_SHOT_TURBO,
   DO_PAST, DO_FUTURE,
   DO_PREV_TAB, DO_NEXT_TAB,
   DO_FUTURE_TAB, DO_PAST_TAB,
@@ -129,6 +149,64 @@ enum do_command {
   DO_FUTURE_WINDOW, DO_PAST_WINDOW,
   DO_MOUSE_SLOW, DO_MOUSE_FAST,
 };
+
+
+typedef struct {
+  bool waiting;
+  uint16_t keycode;
+  bool fingerPressing;
+  bool signalActive;
+  uint16_t signalTimer;
+} Turbo;
+Turbo turbo = {.waiting = false, .keycode = 0, .fingerPressing = false, .signalActive = false, .signalTimer = 0};
+void turboWaitEnable(void) {
+  turbo.waiting = true;
+}
+void turboSendSignal(void) {
+  turbo.signalTimer = timer_read();
+  if (turbo.signalActive) {
+    register_code16(turbo.keycode);
+    return;
+  }
+  unregister_code16(turbo.keycode);
+}
+void turboEnable(uint16_t code) {
+  turbo.waiting = false;
+  if (code == KC_DO_ONE_SHOT_TURBO) {
+    turbo.keycode = 0;
+    return;
+  }
+  turbo.keycode = code;
+  turboSendSignal();
+}
+bool turboHandlePress(uint16_t code, bool pressed) {
+  if (turbo.waiting && pressed) {
+    turboEnable(code);
+    return true;
+  }
+  if (code == turbo.keycode) {
+    turbo.fingerPressing = pressed;
+    turbo.signalActive = pressed;
+    turboSendSignal();
+    return true;
+  }
+  return false;
+}
+inline void turboTick(void) {
+  if (!turbo.fingerPressing || turbo.keycode == 0) {
+    return;
+  }
+  uint16_t signalMs = timer_elapsed(turbo.signalTimer);
+  uint16_t timeoutMs = TURBO_NO_SIGNAL_TIMEOUT;
+  if (turbo.signalActive) {
+    timeoutMs = TURBO_SIGNAL_TIMEOUT;
+  }
+  if (signalMs <= timeoutMs) {
+    return;
+  }
+  turbo.signalActive = !turbo.signalActive;
+  turboSendSignal();
+}
 
 
 typedef struct {
@@ -220,7 +298,7 @@ void appSwitchRun(bool past, uint8_t target) {
   appSwitch.active = true;
   appSwitch.target = target;
 }
-void appSwitchTimeout(void) {
+inline void appSwitchTimeout(void) {
   if (!appSwitch.active) {
     return;
   }
@@ -286,6 +364,9 @@ void run_advanced (uint8_t command) {
       break;
     case DO_ONE_SHOT_SHIFT:
       do_one_shot(MOD_LSFT);
+      break;
+    case DO_ONE_SHOT_TURBO:
+      turboWaitEnable();
       break;
     case DO_PAST_APP:
       appSwitchRun(true, TARGET_APP);
@@ -2413,24 +2494,6 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [DANCE_KC_F10DANCE] = DANCE_MODIFIER()
 };
 
-enum custom_keycodes {
-  ZKC_BTL = SAFE_RANGE,
-  KC_DO_NEXT_LANGUAGE,
-KC_DO_FUTURE_APP,
-KC_DO_FUTURE_TAB,
-KC_DO_PAST_TAB,
-KC_DO_PAST_APP,
-KC_DO_PAST_WINDOW,
-KC_DO_FUTURE_WINDOW,
-KC_DO_PAST,
-KC_DO_FUTURE,
-KC_DO_BOOTLOADER,
-
-
-  // At the end:
-  DYNAMIC_MACRO_RANGE,
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_DEFAULT] = LAYOUT_ergodox(
@@ -2440,7 +2503,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-2 */ TD(DANCE_KC_CAPSDANCE),TD(DANCE_KC_ADANCE),KC_S,KC_D,KC_F,KC_G,
 /* left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,KC_DO_FUTURE_APP,
 /* left-4 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DO_FUTURE_TAB,KC_DO_PAST_TAB,
-/* left-thumb-0 */ KC_ESC,_______,
+/* left-thumb-0 */ KC_ESC,KC_DO_ONE_SHOT_TURBO,
 /* left-thumb-1 */ KC_HOME,
 /* left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
 /* right-0 */ _______,KC_6,KC_7,KC_8,KC_9,KC_0,_______,
@@ -2477,10 +2540,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_GAMENUMBERS] = LAYOUT_ergodox(
   
-/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* left-1 */ _______,KC_1,KC_2,KC_3,_______,_______,_______,
-/* left-2 */ _______,KC_4,KC_5,KC_6,_______,_______,
-/* left-3 */ _______,KC_7,KC_8,KC_9,_______,_______,_______,
+/* left-0 */ _______,KC_F1,KC_F2,KC_F3,KC_F4,KC_F5,_______,
+/* left-1 */ _______,KC_1,KC_2,KC_3,KC_F6,KC_F7,_______,
+/* left-2 */ _______,KC_4,KC_5,KC_6,KC_F8,KC_F9,
+/* left-3 */ _______,KC_7,KC_8,KC_9,KC_F10,KC_F11,_______,
 /* left-4 */ _______,_______,KC_0,_______,_______,
 /* left-thumb-0 */ _______,_______,
 /* left-thumb-1 */ _______,
@@ -2656,7 +2719,10 @@ void matrix_init_user(void) {
 
 LEADER_EXTERNS();
 void matrix_scan_user(void) {
+  turboTick();
+
   appSwitchTimeout();
+
   LEADER_DICTIONARY() {
     leading = false;
     leader_end();
@@ -2681,6 +2747,10 @@ void keyboard_post_init_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
+
+  if (turboHandlePress(keycode, pressed)) {
+    return false;
+  }
 
 
   if (!pressed) {
@@ -2724,6 +2794,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   
       case KC_DO_PAST_TAB:
         run_advanced(DO_PAST_TAB);
+        break;
+  
+      case KC_DO_ONE_SHOT_TURBO:
+        run_advanced(DO_ONE_SHOT_TURBO);
         break;
   
       case KC_DO_PAST_APP:

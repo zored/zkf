@@ -12,7 +12,7 @@ keyboards:
             - ['shift(', zDance, xDance, cDance, v, b, doFutureApp]
             - [leader, toggleNavigation, ~, doFutureTab, doPastTab]
           left-thumb:
-            - [esc, ~]
+            - [esc, doOneShotTurbo]
             - [home]
             - [space, backspace, end]
           right:
@@ -315,7 +315,6 @@ keyboards:
 
         NO_ACTION_FUNCTION: ''
         NO_ACTION_MACRO: ''
-        APP_SWITCH_TIMEOUT: 250
         NO_DEBUG: ''
         NO_PRINT: ''
         ONESHOT_TAP_TOGGLE: 5
@@ -323,6 +322,11 @@ keyboards:
         TAPPING_TERM: 110
         TAPPING_TERM_TAP_DANCE: 270
         UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
+        
+        # My custom settings:
+        TURBO_SIGNAL_TIMEOUT: 100
+        TURBO_NO_SIGNAL_TIMEOUT: 200
+        APP_SWITCH_TIMEOUT: 250
 
 
       # https://docs.qmk.fm/#/config_options?id=the-rulesmk-file
