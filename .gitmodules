@@ -1,5 +1,0 @@
-[submodule "qmk_firmware"]
-	path = vendor/qmk_firmware
-	url = https://github.com/zored/qmk_firmware.git
-	branch = zkf-1
-	ignore = dirty
