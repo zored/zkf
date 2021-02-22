@@ -360,10 +360,9 @@ keyboards:
       rules:
         <<: *rules
         AUDIO_ENABLE: 'yes'
+        RGBLIGHT_ENABLE: 'yes'
       config:
         <<: *config
-        RGBLIGHT_ENABLE: 'yes'
-        RGBLED_NUM: 2
         AUDIO_CLICKY: ''
         STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
