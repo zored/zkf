@@ -35,6 +35,3 @@ jobs:
           firmwares/ergodox_ez.hex
           firmwares/planck.bin
           firmwares/ymd09.hex
-    - run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
