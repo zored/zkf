@@ -4,14 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/cache@v2
-      with:
-        path: |
-          vendor/qmk_firmware
-        key: ${{ runner.os }}-${{ hashFiles('.gitmodules') }}
     - uses: docker-practice/actions-setup-docker@1.0.4
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      continue-on-error: true
     - uses: actions/checkout@v2
     - run: ./project.sh sync
     - run: ./project.sh build-all
@@ -24,3 +17,12 @@ jobs:
           firmwares/ergodox_ez.hex
           firmwares/planck.bin
           firmwares/ymd09.hex
+
+    # Cache:
+    - uses: actions/cache@v2
+      with:
+        path: |
+          vendor/qmk_firmware
+        key: ${{ runner.os }}-${{ hashFiles('.gitmodules') }}
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      continue-on-error: true
