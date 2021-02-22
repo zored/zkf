@@ -644,7 +644,9 @@ LAYER_DEFAULT = 0,
   LAYER_NAVIGATION2,
   LAYER_EMOJI,
   LAYER_HISTORY,
-  LAYER_GAME
+  LAYER_GAME,
+  LAYER_GAMEMIRROR,
+  LAYER_GAMENUMBERS
 };
 
 enum dance_keys {
@@ -677,7 +679,8 @@ enum dance_keys {
   DANCE_KC_F1DANCE,
   DANCE_KC_F2DANCE,
   DANCE_KC_F3DANCE,
-  DANCE_KC_F10DANCE
+  DANCE_KC_F10DANCE,
+  DANCE_KC_PLANCKGAMEBACKSPACEDANCE
 };
 enum dance_action_names {
   ACTION_SEQ__DO_NEXT_LANGUAGE_1 = 1,
@@ -764,10 +767,12 @@ enum dance_action_names {
   ACTION_SEQ__F3_138,
   ACTION_SEQ__F13_139,
   ACTION_SEQ__F10_142,
-  ACTION_SEQ__F20_143
+  ACTION_SEQ__F20_143,
+  ACTION_SEQ__BSPC_146,
+  ACTION_SEQ__HOLD_LAYER_GAMENUMBERS_148
 };
 
-static int dance_key_states[85] = {0};
+static int dance_key_states[87] = {0};
 
 void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
   if (state->count == 0) {
@@ -982,6 +987,13 @@ void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
 
     case DANCE_KC_F10DANCE:
       if (state->count <= 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_PLANCKGAMEBACKSPACEDANCE:
+      if (state->count <= 1) {
         return;
       }
       break;
@@ -2135,6 +2147,40 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
       }
       break;
     
+    case DANCE_KC_PLANCKGAMEBACKSPACEDANCE:
+      if (state->pressed) {
+        // Hold actions:
+        switch (state->count) {
+          case 1:
+            layer_on(LAYER_GAMENUMBERS);
+    
+            dance_key_states[dance_key] = ACTION_SEQ__HOLD_LAYER_GAMENUMBERS_148;
+            return;
+      
+          default:
+            
+            return;
+        }
+      }
+      else {
+        // Tap actions:
+        switch (state->count) {
+          case 1:
+            code_down(KC_BSPC);
+            dance_key_states[dance_key] = ACTION_SEQ__BSPC_146;
+            return;
+      
+          default:
+            for (int i=0; i < state->count; i++) {
+              code_down(KC_BSPC);
+            dance_key_states[dance_key] = ACTION_SEQ__BSPC_146;
+              code_up(KC_BSPC);
+            }
+            return;
+        }
+      }
+      break;
+    
   }
 }
 
@@ -2385,6 +2431,13 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             code_up(KC_F20);
             break;
     
+        case ACTION_SEQ__HOLD_LAYER_GAMENUMBERS_148:
+            layer_off(LAYER_GAMENUMBERS);
+            break;
+        case ACTION_SEQ__BSPC_146:
+            code_up(KC_BSPC);
+            break;
+    
   }
 
   dance_key_states[dance_key] = 0;
@@ -2429,7 +2482,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [DANCE_KC_F1DANCE] = DANCE_MODIFIER(),
   [DANCE_KC_F2DANCE] = DANCE_MODIFIER(),
   [DANCE_KC_F3DANCE] = DANCE_MODIFIER(),
-  [DANCE_KC_F10DANCE] = DANCE_MODIFIER()
+  [DANCE_KC_F10DANCE] = DANCE_MODIFIER(),
+  [DANCE_KC_PLANCKGAMEBACKSPACEDANCE] = DANCE_MODIFIER()
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -2490,10 +2544,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_GAME] = LAYOUT_planck_grid(
   
-/* 0 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,KC_UP,_______,_______,
-/* 1 */ KC_TAB,_______,_______,_______,_______,_______,_______,_______,KC_LEFT,KC_DOWN,KC_RGHT,_______,
+/* 0 */ _______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
+/* 1 */ KC_TAB,KC_A,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
 /* 2 */ KC_LSHIFT,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,_______,
-/* 3 */ KC_LCTRL,KC_LALT,KC_LGUI,_______,_______,_______,_______,_______,KC_RGUI,KC_RALT,KC_RCTRL,_______
+/* 3 */ KC_LCTRL,KC_LALT,KC_LGUI,MO(LAYER_GAMEMIRROR),TD(DANCE_KC_PLANCKGAMEBACKSPACEDANCE),_______,_______,_______,KC_RGUI,KC_RALT,KC_RCTRL,_______
+)
+  ,
+
+[LAYER_GAMEMIRROR] = LAYOUT_planck_grid(
+  
+/* 0 */ _______,KC_Y,KC_U,KC_I,KC_O,KC_P,_______,_______,_______,_______,_______,_______,
+/* 1 */ KC_CAPSLOCK,KC_H,KC_J,KC_K,KC_L,KC_SCOLON,KC_QUOT,_______,_______,_______,_______,_______,
+/* 2 */ KC_RSHIFT,KC_N,KC_M,KC_COMM,KC_DOT,KC_SLSH,_______,_______,_______,_______,_______,_______,
+/* 3 */ KC_RCTRL,KC_RALT,KC_RGUI,_______,KC_TAB,KC_ENT,_______,_______,_______,_______,_______,_______
+)
+  ,
+
+[LAYER_GAMENUMBERS] = LAYOUT_planck_grid(
+  
+/* 0 */ _______,KC_1,KC_2,KC_3,KC_F1,KC_F2,_______,_______,_______,_______,_______,_______,
+/* 1 */ _______,KC_4,KC_5,KC_6,KC_F3,KC_F4,_______,_______,_______,_______,_______,_______,
+/* 2 */ _______,KC_7,KC_8,KC_9,KC_F5,KC_F6,_______,_______,_______,_______,_______,_______,
+/* 3 */ _______,_______,KC_0,_______,_______,_______,_______,_______,_______,_______,_______,_______
 )
   
 };
@@ -2655,6 +2727,14 @@ uint32_t layer_state_set_user(uint32_t state) {
     
       case LAYER_GAME:
         combo_disable(); planck_ez_right_led_on();
+        break;
+    
+      case LAYER_GAMEMIRROR:
+        combo_disable(); planck_ez_left_led_on();
+        break;
+    
+      case LAYER_GAMENUMBERS:
+        combo_disable(); planck_ez_left_led_on(); planck_ez_right_led_on();
         break;
     
   }

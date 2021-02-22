@@ -411,10 +411,24 @@ keyboards:
       game:
         lights: [2]
         keys:
-            - [~, ~, ~, ~, ~, ~, ~, ~, ~, up, ~, ~]
-            - [tab, ~, ~, ~, ~, ~, ~, ~, left, down, right, ~]
+            - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+            - [tab, a, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
             - [lShift, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-            - [lCtrl, lAlt, lGui, ~, ~, ~, ~, ~, rgui, rAlt, rCtrl, ~]
+            - [lCtrl, lAlt, lGui, holdGameMirror, planckGameBackspaceDance, ~, ~, ~, rgui, rAlt, rCtrl, ~]
+      gameMirror:
+        lights: [1]
+        keys:
+            - [~, y, u, i, o, p, ~, ~, ~, ~, ~, ~]
+            - [capsLock, h, j, k, l, ";", "'", ~, ~, ~, ~, ~]
+            - [rShift, n, m, ",", ".", "/", ~, ~, ~, ~, ~, ~]
+            - [rCtrl, rAlt, rGui, ~, tab, enter, ~, ~, ~, ~, ~, ~]
+      gameNumbers:
+        lights: [1,2]
+        keys:
+            - [~, 1, 2, 3, f1, f2, ~, ~, ~, ~, ~, ~]
+            - [~, 4, 5, 6, f3, f4, ~, ~, ~, ~, ~, ~]
+            - [~, 7, 8, 9, f5, f6, ~, ~, ~, ~, ~, ~]
+            - [~, ~, 0, ~, ~, ~, ~, ~, ~, ~, ~, ~]
   ymd09:
     settings:
       rules:
@@ -597,6 +611,7 @@ keys:
   F8Dance: {tap: [['f8'], ['f18']]}
   F9Dance: {tap: [['f9'], ['f19']]}
   F10Dance: {tap: [['f10'], ['f20']]}
+  planckGameBackspaceDance: {tap: [[backspace]], hold: [[holdGameNumbers]]}
   semicolonDance:
     tap: [[';']]
     hold:
