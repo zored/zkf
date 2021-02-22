@@ -21,8 +21,8 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: vendor/qmk_firmware
-        key: ${{ runner.os }}-gitmodules-${{ hashFiles('**/.gitmodules') }}
-        restore-keys: ${{ runner.os }}-gitmodules-
+        key: ${{ runner.os }}-gitmodules-1-${{ hashFiles('**/.gitmodules') }}
+        restore-keys: ${{ runner.os }}-gitmodules-1-
 
     - run: ./project.sh sync
     - run: ./project.sh build-all
