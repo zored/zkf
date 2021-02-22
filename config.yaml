@@ -362,6 +362,7 @@ keyboards:
         AUDIO_ENABLE: 'yes'
       config:
         <<: *config
+        RGBLIGHT_ENABLE: 'yes'
         AUDIO_CLICKY: ''
         STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
