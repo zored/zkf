@@ -92,7 +92,8 @@ case $1 in
   run $node_image 'yarn install --no-bin-links --cwd=compiler'
 
   echo "Clone QMK with submodules."
-  git clone -b zkf --single-branch --recurse-submodules git@github.com:zored/qmk_firmware.git $QMK_DIR || ls $QMK_DIR
+  git clone -b zkf --single-branch --recurse-submodules git@github.com:zored/qmk_firmware.git $QMK_DIR || ls $QMK_DIR/quantum
+  rm -rf $QMK_DIR/.git
 
   echo "Checking firmware flasher presence..."
   if [[ $wally != '' ]] && [[ ! -e $wally ]]; then
