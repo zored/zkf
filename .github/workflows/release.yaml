@@ -10,11 +10,8 @@ jobs:
       id: buildx
       with:
         install: true
-    - uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: ${{ runner.os }}-buildx-
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      continue-on-error: true
 
     # git
     - uses: actions/checkout@v2
