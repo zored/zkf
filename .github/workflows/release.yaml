@@ -15,6 +15,7 @@ jobs:
         key: my-docker-{hash}
         restore-keys: my-docker-
         concurrency: 8
+    - run: docker image ls && exit 1
 
     # git
     - uses: actions/checkout@v2
