@@ -97,6 +97,13 @@ case $1 in
   run $node_image 'yarn install --no-bin-links --cwd=compiler'
 
   echo "Get and patch QMK."
+  for d in vendor vendor/qmk_firmware; do
+    (
+      cd $d 
+      ls -lAc .
+      git status
+    ) || true
+  done
   git submodule update --init --recursive || git submodule sync --recursive
   run $qmk_image "cd $QMK_DIR && make git-submodule"
 
