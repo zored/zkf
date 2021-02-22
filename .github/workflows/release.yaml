@@ -12,8 +12,8 @@ jobs:
     - uses: satackey/action-docker-layer-caching@v0.0.11
       continue-on-error: true
       with:
-        key: qmk-docker-{hash}
-        restore-keys: qmk-docker-
+        key: docker-1-{hash}
+        restore-keys: docker-1-
         concurrency: 8
 
     # git

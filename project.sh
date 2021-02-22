@@ -201,6 +201,8 @@ TEXT
     skip="$skip $(docker image ls $i -q)"
   done
 
+  docker stop -t 1 $(docker ps -q)
+
   for i in $(docker image ls -q); do
     for s in $skip; do
       if [[ "$i" == "$s" ]]; then
@@ -210,10 +212,10 @@ TEXT
     done
 
     if [[ "$i" = "" ]]; then
-      break;
+      continue;
     fi
 
-    docker image rm -f $i || true
+    docker image rm -f $i || echo 'Could not stop image'
   done
   ;;
  *)
