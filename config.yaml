@@ -360,7 +360,6 @@ keyboards:
       rules:
         <<: *rules
         AUDIO_ENABLE: 'yes'
-        RGBLIGHT_ENABLE: 'yes'
       config:
         <<: *config
         AUDIO_CLICKY: ''

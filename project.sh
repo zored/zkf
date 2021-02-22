@@ -94,7 +94,7 @@ case $1 in
 
   echo "Clone QMK with submodules."
   if [[ ! -f "$QMK_DIR/Makefile" ]]; then
-    git clone -b zkf --single-branch --recurse-submodules https://github.com/zored/qmk_firmware.git $QMK_DIR
+    git clone -b zkf_stable_planck --single-branch --recurse-submodules https://github.com/zored/qmk_firmware.git $QMK_DIR
     rm -rf $QMK_DIR/.git
   fi
 
