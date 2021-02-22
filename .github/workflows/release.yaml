@@ -23,10 +23,6 @@ jobs:
         path: vendor
         key: ${{ runner.os }}-vendor-${{ hashFiles('vendor.yaml') }}
         restore-keys: ${{ runner.os }}-vendor-
-    - uses: MrSquaare/ssh-setup-action@v1.0.1
-      with:
-        host: github.com
-        private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - run: ./project.sh sync
     - run: ./project.sh build-all
