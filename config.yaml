@@ -342,7 +342,7 @@ keyboards:
         EXTRAKEY_ENABLE: 'yes'
         KEY_LOCK_ENABLE: 'no'
         LEADER_ENABLE: 'yes'
-        LINK_TIME_OPTIMIZATION_ENABLE: 'yes'
+        LTO_ENABLE: 'yes'
         NKRO_ENABLE: 'yes'
         RGBLIGHT_ENABLE: 'no'
         SLEEP_LED_ENABLE: 'no'
