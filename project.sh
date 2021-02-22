@@ -97,7 +97,7 @@ case $1 in
   run $node_image 'yarn install --no-bin-links --cwd=compiler'
 
   echo "Get and patch QMK."
-  git submodule update --init --recursive
+  git submodule update --init --recursive || git submodule sync --recursive
   run $qmk_image "cd $QMK_DIR && make git-submodule"
 
   echo "Checking firmware flasher presence..."
