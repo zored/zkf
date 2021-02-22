@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Contains helper code for easy work.
 set -ex
 
@@ -213,7 +213,7 @@ TEXT
       break;
     fi
 
-    docker image rm -f $i
+    docker image rm -f $i || true
   done
   ;;
  *)
