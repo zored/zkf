@@ -575,7 +575,7 @@ void run_advanced (uint8_t command) {
 
 
 
-void process_combo_event(uint8_t combo_index, bool pressed) {
+void process_combo_event(uint16_t combo_index, bool pressed) {
   if (!pressed) {
     return;
   }
