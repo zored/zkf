@@ -98,9 +98,6 @@ case $1 in
 
   echo "Get and patch QMK."
   git submodule update --init --recursive
-  for patch in patches/*; do
-    patch -d $QMK_DIR --forward --no-backup-if-mismatch -r- -p1 -i $PWD/$patch || true
-  done
   run $qmk_image "cd $QMK_DIR && make git-submodule"
 
   echo "Checking firmware flasher presence..."
