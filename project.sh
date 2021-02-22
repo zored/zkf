@@ -188,6 +188,11 @@ TEXT
   done
   ;;
 
+ ci) ##
+  ./project.sh sync
+  ./project.sh build-all
+  docker system prune -f
+  ;;
  *)
   echo Unknown parameters.
   exit 1
