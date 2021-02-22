@@ -48,6 +48,7 @@ fi
 export QMK_DIR=vendor/qmk_firmware
 node_image=node:12.4.0-alpine
 qmk_image=qmkfm/qmk_firmware
+images="$node_image $qmk_image"
 
 
 flash_with=wally
@@ -191,7 +192,29 @@ TEXT
  ci) ##
   ./project.sh sync
   ./project.sh build-all
-  docker system prune -f
+  ./project.sh prune-images
+  ;;
+
+ prune-images)
+  skip=""
+  for i in $images; do
+    skip="$skip $(docker image ls $i -q)"
+  done
+
+  for i in $(docker image ls -q); do
+    for s in $skip; do
+      if [[ "$i" == "$s" ]]; then
+        i=""
+        break
+      fi
+    done
+
+    if [[ "$i" = "" ]]; then
+      break;
+    fi
+
+    docker image rm -f $i
+  done
   ;;
  *)
   echo Unknown parameters.

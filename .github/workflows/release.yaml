@@ -12,10 +12,9 @@ jobs:
     - uses: satackey/action-docker-layer-caching@v0.0.11
       continue-on-error: true
       with:
-        key: my-docker-{hash}
-        restore-keys: my-docker-
+        key: qmk-docker-{hash}
+        restore-keys: qmk-docker-
         concurrency: 8
-    - run: docker image ls && exit 1
 
     # git
     - uses: actions/checkout@v2
