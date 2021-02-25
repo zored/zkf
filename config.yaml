@@ -391,7 +391,7 @@ keyboards:
       navigation2:
         lights: [1]
         keys:
-            - [~, rgbBriDown, rgbBriUp,, rgbSatDown, rgbSatUp, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
+            - [~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
             - [~, audioClickToggle, audioClickUp, audioClickDown, ~, ~, home, pageDown, pageUp, end, ~, ~]
             - [~, musicToggle, musicMode, ~, ~, ~, mediaPrev, ~, mediaToggle, mediaNext, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, rgbPrev, rgbNext, rgbToggle, rgbHueDown, rgbHueUp]
