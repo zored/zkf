@@ -9,7 +9,7 @@ jobs:
       with:
         install: true
     - uses: actions/checkout@v2
-    - run: export SYNC_AP2=Y && ./project.sh ci
+    - run: export SYNC_AP2=Y keyboards="annepro2/c18" && ./project.sh ci
     - uses: softprops/action-gh-release@v1
       if: "startsWith(github.ref, 'refs/tags/v')"
       env:
@@ -25,7 +25,7 @@ jobs:
       with:
         install: true
     - uses: actions/checkout@v2
-    - run: export SYNC_QMK=Y && ./project.sh ci
+    - run: export SYNC_QMK=Y keyboards="ergodox_ez planck/ez ymdk/ymd09" && ./project.sh ci
     - uses: softprops/action-gh-release@v1
       if: "startsWith(github.ref, 'refs/tags/v')"
       env:

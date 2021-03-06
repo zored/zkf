@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Contains helper code for easy work.
 set -ex
-
-keyboards="ergodox_ez planck/ez ymdk/ymd09 annepro2/c18"
+keyboards=${keyboards:-"ergodox_ez planck/ez ymdk/ymd09 annepro2/c18"}
 case $2 in
   planck|planck/ez|p|2)
     keyboard=planck/ez
