@@ -135,6 +135,9 @@ case $1 in
     fi
     if [[ ! -f "$AP2_SHINE" ]]; then
       $0 make $AP2_SHINE_DIR C18
+      ls $AP2_SHINE_DIR/
+      ls $AP2_SHINE_DIR/build
+      ls $AP2_SHINE_DIR/build/C18
       mv $AP2_SHINE_DIR/build/C18/annepro2-shine-C18.bin $AP2_SHINE
     fi
   fi
