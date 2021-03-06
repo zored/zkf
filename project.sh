@@ -123,8 +123,8 @@ case $1 in
   if [[ "$SYNC_AP2" = "Y" ]]; then
     echo "Clone AnnePro2 QMK with submodules"
     if [[ ! -f "$AP2_QMK_DIR/Makefile" ]]; then
-    git clone --recurse-submodules https://github.com/OpenAnnePro/qmk_firmware.git "$AP2_QMK_DIR"
-    git checkout keyboard-annepro2
+      git clone --recurse-submodules https://github.com/OpenAnnePro/qmk_firmware.git "$AP2_QMK_DIR"
+      #git checkout keyboard-annepro2
     fi
 
     echo "Clone and compile AnnePro2 shine"
