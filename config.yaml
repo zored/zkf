@@ -320,6 +320,7 @@ keyboards:
         NO_PRINT: ''
         ONESHOT_TAP_TOGGLE: 5
         ONESHOT_TIMEOUT: 4000
+        PERMISSIVE_HOLD: ''
         TAPPING_TERM: 110
         TAPPING_TERM_TAP_DANCE: 270
         UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
@@ -355,6 +356,28 @@ keyboards:
       - [doTerminal, doNotEquals, doScreenshot, doClose]
       - [doEmojiPanel, '*', doUnderscore, doAmpersand]
       - [~, doArrow]
+
+  annepro2:
+    qmk_new: true
+    mouse_disable: true
+    settings:
+      rules:
+        <<: *rules
+        UNICODEMAP_ENABLE: 'no'
+      config:
+        <<: *config
+    combos: *combos
+    layers:
+      default:
+        enableCombos: true
+        # lights: []
+        keys:
+        - [esc, F1Dance, F2Dance, F3Dance, F4Dance, F5Dance, F6Dance, F7Dance, F8Dance, F9Dance, F10Dance, '-', '+', backspace]
+        - [tab, q, w, e, r, t, y, u, i, o, p, '[', ']', '\']
+        - [capsLock, a, s, d, f, g, h, j, k, l, ';', "'",enter]
+        - ['shift(', z, x, c, v, b, n, m, ',', '.', '/', 'shift)']
+        - [leader, ~, ~, space, enter, ~, ~, doBootloader]
+
   planck:
     settings:
       rules:
@@ -785,6 +808,10 @@ map:
     audioClickDown: CK_DOWN
     musicToggle: MU_TOG
     musicMode: MU_MOD
+    bt1: KC_AP2_BT1
+    bt2: KC_AP2_BT2
+    bt3: KC_AP2_BT3
+    bt4: KC_AP2_BT4
   prefixes:
     - AU
     - CK
@@ -797,3 +824,4 @@ map:
     - ZKC
     - DO
     - OSM
+    - KC_AP2_

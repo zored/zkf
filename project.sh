@@ -2,8 +2,7 @@
 # Contains helper code for easy work.
 set -ex
 
-# TODO: add annepro2/c18
-keyboards="ergodox_ez planck/ez ymdk/ymd09"
+keyboards="ergodox_ez planck/ez ymdk/ymd09 annepro2/c18"
 case $2 in
   planck|planck/ez|p|2)
     keyboard=planck/ez
@@ -51,6 +50,7 @@ fi
 
 
 AP2_DIR='vendor/AnnePro2-Tools.git'
+AP2_SHINE='firmwares/annepro2-shine.bin'
 AP2_QMK_DIR=vendor/ap2_qmk_firmware
 export QMK_DIR=vendor/qmk_firmware
 node_image=node:12.4.0-alpine
@@ -74,7 +74,7 @@ case $keyboard in
     flash_with=dfu
     ;;
   annepro2/c18)
-    firmware_source=$AP2_QMK_DIR/annepro2_c18_default.bin
+    firmware_source=$AP2_QMK_DIR/annepro2_c18_zored.bin
     firmware_filename=annepro2.bin
     flash_with=ap2
     ;;
@@ -108,9 +108,34 @@ case $1 in
   echo "Install keymap compiler."
   run $node_image 'yarn install --no-bin-links --cwd=compiler'
 
-  echo "Clone QMK with submodules."
-  if [[ ! -f "$QMK_DIR/Makefile" ]]; then
-    git clone -b zkf_stable_planck --single-branch --recurse-submodules https://github.com/zored/qmk_firmware.git $QMK_DIR
+  case $2 in
+    ci) ;;
+    *) SYNC_QMK=Y SYNC_AP2=Y ;;
+  esac
+
+  if [[ "$SYNC_QMK" = "Y" ]]; then
+    echo "Clone QMK with submodules."
+    if [[ ! -f "$QMK_DIR/Makefile" ]]; then
+      git clone -b zkf_stable_planck --single-branch --recurse-submodules https://github.com/zored/qmk_firmware.git $QMK_DIR
+    fi
+  fi
+
+  if [[ "$SYNC_AP2" = "Y" ]]; then
+    echo "Clone AnnePro2 QMK with submodules"
+    if [[ ! -f "$AP2_QMK_DIR/Makefile" ]]; then
+    git clone --recurse-submodules git@github.com:OpenAnnePro/qmk_firmware.git "$AP2_QMK_DIR"
+    git checkout keyboard-annepro2
+    fi
+
+    echo "Clone and compile AnnePro2 shine"
+    AP2_SHINE_DIR=vendor/ap2_shine
+    if [[ ! -f "$AP2_SHINE_DIR/readme.md" ]]; then
+    git clone https://github.com/OpenAnnePro/annepro2-shine.git --recursive "$AP2_SHINE_DIR"
+    fi
+    if [[ ! -f "$AP2_SHINE" ]]; then
+      $0 make $AP2_SHINE_DIR C18
+      mv $AP2_SHINE_DIR/build/annepro2-shine-C18.bin $AP2_SHINE
+    fi
   fi
 
   echo "Checking firmware flasher presence..."
@@ -129,20 +154,7 @@ case $1 in
   ;;
 
  anne-pro2-build|ap2) ##
-   if [[ ! -f "$AP2_QMK_DIR/Makefile" ]]; then
-    git clone --recurse-submodules git@github.com:OpenAnnePro/qmk_firmware.git "$AP2_QMK_DIR"
-    git checkout keyboard-annepro2
-   fi
-
-
-   AP2_SHINE_DIR=vendor/ap2_shine
-   if [[ ! -f "$AP2_SHINE_DIR/readme.md" ]]; then
-    git clone https://github.com/OpenAnnePro/annepro2-shine.git --recursive "$AP2_SHINE_DIR"
-   fi
-
-   $0 make $AP2_SHINE_DIR C18
-   $0 make $AP2_QMK_DIR annepro2/c18:default
-   mv $AP2_SHINE_DIR/build/annepro2-shine-C18.bin firmwares/annepro2-shine.bin
+   $0 make $AP2_QMK_DIR annepro2/c18:zored
    mv $firmware_source $firmware
    ;;
 
@@ -202,17 +214,17 @@ TEXT
         popd
       fi
 
-
-      cmd="$AP2 $firmware"
       case $3 in
         shine)
-          cmd="$AP2 --boot -t led firmwares/annepro2-shine.bin"
+          $AP2 --boot -t led $AP2_SHINE
+          ;;
+        *)
+          while ! $AP2 $firmware; do
+            sleep 3
+          done
+          $0 $1 $2 shine
           ;;
       esac
-
-      while ! $cmd; do
-        sleep 3
-      done
       ;;
     *)
       echo "Unknown flash type: $flash_with"
@@ -244,7 +256,7 @@ TEXT
   ;;
 
  ci) ##
-  ./project.sh sync
+  ./project.sh sync ci
   ./project.sh build-all
   ./project.sh prune-images
   ;;

@@ -1,5 +1,6 @@
 'use strict'
 
+const { triggerAsyncId } = require('async_hooks')
 const fs = require('fs')
 const ARRAY_GLUE = ',\n'
 const INDENT = '  '
@@ -543,6 +544,8 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
 
   const { combos, comboCount } = getCombos(keyboard.config.combos, keyFactory)
   const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
+    qmk_new: !!keyboard.config.qmk_new,
+    mouse_disable: !!keyboard.config.mouse_disable,
     dance: getDanceTemplateData(layers, danceEnemies, keyFactory),
     unicode: getUnicodeTemplateData(layers),
     layers: getLayersTemplateData(layers, keyboard),
@@ -887,6 +890,18 @@ class Ymd09 extends Keyboard {
   }
 }
 
+class AnnePro2 extends Keyboard {
+  get configName () {
+    return 'annepro2'
+  }
+  get layoutCodeName () {
+    return 'KEYMAP'
+  }
+  get keymapPath () {
+    return 'vendor/ap2_qmk_firmware/keyboards/' + this.configName + '/keymaps/zored/'
+  }
+}
+
 class KeyboardFactory {
   constructor (config) {
     this.config = config
@@ -899,6 +914,8 @@ class KeyboardFactory {
         return new PlanckEz(this.config)
       case 'ymdk/ymd09':
         return new Ymd09(this.config)
+      case 'annepro2/c18':
+        return new AnnePro2(this.config)
     }
 
     throw new Error(`Unknown QMK keyboard ${qmkName}.`)

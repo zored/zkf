@@ -14,6 +14,13 @@
 #include QMK_KEYBOARD_H
 {{/ymd09}}
 
+{{#annepro2}}
+#include <stdint.h>
+#include "annepro2.h"
+#include "qmk_ap2_led.h"
+#include "config.h"
+{{/annepro2}}
+
 #include "action_layer.h"
 #include "version.h"
 
@@ -310,11 +317,15 @@ inline void appSwitchTimeout(void) {
 {{/keyGroups.appSwitch}}
 
 
+{{^mouse_disable}}
 extern uint8_t mk_max_speed;
 void mousekey_on(uint8_t code);
 void mousekey_off(uint8_t code);
 uint8_t mouseSpeed = 1;
+{{/mouse_disable}}
+
 void setMouseSpeed(uint8_t newMouseSpeed) {
+{{^mouse_disable}}
   // Turn off:
   if (mouseSpeed == newMouseSpeed || newMouseSpeed == 1) {
     mouseSpeed = 1;
@@ -336,6 +347,7 @@ void setMouseSpeed(uint8_t newMouseSpeed) {
   }
   mouseSpeed = newMouseSpeed;
 
+{{/mouse_disable}}
 }
 
 // Advanced commands.
@@ -579,7 +591,12 @@ unicode_map[] = {
 
 {{{combos.definitions}}}
 
+{{^qmk_new}}
 void process_combo_event(uint8_t combo_index, bool pressed) {
+{{/qmk_new}}  
+{{#qmk_new}}
+void process_combo_event(uint16_t combo_index, bool pressed) {
+{{/qmk_new}}
   if (!pressed) {
     return;
   }
@@ -678,6 +695,10 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 {{{layers.keys}}}
 };
+
+{{#annepro2}}
+const uint16_t keymaps_size = sizeof(keymaps);
+{{/annepro2}}
 
 
 {{#planck}}
@@ -800,6 +821,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 {{^ymd09}}
+{{^annepro2}}
 uint32_t layer_state_set_user(uint32_t state) {
   uint8_t layer = biton32(state);
 
@@ -818,4 +840,5 @@ uint32_t layer_state_set_user(uint32_t state) {
 
   return state;
 };
+{{/annepro2}}
 {{/ymd09}}
