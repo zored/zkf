@@ -80,6 +80,7 @@ case $keyboard in
     ;;
 esac
 firmware=firmwares/$firmware_filename
+mkdir -p firmwares/
 
 case $1 in
  build|b) ##
@@ -134,7 +135,7 @@ case $1 in
     fi
     if [[ ! -f "$AP2_SHINE" ]]; then
       $0 make $AP2_SHINE_DIR C18
-      mv $AP2_SHINE_DIR/build/annepro2-shine-C18.bin $AP2_SHINE
+      mv $AP2_SHINE_DIR/build/C18/annepro2-shine-C18.bin $AP2_SHINE
     fi
   fi
 
