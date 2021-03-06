@@ -123,7 +123,7 @@ case $1 in
   if [[ "$SYNC_AP2" = "Y" ]]; then
     echo "Clone AnnePro2 QMK with submodules"
     if [[ ! -f "$AP2_QMK_DIR/Makefile" ]]; then
-    git clone --recurse-submodules git@github.com:OpenAnnePro/qmk_firmware.git "$AP2_QMK_DIR"
+    git clone --recurse-submodules https://github.com/OpenAnnePro/qmk_firmware.git "$AP2_QMK_DIR"
     git checkout keyboard-annepro2
     fi
 
@@ -152,11 +152,6 @@ case $1 in
   link=https://github.com/zored/zkf/releases/download/${version}/${firmware_filename}
   wget $link -O $firmware
   ;;
-
- anne-pro2-build|ap2) ##
-   $0 make $AP2_QMK_DIR annepro2/c18:zored
-   mv $firmware_source $firmware
-   ;;
 
  wally-build|wb) ##
    mkdir -p vendor/wally
