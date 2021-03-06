@@ -58,6 +58,7 @@ images="$node_image $qmk_image"
 
 
 flash_with=wally
+keyboard_qmk=$QMK_DIR
 case $keyboard in
   planck/ez)
     firmware_source=$QMK_DIR/planck_ez_zored.bin
@@ -73,6 +74,7 @@ case $keyboard in
     flash_with=dfu
     ;;
   annepro2/c18)
+    keyboard_qmk=$AP2_QMK_DIR
     firmware_source=$AP2_QMK_DIR/annepro2_c18_zored.bin
     firmware_filename=annepro2.bin
     flash_with=ap2
@@ -86,7 +88,7 @@ case $1 in
   $0 transpile $keyboard
 
   echo "Building firmware..."
-  $0 make "$QMK_DIR" "${keyboard}:zored"
+  $0 make "$keyboard_qmk" "${keyboard}:zored"
   mv $firmware_source $firmware
  ;;
 
