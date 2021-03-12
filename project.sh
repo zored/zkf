@@ -37,6 +37,25 @@ run () {
     //bin/sh -c "$*"
 }
 
+sync_qmk () {
+  local d=$1 b=$2
+  if [[ -f "$d/Makefile" ]]; then
+    return
+  fi
+  if [[ -f "$QMK_DIR/Makefile" ]]; then
+    cp -r $QMK_DIR $d
+  elif [[ -f "$AP2_QMK_DIR/Makefile" ]]; then
+    cp -r $AP2_QMK_DIR $d
+  else
+    git clone https://github.com/zored/qmk_firmware.git $d
+  fi
+  pushd $d
+  git checkout $b
+  git clean -f .
+  git submodule update --init --recursive
+  popd
+}
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export OS=MACOSX
   wally="/usr/local/bin/wally-cli"
@@ -117,17 +136,12 @@ case $1 in
 
   if [[ "$SYNC_QMK" = "Y" ]]; then
     echo "Clone QMK with submodules."
-    if [[ ! -f "$QMK_DIR/Makefile" ]]; then
-      git clone -b zkf_stable_planck --single-branch --recurse-submodules https://github.com/zored/qmk_firmware.git $QMK_DIR
-    fi
+    sync_qmk $QMK_DIR zkf_stable_planck
   fi
 
   if [[ "$SYNC_AP2" = "Y" ]]; then
     echo "Clone AnnePro2 QMK with submodules"
-    if [[ ! -f "$AP2_QMK_DIR/Makefile" ]]; then
-      git clone --recurse-submodules https://github.com/OpenAnnePro/qmk_firmware.git "$AP2_QMK_DIR"
-      #git checkout keyboard-annepro2
-    fi
+    sync_qmk $AP2_QMK_DIR zkf_stable_ap2
 
     echo "Clone and compile AnnePro2 shine"
     AP2_SHINE_DIR=vendor/ap2_shine

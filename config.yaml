@@ -356,14 +356,14 @@ keyboards:
       - [doTerminal, doNotEquals, doScreenshot, doClose]
       - [doEmojiPanel, '*', doUnderscore, doAmpersand]
       - [~, doArrow]
-
   annepro2:
     qmk_new: true
-    mouse_disable: true
+    mouse_disable: false
     settings:
       rules:
         <<: *rules
         UNICODEMAP_ENABLE: 'no'
+        MOUSEKEY_ENABLE: 'yes'
       config:
         <<: *config
     combos: *combos
@@ -371,21 +371,21 @@ keyboards:
       default:
         enableCombos: true
         keys:
-        - [esc, F1Dance, F2Dance, F3Dance, F4Dance, F5Dance, F6Dance, F7Dance, F8Dance, F9Dance, F10Dance, '-', '+', backspace]
+        - [esc, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '-', '+', backspace]
         - [tab, q, w, e, r, t, y, u, i, o, p, '[', ']', '\']
-        - [capsLock, a, s, d, f, g, h, j, k, l, semicolonDance, "'",enter]
-        - ['shift(', z, x, c, v, b, n, m, ',', '.', '/', 'shift)']
+        - [capsDance, aDance, s, d, f, g, h, j, k, l, semicolonDance, "'",enter]
+        - ['shift(', zDance, xDance, cDance, v, b, n, m, commaDance, dotDance, slashDance, 'shift)']
         - [leader, ~, ~, space, enter, ~, ~, doBootloader]
       navigation:
         keys:
         - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-        - [~, ~, ~, mouseUp, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
-        - [~, ~, mouseLeft, mouseDown, mouseRight, ~, ~, ~, ~, ~, ~, ~, ~]
-        - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+        - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~, ~, ap2NextIntensity, ~, ~, ~, ~, ~]
+        - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~, ~]
+        - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
         - [~, ~, ~, ~, ~, ~, ~, ~]
       navigation2:
         keys:
-        - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+        - [~, bt1, bt2, bt3, bt4, ~, ~, ~, ~, ~, ~, ~, ~, ~]
         - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
         - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
         - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
@@ -396,6 +396,13 @@ keyboards:
         - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
         - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
         - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+        - [~, ~, ~, ~, ~, ~, ~, ~]
+      symbol:
+        keys:
+        - [~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+        - [~, '!', '#', '{', '}','/', '=', 7, 8, 9, '&', '|', ~, ~]
+        - [~, '@', '$', '(', ')', '`', '+', 4, 5, 6, '*', ~, ~]
+        - [~, percentDance, circumflexDance, leftSquareBracketDance, ']', '~', '-', 1, 2, 3, '/', ~]
         - [~, ~, ~, ~, ~, ~, ~, ~]
       history:
         keys:
@@ -766,6 +773,7 @@ map:
     backspace: BSPC
     brightnessDown: BRID
     brightnessUp: BRIU
+    ap2NextIntensity: AP_LED_NEXT_INTENSITY
     down: DOWN
     enter: ENT
     keyLock: LOCK
@@ -856,10 +864,10 @@ map:
     audioClickDown: CK_DOWN
     musicToggle: MU_TOG
     musicMode: MU_MOD
-    bt1: KC_AP2_BT1
-    bt2: KC_AP2_BT2
-    bt3: KC_AP2_BT3
-    bt4: KC_AP2_BT4
+    bt1: AP2_BT1
+    bt2: AP2_BT2
+    bt3: AP2_BT3
+    bt4: AP2_BT4
   prefixes:
     - AU
     - CK
@@ -873,3 +881,4 @@ map:
     - DO
     - OSM
     - KC_AP2_
+    - KC_AP_
