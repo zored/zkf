@@ -759,6 +759,11 @@ void keyboard_post_init_user(void) {
     case UC_OSX:
       zored_os = OS_MACOS;
   }
+
+  {{#annepro2}}
+  annepro2LedEnable();
+  annepro2LedSetProfile(6); // animatedRainbowFlow
+  {{/annepro2}}
 }
 {{/unicode}}
 
