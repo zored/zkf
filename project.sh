@@ -39,18 +39,18 @@ run () {
 
 sync_qmk () {
   local d=$1 b=$2
-  if [[ -f "$d/Makefile" ]]; then
-    return
-  fi
-  if [[ -f "$QMK_DIR/Makefile" ]]; then
-    cp -r $QMK_DIR $d
-  elif [[ -f "$AP2_QMK_DIR/Makefile" ]]; then
-    cp -r $AP2_QMK_DIR $d
-  else
-    git clone https://github.com/zored/qmk_firmware.git $d
+  if [[ ! -f "$d/Makefile" ]]; then
+    if [[ -f "$QMK_DIR/Makefile" ]]; then
+      cp -r $QMK_DIR $d
+    elif [[ -f "$AP2_QMK_DIR/Makefile" ]]; then
+      cp -r $AP2_QMK_DIR $d
+    else
+      git clone https://github.com/zored/qmk_firmware.git $d
+    fi
   fi
   pushd $d
   git checkout $b
+  git pull
   git clean -f .
   git submodule update --init --recursive
   popd
