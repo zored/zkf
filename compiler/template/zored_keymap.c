@@ -118,6 +118,7 @@ enum do_command {
   DO_ENPASS,
   DO_MAIL,
   DO_LOGIN,
+  DO_COPY, DO_PASTE,
   DO_TERMINAL,
   DO_SCREENSHOT,
   DO_BOOTLOADER,
@@ -515,6 +516,26 @@ void run_advanced (uint8_t command) {
           break;
         case OS_WINDOWS:
           tap_code16(G(S(KC_S)));
+          break;
+      }
+      break;
+    case DO_COPY:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_C));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(KC_C));
+          break;
+      }
+      break;
+    case DO_PASTE:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_V));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(KC_V));
           break;
       }
       break;

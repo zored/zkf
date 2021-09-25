@@ -10,7 +10,7 @@ keyboards:
             - [esc, q, w, e, r, t, ~]
             - [capsDance, aDance, s, d, f, g]
             - ['shift(', zDance, xDance, cDance, v, b, doFutureApp]
-            - [leader, toggleNavigation, ~, doFutureTab, doPastTab]
+            - [leader, toggleNavigation, ~, doCopy, doPaste]
           left-thumb:
             - [esc, doOneShotTurbo]
             - [home]

@@ -14,8 +14,8 @@ enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE,
   KC_DO_NEXT_LANGUAGE,
 KC_DO_FUTURE_APP,
-KC_DO_FUTURE_TAB,
-KC_DO_PAST_TAB,
+KC_DO_COPY,
+KC_DO_PASTE,
 KC_DO_ONE_SHOT_TURBO,
 KC_DO_PAST_APP,
 KC_DO_PAST_WINDOW,
@@ -23,6 +23,8 @@ KC_DO_FUTURE_WINDOW,
 KC_DO_PAST,
 KC_DO_FUTURE,
 KC_DO_BOOTLOADER,
+KC_DO_FUTURE_TAB,
+KC_DO_PAST_TAB,
 
 
   // At the end:
@@ -125,6 +127,7 @@ enum do_command {
   DO_ENPASS,
   DO_MAIL,
   DO_LOGIN,
+  DO_COPY, DO_PASTE,
   DO_TERMINAL,
   DO_SCREENSHOT,
   DO_BOOTLOADER,
@@ -507,6 +510,26 @@ void run_advanced (uint8_t command) {
           break;
       }
       break;
+    case DO_COPY:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_C));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(KC_C));
+          break;
+      }
+      break;
+    case DO_PASTE:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_V));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(KC_V));
+          break;
+      }
+      break;
     case DO_BOOTLOADER:
       clear_keyboard();
       bootloader_jump();
@@ -650,7 +673,7 @@ combo_t key_combos[COMBO_COUNT] = {
 };
 
 
-void process_combo_event(uint16_t combo_index, bool pressed) {
+void process_combo_event(uint8_t combo_index, bool pressed) {
   if (!pressed) {
     return;
   }
@@ -2502,7 +2525,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* left-1 */ KC_ESC,KC_Q,KC_W,KC_E,KC_R,KC_T,_______,
 /* left-2 */ TD(DANCE_KC_CAPSDANCE),TD(DANCE_KC_ADANCE),KC_S,KC_D,KC_F,KC_G,
 /* left-3 */ KC_LSPO,TD(DANCE_KC_ZDANCE),TD(DANCE_KC_XDANCE),TD(DANCE_KC_CDANCE),KC_V,KC_B,KC_DO_FUTURE_APP,
-/* left-4 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DO_FUTURE_TAB,KC_DO_PAST_TAB,
+/* left-4 */ KC_LEAD,TG(LAYER_NAVIGATION),_______,KC_DO_COPY,KC_DO_PASTE,
 /* left-thumb-0 */ KC_ESC,KC_DO_ONE_SHOT_TURBO,
 /* left-thumb-1 */ KC_HOME,
 /* left-thumb-2 */ KC_SPC,KC_BSPC,KC_END,
@@ -2788,12 +2811,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         run_advanced(DO_FUTURE_APP);
         break;
   
-      case KC_DO_FUTURE_TAB:
-        run_advanced(DO_FUTURE_TAB);
+      case KC_DO_COPY:
+        run_advanced(DO_COPY);
         break;
   
-      case KC_DO_PAST_TAB:
-        run_advanced(DO_PAST_TAB);
+      case KC_DO_PASTE:
+        run_advanced(DO_PASTE);
         break;
   
       case KC_DO_ONE_SHOT_TURBO:
@@ -2822,6 +2845,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   
       case KC_DO_BOOTLOADER:
         run_advanced(DO_BOOTLOADER);
+        break;
+  
+      case KC_DO_FUTURE_TAB:
+        run_advanced(DO_FUTURE_TAB);
+        break;
+  
+      case KC_DO_PAST_TAB:
+        run_advanced(DO_PAST_TAB);
         break;
   
 

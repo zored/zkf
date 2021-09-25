@@ -37,7 +37,11 @@ run () {
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export OS=MACOSX
-  wally="/usr/local/bin/wally-cli"
+  if which wally-cli; then
+    wally="wally-cli"
+  else
+    wally="/usr/local/bin/wally-cli"
+  fi
 elif [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
   export OS=WINDOWS
   wally="'/c/Program Files (x86)/Wally/wally-cli.exe'"
@@ -120,7 +124,8 @@ case $1 in
    if [[ "$OS" = 'MACOSX' ]]; then
      brew install libusb dfu-programmer
    fi
-   go build -o wally-cli cli/main.go
+   go install github.com/wailsapp/wails/cmd/wails@v1.16.6
+   wails build
    ;;
 
  provision-host)
