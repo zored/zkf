@@ -875,6 +875,16 @@ class PlanckEz extends Keyboard {
     throw new Error(`Unknow Planck light #${light}`)
   }
 }
+
+class DAO extends Keyboard {
+  get configName() {
+    return 'dao';
+  }
+  get layoutCodeName () {
+    return 'LAYOUT'
+  }
+}
+
 class Ymd09 extends Keyboard {
   get configName () {
     return 'ymd09'
@@ -899,6 +909,8 @@ class KeyboardFactory {
         return new PlanckEz(this.config)
       case 'ymdk/ymd09':
         return new Ymd09(this.config)
+      case 'dao':
+        return new DAO(this.config)
     }
 
     throw new Error(`Unknown QMK keyboard ${qmkName}.`)

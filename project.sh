@@ -2,13 +2,16 @@
 # Contains helper code for easy work.
 set -ex
 
-keyboards="ergodox_ez planck/ez ymdk/ymd09"
+keyboards="ergodox_ez planck/ez ymdk/ymd09 dao44"
 case $2 in
   planck|planck/ez|p|2)
     keyboard=planck/ez
     ;;
   ymd09|ymdk/ymd09|y|3)
     keyboard=ymdk/ymd09
+    ;;
+  dao|dao44|d|4)
+    keybaord=dao44
     ;;
   *)
     keyboard=ergodox_ez
@@ -49,7 +52,7 @@ else
   wally=''
 fi
 
-export QMK_DIR=vendor/qmk_firmware
+export QMK_DIR=vendor/qmk_firmware DAO_ZMK_DIR=vendor/dao_zmk
 node_image=node:12.4.0-alpine
 qmk_image=qmkfm/qmk_firmware
 images="$node_image $qmk_image"
@@ -70,13 +73,17 @@ case $keyboard in
     firmware_filename=ymd09.hex
     flash_with=dfu
     ;;
+  dao44)
+    ;;
 esac
 firmware=firmwares/$firmware_filename
 
 case $1 in
  build|b) ##
   $0 transpile $keyboard
-
+  if [ "$firmware_source" = '' ]; then
+    exit 0
+  fi
   echo "Building firmware..."
   run $qmk_image "cd $QMK_DIR && make $keyboard:zored"
   mv $firmware_source $firmware
