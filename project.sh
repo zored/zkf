@@ -2,7 +2,7 @@
 # Contains helper code for easy work.
 set -ex
 
-keyboards="ergodox_ez planck/ez ymdk/ymd09 dao44"
+keyboards="ergodox_ez planck/ez ymdk/ymd09 dao"
 case $2 in
   planck|planck/ez|p|2)
     keyboard=planck/ez
@@ -11,7 +11,7 @@ case $2 in
     keyboard=ymdk/ymd09
     ;;
   dao|dao44|d|4)
-    keybaord=dao44
+    keybaord=dao
     ;;
   *)
     keyboard=ergodox_ez
@@ -73,7 +73,7 @@ case $keyboard in
     firmware_filename=ymd09.hex
     flash_with=dfu
     ;;
-  dao44)
+  dao)
     ;;
 esac
 firmware=firmwares/$firmware_filename
