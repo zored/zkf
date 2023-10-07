@@ -9,7 +9,8 @@ Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmw
 I have:
 - [Ergodox](https://ergodox-ez.com).
 - [Planck](https://ergodox-ez.com/pages/planck).
-- [YMD09](https://github.com/qmk/qmk_firmware/tree/master/keyboards/ymdk/ymd09)
+- [YMD09](https://github.com/qmk/qmk_firmware/tree/master/keyboards/ymdk/ymd09).
+- [DAO44](https://github.com/yumagulovrn/dao-choc-ble) (based on [ZMK framework fork](https://github.com/zored/dao-zmk-config/tree/zored)).
 
 Supports Windows and macOS.
 
