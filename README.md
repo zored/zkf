@@ -14,6 +14,8 @@ Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmw
 
 Supports Windows and macOS.
 
+Steno: ErgoDox and Planck have a Plover HID layer, see [plover.md](docs/plover.md).
+
 ## Example
 ```bash
 ./project.sh build-and-flash planck

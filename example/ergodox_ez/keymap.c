@@ -2730,9 +2730,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   
 /* left-0 */ KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,TG(LAYER_STENO),
 /* left-1 */ KC_NO,ST_N1,ST_N2,ST_N3,ST_N4,ST_N5,KC_NO,
-/* left-2 */ KC_NO,ST_S1,ST_TL,ST_PL,ST_HL,ST_ST1,
-/* left-3 */ KC_NO,ST_S2,ST_KL,ST_WL,ST_RL,ST_ST2,KC_NO,
-/* left-4 */ KC_NO,KC_NO,KC_NO,ST_A,ST_O,
+/* left-2 */ ST_X1,ST_S1,ST_TL,ST_PL,ST_HL,ST_ST1,
+/* left-3 */ ST_X2,ST_S2,ST_KL,ST_WL,ST_RL,ST_ST2,KC_NO,
+/* left-4 */ KC_NO,KC_NO,ST_X3,ST_A,ST_O,
 /* left-thumb-0 */ KC_NO,KC_NO,
 /* left-thumb-1 */ KC_NO,
 /* left-thumb-2 */ ST_A,ST_O,KC_NO,

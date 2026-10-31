@@ -3,3 +3,6 @@ firmware.hex
 node_modules/
 .idea/
 .vagrant/
+os/plover/build/
+*.egg-info/
+__pycache__/

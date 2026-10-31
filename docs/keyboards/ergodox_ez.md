@@ -28,7 +28,7 @@
 ## Steno (Plover)
 
 - Protocol: Plover HID (`PLOVER_HID_ENABLE`); normal typing is not affected, so Plover can stay on.
-- Enter: toggle `navigation`, then press the top inner key of the left half (`toggleSteno`). Press it again to leave `steno`; `navigation` stays on until `toggleNavigation`.
+- Enter: hold `;` and press the top inner key of the left half (`toggleSteno` on `navigation`). The same key leaves `steno`.
+- Trillo extras: `X1` / `X2` on the outer pinky column of the home and Shift rows (`Х-` / `Ц-`), `X3` left of `A` in the bottom row (`О`).
 - LEDs: all three on. Keys outside the steno chart are `KC_NO`, so nothing falls through to lower layers.
-- Plover: machine "Plover HID" (built in since Plover 5.1, earlier versions need the `plover-machine-hid` plugin). Not verified on hardware yet.
-- macOS input source must be ABC (English) while stenoing: with a Russian layout Plover finds Latin letters only on the Cmd layer and sends `Cmd+H` for `h`, which hides the front app.
+- Plover setup, English/Russian systems and the macOS input source: [plover.md](../plover.md). Not verified on hardware yet.

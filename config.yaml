@@ -261,9 +261,9 @@ keyboards:
           left:
             - [none, none, none, none, none, none, toggleSteno]
             - [none, sN1, sN2, sN3, sN4, sN5, none]
-            - [none, sS1, sTL, sPL, sHL, sST1]
-            - [none, sS2, sKL, sWL, sRL, sST2, none]
-            - [none, none, none, sA, sO]
+            - [sX1, sS1, sTL, sPL, sHL, sST1]
+            - [sX2, sS2, sKL, sWL, sRL, sST2, none]
+            - [none, none, sX3, sA, sO]
           left-thumb:
             - [none, none]
             - [none]
@@ -396,7 +396,7 @@ keyboards:
             - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~, brightnessDown, brightnessUp, ~, ~, ~]
             - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~]
             - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, toggleSteno]
+            - [toggleSteno, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
       navigation2:
         lights: [1]
         keys:
@@ -443,9 +443,9 @@ keyboards:
         lights: [1,2]
         keys:
             - [none, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
-            - [none, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
-            - [none, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
-            - [none, none, none, sA, sO, none, none, sE, sU, none, none, toggleSteno]
+            - [sX1, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
+            - [sX2, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
+            - [toggleSteno, none, sX3, sA, sO, none, none, sE, sU, none, none, none]
   ymd09:
     settings:
       rules:
@@ -795,6 +795,9 @@ map:
     sTR: ST_TR
     sU: ST_U
     sWL: ST_WL
+    sX1: ST_X1
+    sX2: ST_X2
+    sX3: ST_X3
     sZR: ST_ZR
     up: UP
     volumeDown: VOLD

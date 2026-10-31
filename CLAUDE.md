@@ -5,6 +5,7 @@ YAML-configured keymaps for my QMK keyboards. `config.yaml` → `compiler/run.js
 - `config.yaml` keys and template features: [compiler/README.md](compiler/README.md)
 - Roadmap, known issues, keyboard check order: [plans.md](plans.md)
 - How to flash each board, its bootloader, its layout: [docs/keyboards/](docs/keyboards/)
+- Plover steno (setup, English/Russian systems, `os/plover` plugin): [docs/plover.md](docs/plover.md)
 
 ## Build
 

@@ -110,12 +110,17 @@ The keyboard guesses the active RU/EN layout; `DO_NEXT_LANGUAGE` only toggles bl
 
 - [x] NKRO is active: `NKRO_DEFAULT_ON: 'true'` sets it in `eeconfig_init()`, which runs on the first 0.34.7 boot because the EEPROM magic changed (`0xFEEC` → `0xFEE3`). Checked in QMK sources, not on hardware.
 - [x] Protocol: Plover HID (`PLOVER_HID_ENABLE`, +440 bytes on ErgoDox). GeminiPR costs +1.3 KB and a serial port; the "Keyboard" machine needs Plover toggled in sync with the layer.
-- [x] `steno` layer on ErgoDox (top inner key of the left half on `navigation`) and Planck (bottom-right key on `navigation`); YMD09 keeps `PLOVER_HID_ENABLE: 'no'`.
+- [x] `steno` layer on ErgoDox (top inner key of the left half on `navigation`) and Planck (bottom-left key on `navigation`); YMD09 keeps `PLOVER_HID_ENABLE: 'no'`.
 - [x] Planck flashed: macOS sees the Plover HID interface (usage page `0xFF50`, usage `0x4C56`).
 - [x] Planck: strokes verified in Plover 5.4.2 with the ABC input source; non-steno keys are `KC_NO` (transparent keys fell through to `capsDance`, which taps `Cmd+Space`).
-- [ ] ErgoDox: flash and verify.
-- [ ] Switch the macOS input source to ABC on entering `steno` (with RussianWin, Plover types Latin letters through the Cmd layer: `had` hides apps via `Cmd+H`); needs input source awareness, see the feature above.
-- [ ] Russian: needs a Russian steno system/dictionary in Plover; `ST_X1`..`ST_X14` could switch dictionaries.
+- [ ] ErgoDox: flash and verify, including `X1`..`X3`.
+- [x] Any macOS input source: `zkf_layout_fix` Plover extension ([os/plover](os/plover)) drops Cmd/Ctrl combinations from Plover's layout table (with RussianWin `h` was `Cmd+H`). Checked against RussianWin and ABC tables with Plover's Python.
+- [x] Russian: `plover-russian-trillo` 0.0.2 (Tréal chart); `X1`..`X3` added to both `steno` layers, Trillo → Plover HID keymap and switch strokes (`R*UFS` / `ХЦ`) written by `./project.sh plover-setup`. Docs: [docs/plover.md](docs/plover.md).
+- [x] Planck: `steno` entered with `;` + bottom-left key and left with the bottom-left key (was `;` + bottom-right, both on the right hand).
+- [x] Planck: flashed; steno on RussianWin and Trillo strokes work (Plover 5.4.2). The packaged app keeps `KeyboardLayout` in `plover.oslayer.keyboardlayout`, so the extension patches the class of the live emulation object, not the `osx` module.
+- [x] Trillo on Plover 5: the extension drops `Н-` from Trillo's implicit hyphen keys (Plover 5 requires unique letters there).
+- [x] System follows the macOS input source (ASCII-capable → English, else Trillo), via the same extension. Checked live on ABC and RussianWin.
+- [ ] Upstream: report the Cmd-layer lookup to Plover (`plover/oslayer/osx/keyboardlayout.py`).
 
 ## Known issues
 

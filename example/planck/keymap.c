@@ -2527,7 +2527,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* 0 */ _______,_______,MS_BTN2,MS_UP,MS_BTN1,_______,_______,KC_BRID,KC_BRIU,_______,_______,_______,
 /* 1 */ _______,_______,MS_LEFT,MS_DOWN,MS_RGHT,_______,KC_LEFT,KC_DOWN,KC_UP,KC_RGHT,_______,_______,
 /* 2 */ _______,_______,_______,_______,_______,_______,MS_WHLL,MS_WHLD,MS_WHLU,MS_WHLR,_______,_______,
-/* 3 */ _______,_______,_______,_______,_______,_______,_______,KC_VOLD,KC_VOLU,KC_MUTE,_______,TG(LAYER_STENO)
+/* 3 */ TG(LAYER_STENO),_______,_______,_______,_______,_______,_______,KC_VOLD,KC_VOLU,KC_MUTE,_______,_______
 )
   ,
 
@@ -2588,9 +2588,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_STENO] = LAYOUT_planck_grid(
   
 /* 0 */ KC_NO,ST_N1,ST_N2,ST_N3,ST_N4,ST_N5,ST_N6,ST_N7,ST_N8,ST_N9,ST_NA,ST_NB,
-/* 1 */ KC_NO,ST_S1,ST_TL,ST_PL,ST_HL,ST_ST1,ST_ST3,ST_FR,ST_PR,ST_LR,ST_TR,ST_DR,
-/* 2 */ KC_NO,ST_S2,ST_KL,ST_WL,ST_RL,ST_ST2,ST_ST4,ST_RR,ST_BR,ST_GR,ST_SR,ST_ZR,
-/* 3 */ KC_NO,KC_NO,KC_NO,ST_A,ST_O,KC_NO,KC_NO,ST_E,ST_U,KC_NO,KC_NO,TG(LAYER_STENO)
+/* 1 */ ST_X1,ST_S1,ST_TL,ST_PL,ST_HL,ST_ST1,ST_ST3,ST_FR,ST_PR,ST_LR,ST_TR,ST_DR,
+/* 2 */ ST_X2,ST_S2,ST_KL,ST_WL,ST_RL,ST_ST2,ST_ST4,ST_RR,ST_BR,ST_GR,ST_SR,ST_ZR,
+/* 3 */ TG(LAYER_STENO),KC_NO,ST_X3,ST_A,ST_O,KC_NO,KC_NO,ST_E,ST_U,KC_NO,KC_NO,KC_NO
 )
   
 };

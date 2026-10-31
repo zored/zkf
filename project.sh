@@ -186,6 +186,17 @@ TEXT
   $0 f $2
  ;;
 
+ plover-setup|ps)
+  if pgrep -qf "Plover.app/Contents/MacOS/Plover"; then
+    echo "Quit Plover first: it rewrites plover.cfg on exit."
+    exit 1
+  fi
+  plover_python=/Applications/Plover.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
+  PYTHONUSERBASE="$HOME/Library/Application Support/plover/plugins/mac" \
+    "$plover_python" -m pip install --user --no-build-isolation --force-reinstall --no-deps --disable-pip-version-check ./os/plover
+  "$plover_python" -I os/plover/configure.py
+  ;;
+
  build-all|ba)
   for keyboard in $keyboards; do
     $0 build $keyboard
