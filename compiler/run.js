@@ -26,7 +26,7 @@ function main () {
   )
   const files = new KeymapFiles(keyboard)
 
-  compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies, config)
+  compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies)
   compileSettings(keyboard, files)
 
   console.log(`
@@ -771,7 +771,7 @@ class KeymapFiles {
       .map(dir => this._checkDir(dir))
       .map(dir => dir + fileName)
       .forEach(path => {
-        const isChanged = !fs.existsSync(path) || fs.readFileSync(path) !== content
+        const isChanged = !fs.existsSync(path) || fs.readFileSync(path, 'utf8') !== content
         if (isChanged) {
           fs.writeFileSync(path, content)
         }

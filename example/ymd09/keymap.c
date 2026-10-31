@@ -9,7 +9,7 @@
 #endif
 
 enum custom_keycodes {
-  ZKC_BTL = SAFE_RANGE,
+  ZKC_FIRST = SAFE_RANGE,
   KC_DO_NEXT_MAPPING,
 KC_DO_NEXT_LANGUAGE,
 KC_DO_BOOTLOADER,
@@ -338,12 +338,6 @@ void code_down(uint8_t code) {
 
 void code_up(uint8_t code) {
   unregister_code(map_code(code));
-}
-
-void code_hold_ms(uint8_t code, uint32_t timeout) {
-  code_down(KC_CAPS);
-  wait_ms(timeout);
-  code_up(KC_CAPS);
 }
 
 // Helper functions:
@@ -1878,6 +1872,8 @@ void matrix_scan_user(void) {
 }
 
 
+void keyboard_post_init_user(void) {
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;

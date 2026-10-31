@@ -10,7 +10,7 @@
 #endif
 
 enum custom_keycodes {
-  ZKC_BTL = SAFE_RANGE,
+  ZKC_FIRST = SAFE_RANGE,
   {{{layers.doKeys.names}}}
 };
 
@@ -86,12 +86,6 @@ void code_down(uint8_t code) {
 
 void code_up(uint8_t code) {
   unregister_code(map_code(code));
-}
-
-void code_hold_ms(uint8_t code, uint32_t timeout) {
-  code_down(KC_CAPS);
-  wait_ms(timeout);
-  code_up(KC_CAPS);
 }
 
 // Helper functions:
@@ -382,6 +376,7 @@ void run_advanced (uint8_t command) {
           tap_code16(C(A(KC_RIGHT)));
           break;
       }
+      break;
     case DO_PREV_TAB:
       switch (zored_os) {
         case OS_MACOS:
@@ -391,6 +386,7 @@ void run_advanced (uint8_t command) {
           tap_code16(C(A(KC_LEFT)));
           break;
       }
+      break;
     {{/keyGroups.appSwitch}}
     case DO_FUTURE:
       switch (zored_os) {
@@ -745,6 +741,7 @@ void keyboard_post_init_user(void) {
 {{/unicode}}
 {{#planck}}
   clicky_off();
+  rgb_matrix_set_speed_noeeprom(RGB_MATRIX_DEFAULT_SPD);
 {{/planck}}
 }
 

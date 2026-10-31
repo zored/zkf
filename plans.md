@@ -42,8 +42,8 @@ The fork branch `zkf_stable_planck` is upstream `ae46e6a` (2020-02) plus one pat
 - [x] Replace the `qmkfm/qmk_firmware` image with `ghcr.io/qmk/qmk_cli` (native arm64).
 - [ ] CI: `release.yaml` still uses old actions; check `./project.sh ci` on the new images.
 - [ ] Fork housekeeping in [zored/qmk_firmware](https://github.com/zored/qmk_firmware) (ask before deleting anything):
-  - [ ] Tag `archive/zkf_stable_planck`, `archive/zkf_stable_ap2`, `archive/zored`, `archive/zkf`.
-  - [ ] Sync `master` with upstream; it becomes the fork's working and default branch.
+  - [x] Tag `archive/zkf_stable_planck`, `archive/zkf_stable_ap2`, `archive/zored`, `archive/zkf`.
+  - [x] Sync `master` with upstream; it becomes the fork's working and default branch.
   - [ ] Delete the archived branches.
   - [ ] Future core patches: one commit each on top of `master`, rebased on upstream.
 
@@ -117,13 +117,5 @@ The keyboard guesses the active RU/EN layout; `DO_NEXT_LANGUAGE` only toggles bl
 
 ## Known issues
 
-- `DO_NEXT_TAB` / `DO_PREV_TAB` lack `break` and fall through into `DO_FUTURE` (`compiler/template/zored_keymap.c`).
-- `DO_FUTURE` sends "back", `DO_PAST` sends "forward": names swapped.
-- `code_hold_ms` ignores its argument and always holds CapsLock.
-- `ZKC_BTL` is declared but never handled; `project.sh flash` still mentions it.
-- `DYNAMIC_MACRO_ENABLE: 'no'`, yet the ErgoDox emoji layer has record/play macro keys.
-- `KeymapFiles` compares a Buffer to a string with `!==`, so files are always rewritten (`compiler/run.js`).
-- `compileKeymap` receives an unused `config` argument.
-- README mentions `./project.sh provision`; the command is `provision-host`, and its `cp` arguments are reversed.
-- Stale tooling: `docker-machine` in `project.sh`, `actions/checkout@v2`, `docker/setup-buildx-action@v1.1.1`, `softprops/action-gh-release@v1`.
-- Leftover `console.log` in `docs/js/main.js`.
+- `DO_FUTURE` sends "back", `DO_PAST` sends "forward": names swapped. Layouts disagree on order (ErgoDox `doPast, doFuture`; Planck history layer `doFuture, doPast`), so fixing needs a decision.
+- Stale actions in `release.yaml`: `actions/checkout@v2`, `docker/setup-buildx-action@v1.1.1`, `softprops/action-gh-release@v1`.

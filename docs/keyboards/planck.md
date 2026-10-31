@@ -17,7 +17,7 @@
 
 Install QMK Toolbox once: `brew install --cask qmk-toolbox`. The Toolbox app is verified on `v2.2.1` and `0.34.7` builds.
 
-CLI (not yet verified end to end: the first run lost the device to an open Toolbox):
+CLI (verified on a `0.34.7` build; `dfu-util` first prints `dfuERROR ... firmware is corrupt`, clears it and flashes, which is normal for STM32 DFU):
 
 1. Quit QMK Toolbox: it claims the DFU device first (`LIBUSB_ERROR_ACCESS`); the script refuses to run while it is open.
 2. `./project.sh flash planck`: waits for `0483:df11`, then runs `dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D firmwares/planck.bin`.
@@ -37,6 +37,6 @@ Upstream builds report USB `3297:C6CE` (ZSA) instead of the fork's ID, and start
 - Mouse keys tuned for smooth motion on a 240 Hz screen: a 1 px step every 4 ms (`MOUSEKEY_INTERVAL: 4`, `MOUSEKEY_MOVE_DELTA: 1`), top speed `26` px per tick, `200` ticks to reach it. Upstream raised the default `MOUSEKEY_MOVE_DELTA` from 5 to 8, which made the old values jerky.
 - `history` layer on `a` hold.
 - `navigation2` (tap `;`, then hold `;`) holds RGB, audio and OS-mode keys:
-  - RGB: `q`/`w` brightness, `e`/`r` saturation; bottom row under Tab / Enter / `[` / `]` / last key: previous / next mode / toggle / hue down / hue up.
+  - RGB: `q`/`w` brightness, `e`/`r` saturation, `f`/`g` animation speed (slow `32` on every boot); bottom row under Tab / Enter / `[` / `]` / last key: previous / next mode / toggle / hue down / hue up.
   - Audio: `a` toggles clicks, `s`/`d` click pitch, `z` toggles music mode (keys play notes instead of typing until toggled off).
   - `i` Windows mode, `o` macOS mode; `y` powers the host off and `u` puts it to sleep.

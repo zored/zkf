@@ -338,7 +338,7 @@ keyboards:
         COMBO_ENABLE: 'yes'
         COMMAND_ENABLE: 'no'
         CONSOLE_ENABLE: 'no'
-        DYNAMIC_MACRO_ENABLE: 'no'
+        DYNAMIC_MACRO_ENABLE: 'yes'
         EXTRAKEY_ENABLE: 'yes'
         KEY_LOCK_ENABLE: 'no'
         LEADER_ENABLE: 'yes'
@@ -360,11 +360,13 @@ keyboards:
       rules:
         <<: *rules
         AUDIO_ENABLE: 'yes'
+        DYNAMIC_MACRO_ENABLE: 'no'
         PLOVER_HID_ENABLE: 'no'
       config:
         <<: *config
         AUDIO_CLICKY: ''
         AUDIO_DEFAULT_CLICKY_ON: 'false'
+        RGB_MATRIX_DEFAULT_SPD: 32
         MOUSEKEY_INTERVAL: 4
         MOUSEKEY_MOVE_DELTA: 1
         MOUSEKEY_MAX_SPEED: 26
@@ -400,7 +402,7 @@ keyboards:
         lights: [1]
         keys:
             - [~, rgbBriDown, rgbBriUp, rgbSatDown, rgbSatUp, ~, shutdown, sleep, windowsMode, macosMode, ~, ~]
-            - [~, audioClickToggle, audioClickUp, audioClickDown, ~, ~, home, pageDown, pageUp, end, ~, ~]
+            - [~, audioClickToggle, audioClickUp, audioClickDown, rgbSpeedDown, rgbSpeedUp, home, pageDown, pageUp, end, ~, ~]
             - [~, musicToggle, musicMode, ~, ~, ~, mediaPrev, ~, mediaToggle, mediaNext, ~, ~]
             - [~, ~, ~, ~, ~, ~, ~, rgbPrev, rgbNext, rgbToggle, rgbHueDown, rgbHueUp]
       emoji:
@@ -742,6 +744,8 @@ map:
     rgbPrev: RM_PREV
     rgbSatDown: RM_SATD
     rgbSatUp: RM_SATU
+    rgbSpeedDown: RM_SPDD
+    rgbSpeedUp: RM_SPDU
     rgbToggle: RM_TOGG
     right: RGHT
     sA: ST_A

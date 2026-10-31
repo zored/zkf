@@ -160,7 +160,6 @@ function getKey(key, mapping, danceKeys) {
   let keyText = danceKey ? danceKey.tap[[0]][0] : key;
   if (mapping) {
     const indexOne = mapping[0].indexOf(keyText)
-    console.log({indexOne})
     if (indexOne >= 0) {
       keyText = mapping[1][indexOne];
     }

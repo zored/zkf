@@ -9,7 +9,7 @@
 #endif
 
 enum custom_keycodes {
-  ZKC_BTL = SAFE_RANGE,
+  ZKC_FIRST = SAFE_RANGE,
   KC_DO_NEXT_LANGUAGE,
 KC_DO_BOOTLOADER,
 KC_DO_FUTURE_TAB,
@@ -80,12 +80,6 @@ void code_down(uint8_t code) {
 
 void code_up(uint8_t code) {
   unregister_code(map_code(code));
-}
-
-void code_hold_ms(uint8_t code, uint32_t timeout) {
-  code_down(KC_CAPS);
-  wait_ms(timeout);
-  code_up(KC_CAPS);
 }
 
 // Helper functions:
@@ -327,6 +321,7 @@ void run_advanced (uint8_t command) {
           tap_code16(C(A(KC_RIGHT)));
           break;
       }
+      break;
     case DO_PREV_TAB:
       switch (zored_os) {
         case OS_MACOS:
@@ -336,6 +331,7 @@ void run_advanced (uint8_t command) {
           tap_code16(C(A(KC_LEFT)));
           break;
       }
+      break;
     case DO_FUTURE:
       switch (zored_os) {
         case OS_MACOS:
@@ -2537,7 +2533,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_NAVIGATION2] = LAYOUT_planck_grid(
   
 /* 0 */ _______,RM_VALD,RM_VALU,RM_SATD,RM_SATU,_______,KC_SYSTEM_POWER,KC_SYSTEM_SLEEP,UC_WINC,UC_MAC,_______,_______,
-/* 1 */ _______,CK_TOGG,CK_UP,CK_DOWN,_______,_______,KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
+/* 1 */ _______,CK_TOGG,CK_UP,CK_DOWN,RM_SPDD,RM_SPDU,KC_HOME,KC_PGDN,KC_PGUP,KC_END,_______,_______,
 /* 2 */ _______,MU_TOGG,MU_NEXT,_______,_______,_______,KC_MEDIA_PREV_TRACK,_______,KC_MEDIA_PLAY_PAUSE,KC_MEDIA_NEXT_TRACK,_______,_______,
 /* 3 */ _______,_______,_______,_______,_______,_______,_______,RM_PREV,RM_NEXT,RM_TOGG,RM_HUED,RM_HUEU
 )
@@ -2627,6 +2623,7 @@ void keyboard_post_init_user(void) {
       zored_os = OS_MACOS;
   }
   clicky_off();
+  rgb_matrix_set_speed_noeeprom(RGB_MATRIX_DEFAULT_SPD);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {

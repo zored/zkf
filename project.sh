@@ -15,17 +15,7 @@ case $2 in
     ;;
 esac
 
-pre_run () {
-  # Already running:
-  docker ps &> /dev/null && return
-
-  local machine=${DOCKER_MACHINE:-default}
-  docker-machine start $machine &> /dev/null || true
-  eval $(docker-machine env $machine) || true
-}
-
 run () {
-  pre_run
   local image=$1
   shift
   docker run --rm \
@@ -135,7 +125,7 @@ case $1 in
  provision-host)
   case $OS in
     MACOSX)
-      sudo cp ./os/macos/Library/Keyboard\ Layouts/ /Library/Keyboard\ Layouts/*
+      sudo cp ./os/macos/Library/Keyboard\ Layouts/* /Library/Keyboard\ Layouts/
       ;;
   esac
   ;;
@@ -146,9 +136,8 @@ case $1 in
 ===========
 
 ENTER BOOTLOADER ON YOUR KEYBOARD
-- Either push a little reset button.
-- Or hold SPACE + B on reconnect.
-- Press Bootloader button (`ZKC_BTL`)
+- Press the bootloader key (`doBootloader`, see docs/keyboards/).
+- Or push the reset button.
 
 TEXT
   case $flash_with in
