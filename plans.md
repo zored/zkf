@@ -109,13 +109,16 @@ Facts (QMK `0.34.7` sources): `RAW_ENABLE` fits the USB endpoints on Planck (5 o
 
 ### Phase A: OS detection (no host helper)
 
-- [ ] Planck: `OS_DETECTION_ENABLE` with `OS_DETECTION_KEYBOARD_RESET` (the KVM may keep USB powered, so the board resets to re-detect) and `OS_DETECTION_SINGLE_REPORT` (ARM Macs fire the callback again minutes later).
-- [ ] Verify on hardware through the KVM: switching to the Mac and to the Windows machine each detects the right OS. If the KVM emulates a keyboard instead of passing USB through, detection and Raw HID cannot work: record that and stop the phase.
-- [ ] `process_detected_host_os_user` sets the mode: macOS and iOS → macOS; Windows and Linux → Windows; unsure → keep the mode saved in EEPROM. The mode drives everything `zored_os` drives today (`DO_*` shortcuts, `DO_NEXT_LANGUAGE`, emoji panel) plus the unicode input mode.
-- [ ] `macosMode` / `windowsMode` stay as a manual override until the next connect.
-- [ ] Connect overlay ([RGB status overlays](#feature-rgb-status-overlays)): whole board white for macOS, blue for Windows, 1 s.
-- [ ] ErgoDox and YMD09: same logic behind `osDetection`, size recorded; hardware check when the boards are at hand.
-- [ ] Docs: `docs/keyboards/planck.md` (OS detection, override keys), `compiler/README.md` (flags).
+- [x] Planck: `OS_DETECTION_ENABLE` with `OS_DETECTION_KEYBOARD_RESET` (the KVM may keep USB powered, so the board resets to re-detect) and `OS_DETECTION_SINGLE_REPORT` (ARM Macs fire the callback again minutes later). Size, `rgbOverlay` included (`DEFERRED_EXEC`, connect overlay, flags toggle): +1208 B flash, +4 B RAM; 62936 B of 256 KB.
+- [x] Verify on hardware through the KVM: switching to the Mac and to the Windows machine each detects the right OS. If the KVM emulates a keyboard instead of passing USB through, detection and Raw HID cannot work: record that and stop the phase.
+- [x] `process_detected_host_os_user` sets the mode: macOS and iOS → macOS; Windows and Linux → Windows; unsure → keep the mode saved in EEPROM. The mode drives everything `zored_os` drives today (`DO_*` shortcuts, `DO_NEXT_LANGUAGE`, emoji panel) plus the unicode input mode.
+- [x] `macosMode` / `windowsMode` stay as a manual override until the next connect.
+- [x] Connect overlay ([RGB status overlays](#feature-rgb-status-overlays)): whole board white for macOS, blue for Windows, 1 s.
+- [x] ErgoDox and YMD09: same logic behind `osDetection`, size recorded; hardware check when the boards are at hand.
+  - ErgoDox: +758 B flash, +22 B RAM; 29598 of 32256 B (HalfKay), 2658 B free.
+  - YMD09: +796 B flash, +22 B RAM; 28018 of 28672 B (`atmel-dfu` takes 4 KB), 654 B free.
+  - OS detection alone takes half of the ~1.5 KB AVR budget; YMD09 has no room for phase B as is.
+- [x] Docs: `docs/keyboards/planck.md` (OS detection, override keys), `compiler/README.md` (flags).
 
 ### Phase B: host helper
 
@@ -149,10 +152,10 @@ With RU active, firmware ASCII output (symbol layer, `SEND_STRING` macros like `
 
 Transient overlays on top of the running RGB matrix animation; nothing is persistent. Colours and durations live in `config.yaml`.
 
-- [ ] Draw overlays in `rgb_matrix_indicators_advanced_user`, expire them with `defer_exec` (`DEFERRED_EXEC_ENABLE`).
-- [ ] `rgbToggle`: switch the animation off with `rgb_matrix_set_flags(LED_FLAG_NONE)` (as ZSA's stock code does) instead of `RM_TOGG`. QMK runs no indicator callbacks while the matrix is disabled, suspended, timed out or in mode `NONE`, so with `RM_TOGG` off no overlay would show. Unverified that indicators render with `LED_FLAG_NONE`: check on hardware.
+- [x] Draw overlays in `rgb_matrix_indicators_advanced_user`, expire them with `defer_exec` (`DEFERRED_EXEC_ENABLE`).
+- [x] `rgbToggle`: switch the animation off with `rgb_matrix_set_flags(LED_FLAG_NONE)` (as ZSA's stock code does) instead of `RM_TOGG`; `RM_TOGG` is intercepted (it acts on release), and a matrix disabled by older firmware is converted to `LED_FLAG_NONE` on boot. QMK runs no indicator callbacks while the matrix is disabled, suspended, timed out or in mode `NONE`, so with `RM_TOGG` off no overlay would show. Verified on Planck: the connect overlay shows with `LED_FLAG_NONE` and the board goes dark after it.
 - [ ] Overlays (Planck, 47 LEDs, indexes 0–35 rows 0–2, 36–46 bottom row, 2u space = 41):
-  - [ ] OS on connect: whole board, macOS white, Windows blue, 1 s (phase A).
+  - [x] OS on connect: whole board, macOS white, Windows blue, 1 s (phase A).
   - [ ] Input source change: whole board, EN light blue, RU orange, other purple, 0.6 s (phase B).
   - [ ] Volume change: top row (12 keys) as a green bar, 1.5 s; muted: whole row red; no volume: grey (phase B).
 - [ ] The 2 Planck layer LEDs keep showing layers.

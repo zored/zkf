@@ -21,9 +21,29 @@ KC_DO_ONE_SHOT_SHIFT,
 };
 
 enum operating_systems {
-  OS_MACOS = 1,
-  OS_WINDOWS,
-} zored_os = OS_WINDOWS;
+  ZOS_MACOS = 1,
+  ZOS_WINDOWS,
+} zored_os = ZOS_WINDOWS;
+
+
+bool process_detected_host_os_user(os_variant_t detected_os) {
+  switch (detected_os) {
+    case OS_MACOS:
+    case OS_IOS:
+      zored_os = ZOS_MACOS;
+      break;
+    case OS_WINDOWS:
+    case OS_LINUX:
+      zored_os = ZOS_WINDOWS;
+      break;
+    default:
+      return true;
+  }
+#ifdef UNICODE_COMMON_ENABLE
+  set_unicode_input_mode(zored_os == ZOS_MACOS ? UNICODE_MODE_MACOS : UNICODE_MODE_WINCOMPOSE);
+#endif
+  return true;
+}
 
 uint8_t mappingIndex = 0;
 uint8_t mappingIndexMax = 3;
@@ -288,14 +308,14 @@ case KC_GRV: return KC_GRV;
 
 uint8_t map_mod (uint8_t mod) {
   switch (zored_os) {
-    case OS_MACOS:
+    case ZOS_MACOS:
       switch (mod) {
         case MOD_LCTL:
           return MOD_LGUI;
         case MOD_LGUI:
           return MOD_LCTL;
       }
-    case OS_WINDOWS:
+    case ZOS_WINDOWS:
       break;
   }
 
@@ -308,7 +328,7 @@ void do_one_shot (uint8_t keycode) {
 
 uint8_t map_code (uint8_t keycode) {
   switch (zored_os) {
-    case OS_MACOS:
+    case ZOS_MACOS:
       switch (keycode) {
         case KC_LCTL:
           return KC_LGUI;
@@ -323,7 +343,7 @@ uint8_t map_code (uint8_t keycode) {
         case KC_MEDIA_NEXT_TRACK:
           return KC_MEDIA_FAST_FORWARD;
       }
-    case OS_WINDOWS:
+    case ZOS_WINDOWS:
       break;
   }
 
@@ -406,10 +426,10 @@ void run_advanced (uint8_t command) {
   switch (command) {
     case DO_FIND_BEGIN:
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code(KC_LGUI);
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_SPC));
           break;
       }
@@ -431,20 +451,20 @@ void run_advanced (uint8_t command) {
       break;
     case DO_FUTURE:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_LBRC));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(A(KC_LEFT));
           break;
       }
       break;
     case DO_PAST:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_RBRC));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(A(KC_RIGHT));
           break;
       }
@@ -463,11 +483,11 @@ void run_advanced (uint8_t command) {
       uint32_t timeout = 50;
 
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           hold = KC_LALT;
           tap = KC_LSFT;
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           hold = KC_LGUI;
           tap = KC_SPC;
           break;
@@ -480,10 +500,10 @@ void run_advanced (uint8_t command) {
       break;
     case DO_EMOJI_PANEL:
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(G(KC_DOT));
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(C(KC_SPC)));
           break;
       }
@@ -511,10 +531,10 @@ void run_advanced (uint8_t command) {
     case DO_TERMINAL:
       run_advanced(DO_FIND_BEGIN);
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           SEND_STRING("conemu");
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           SEND_STRING("iterm");
           break;
       }
@@ -528,30 +548,30 @@ void run_advanced (uint8_t command) {
       break;
     case DO_SCREENSHOT:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(C(S(KC_4))));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(G(S(KC_S)));
           break;
       }
       break;
     case DO_COPY:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_C));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(C(KC_C));
           break;
       }
       break;
     case DO_PASTE:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_V));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(C(KC_V));
           break;
       }
@@ -561,10 +581,10 @@ void run_advanced (uint8_t command) {
       break;
     case DO_CLOSE:
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(A(KC_F4));
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_Q));
           break;
       }
@@ -857,6 +877,150 @@ void dance_tap_on_enemy_hold(tap_dance_state_t *state) {
 void on_dance_each_tap(tap_dance_state_t *state, void *user_data) {
   dance_tap_on_enemy_hold(state);
   dance_flush_on_many_taps(state);
+}
+
+void on_dance_each_release(tap_dance_state_t *state, void *user_data) {
+  uint16_t dance_key = state->index;
+
+  switch (dance_key) {
+    
+    case DANCE_KC_Y1DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y2DANCE:
+      if (state->count < 1) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y3DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y4DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y5DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y6DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y7DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y8DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_Y9DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F1DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F2DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F3DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F4DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F5DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F6DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F7DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F8DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F9DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F10DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+    default:
+      return;
+  }
+
+  dance_finish_as_tap(state);
 }
 
 void on_dance_finished(tap_dance_state_t *state, void *user_data) {
@@ -1703,7 +1867,7 @@ void on_dance_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 
-#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED(on_dance_each_tap, on_dance_finished, on_dance_reset)
+#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_WITH_RELEASE(on_dance_each_tap, on_dance_each_release, on_dance_finished, on_dance_reset)
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   if (IS_QK_TAP_DANCE(keycode)) {
@@ -1889,6 +2053,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return false;
   }
 
+
   if (!pressed) {
     return true;
   }
@@ -1896,11 +2061,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   switch (keycode) {
     case UC_MAC:
-      zored_os = OS_MACOS;
+      zored_os = ZOS_MACOS;
       return true;
 
     case UC_WINC:
-      zored_os = OS_WINDOWS;
+      zored_os = ZOS_WINDOWS;
       return true;
 
     // Do keys:
