@@ -375,6 +375,8 @@ enum do_command {
   DO_BOOTLOADER,
   DO_CLOSE,
   DO_NEXT_LANGUAGE,
+  DO_LAYOUT_EN,
+  DO_LAYOUT_RU,
   DO_UNDERSCORE,
   DO_ARROW,
   DO_FAT_ARROW,
@@ -475,6 +477,10 @@ void run_advanced (uint8_t command) {
       if (mappingIndex > mappingIndexMax) {
         mappingIndex = 0;
       }
+      break;
+    case DO_LAYOUT_EN:
+    case DO_LAYOUT_RU:
+      run_advanced(DO_NEXT_LANGUAGE);
       break;
     case DO_NEXT_LANGUAGE:
       ; // empty statement for declarations

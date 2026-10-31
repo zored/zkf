@@ -5,6 +5,7 @@ YAML-configured keymaps for my QMK keyboards. `config.yaml` → `compiler/run.js
 - `config.yaml` keys and template features: [compiler/README.md](compiler/README.md)
 - Roadmap, known issues, keyboard check order: [plans.md](plans.md)
 - How to flash each board, its bootloader, its layout: [docs/keyboards/](docs/keyboards/)
+- Host helper `os/host` (Rust, Raw HID: input source, volume, absolute RU/EN): [docs/host.md](docs/host.md); `./project.sh host-build`, `host-install`
 - Plover steno (setup, English/Russian systems, `os/plover` plugin): [docs/plover.md](docs/plover.md); guided setup: `/steno-init`
 
 ## Build

@@ -15,3 +15,5 @@ jobs:
           firmwares/ergodox_ez.hex
           firmwares/planck.bin
           firmwares/ymd09.hex
+          firmwares/zkf-host-macos
+          firmwares/zkf-host.exe

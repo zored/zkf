@@ -14,6 +14,8 @@ Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmw
 
 Supports Windows and macOS.
 
+Host helper: [zkf-host](docs/host.md) tells the keyboard the input source and the volume (absolute RU/EN switching, RGB overlays).
+
 Steno: ErgoDox and Planck have a Plover HID layer, see [plover.md](docs/plover.md).
 
 ## Example

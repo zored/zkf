@@ -6,3 +6,4 @@ node_modules/
 os/plover/build/
 *.egg-info/
 __pycache__/
+os/host/target/

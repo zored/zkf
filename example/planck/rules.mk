@@ -43,4 +43,6 @@ DEBOUNCE_TYPE = asym_eager_defer_pk
 
 OS_DETECTION_ENABLE = yes
 
+RAW_ENABLE = yes
+
 DEFERRED_EXEC_ENABLE = yes

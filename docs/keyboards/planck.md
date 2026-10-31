@@ -49,6 +49,15 @@ Upstream builds report USB `3297:C6CE` (ZSA) instead of the fork's ID, and start
 - KVM switching: `OS_DETECTION_KEYBOARD_RESET` resets the board when USB comes back while it stays powered, so detection runs again; `OS_DETECTION_SINGLE_REPORT` ignores the second report ARM Macs send minutes later.
 - `i` / `o` on `navigation2` override the mode until the next connect.
 
+## Host helper
+
+`hostState` is on: with [zkf-host](../host.md) running, the board knows the input source and the volume.
+
+- Caps tap = English, double tap = Russian (`--layouts` index 0 / 1). Without the helper, or 15 s after its last report, both toggle the language as before.
+- Input source change: whole board for 0.6 s, EN light blue, RU orange, any other source purple.
+- Volume change: top row (LEDs 0–11) as a green bar for 1.5 s, one key per ~8 %; muted: whole row red; output without volume (HDMI): grey.
+- Colours and durations: `rgbOverlay.layout` / `rgbOverlay.volume` in [config.yaml](../../config.yaml).
+
 ## Steno (Plover)
 
 - Protocol: Plover HID (`PLOVER_HID_ENABLE`); normal typing is not affected, so Plover can stay on.

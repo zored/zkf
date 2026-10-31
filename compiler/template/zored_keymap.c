@@ -20,31 +20,47 @@ enum operating_systems {
 } zored_os = ZOS_WINDOWS;
 
 {{#rgbOverlay}}
-static rgb_t overlay_color;
-static bool overlay_active = false;
+static struct {
+  rgb_t color;
+  uint8_t first, count, lit;
+  bool active;
+} overlay;
 static deferred_token overlay_token = INVALID_DEFERRED_TOKEN;
 
 static uint32_t overlay_expire(uint32_t trigger_time, void *cb_arg) {
-  overlay_active = false;
+  overlay.active = false;
   overlay_token = INVALID_DEFERRED_TOKEN;
   return 0;
 }
 
-void overlay_show(uint8_t r, uint8_t g, uint8_t b, uint32_t duration_ms) {
-  overlay_color = (rgb_t){.r = r, .g = g, .b = b};
-  overlay_active = true;
+// LEDs first..first+count-1: the first `lit` take the colour, the rest go dark.
+void overlay_show_leds(uint8_t r, uint8_t g, uint8_t b, uint8_t first, uint8_t count, uint8_t lit, uint32_t duration_ms) {
+  overlay.color = (rgb_t){.r = r, .g = g, .b = b};
+  overlay.first = first;
+  overlay.count = count;
+  overlay.lit = lit;
+  overlay.active = true;
   cancel_deferred_exec(overlay_token);
   overlay_token = defer_exec(duration_ms, overlay_expire, NULL);
 }
 
+void overlay_show(uint8_t r, uint8_t g, uint8_t b, uint32_t duration_ms) {
+  overlay_show_leds(r, g, b, 0, RGB_MATRIX_LED_COUNT, RGB_MATRIX_LED_COUNT, duration_ms);
+}
+
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   // With LED_FLAG_NONE no effect repaints, so clear what an expired overlay left.
-  if (!overlay_active && rgb_matrix_get_flags() != LED_FLAG_NONE) {
+  bool clear = rgb_matrix_get_flags() == LED_FLAG_NONE;
+  if (!overlay.active && !clear) {
     return false;
   }
-  rgb_t color = overlay_active ? overlay_color : (rgb_t){0};
   for (uint8_t i = led_min; i < led_max; i++) {
-    rgb_matrix_set_color(i, color.r, color.g, color.b);
+    if (overlay.active && i >= overlay.first && i - overlay.first < overlay.count) {
+      rgb_t color = i - overlay.first < overlay.lit ? overlay.color : (rgb_t){0};
+      rgb_matrix_set_color(i, color.r, color.g, color.b);
+    } else if (clear) {
+      rgb_matrix_set_color(i, 0, 0, 0);
+    }
   }
   return false;
 }
@@ -166,6 +182,8 @@ enum do_command {
   DO_BOOTLOADER,
   DO_CLOSE,
   DO_NEXT_LANGUAGE,
+  DO_LAYOUT_EN,
+  DO_LAYOUT_RU,
   DO_UNDERSCORE,
   DO_ARROW,
   DO_FAT_ARROW,
@@ -352,6 +370,112 @@ static inline void appSwitchTimeout(void) {
 }
 {{/keyGroups.appSwitch}}
 
+{{#hostState}}
+// Host helper (os/host) over Raw HID: reports are [type, version, payload...].
+#include "raw_hid.h"
+
+#define HOST_VERSION 1
+#define HOST_REPORT_SIZE 32
+#define HOST_STALE_MS 15000
+#define HOST_NO_VOLUME 0xFF
+
+enum host_report {
+  HOST_LAYOUT = 0x01,
+  HOST_VOLUME = 0x02,
+  HOST_HELLO = 0x80,
+  HOST_SELECT_LAYOUT = 0x81,
+};
+
+typedef struct {
+  uint8_t value[2];
+  uint32_t time;
+  bool seen;
+} host_value_t;
+static host_value_t host_layout, host_volume;
+
+static bool host_fresh(host_value_t *v) {
+  return v->seen && timer_elapsed32(v->time) < HOST_STALE_MS;
+}
+
+// True when a fresh value changed: the first report after a gap shows no overlay.
+static bool host_update(host_value_t *v, uint8_t a, uint8_t b) {
+  bool changed = host_fresh(v) && (v->value[0] != a || v->value[1] != b);
+  v->value[0] = a;
+  v->value[1] = b;
+  v->time = timer_read32();
+  v->seen = true;
+  return changed;
+}
+
+static void host_send(uint8_t type, uint8_t value) {
+  uint8_t report[HOST_REPORT_SIZE] = {type, HOST_VERSION, value};
+  raw_hid_send(report, HOST_REPORT_SIZE);
+}
+
+static uint32_t host_hello(uint32_t trigger_time, void *cb_arg) {
+  host_send(HOST_HELLO, 0);
+  return 0;
+}
+
+// False when the layout is unknown: the caller falls back to the blind toggle.
+static bool host_select_layout(uint8_t index) {
+  if (!host_fresh(&host_layout)) {
+    return false;
+  }
+  if (host_layout.value[0] != index) {
+    host_send(HOST_SELECT_LAYOUT, index);
+  }
+  return true;
+}
+
+{{#rgbOverlay.layout}}
+static const uint8_t overlay_layout_colors[][3] = { {{{rgbOverlay.layout.colors}}} };
+
+static void overlay_show_layout(uint8_t index) {
+  if (index < ARRAY_SIZE(overlay_layout_colors)) {
+    const uint8_t *c = overlay_layout_colors[index];
+    overlay_show(c[0], c[1], c[2], {{{rgbOverlay.layout.ms}}});
+  } else {
+    overlay_show({{{rgbOverlay.layout.other}}}, {{{rgbOverlay.layout.ms}}});
+  }
+}
+{{/rgbOverlay.layout}}
+
+{{#rgbOverlay.volume}}
+static void overlay_show_volume(uint8_t volume, bool muted) {
+  const uint8_t first = {{{rgbOverlay.volume.first}}}, count = {{{rgbOverlay.volume.count}}};
+  if (volume == HOST_NO_VOLUME) {
+    overlay_show_leds({{{rgbOverlay.volume.none}}}, first, count, count, {{{rgbOverlay.volume.ms}}});
+  } else if (muted) {
+    overlay_show_leds({{{rgbOverlay.volume.muted}}}, first, count, count, {{{rgbOverlay.volume.ms}}});
+  } else {
+    overlay_show_leds({{{rgbOverlay.volume.color}}}, first, count, (MIN(volume, 100) * count + 99) / 100, {{{rgbOverlay.volume.ms}}});
+  }
+}
+{{/rgbOverlay.volume}}
+
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+  if (data[1] != HOST_VERSION) {
+    return;
+  }
+  switch (data[0]) {
+    case HOST_LAYOUT:
+      if (host_update(&host_layout, data[2], 0)) {
+{{#rgbOverlay.layout}}
+        overlay_show_layout(data[2]);
+{{/rgbOverlay.layout}}
+      }
+      break;
+    case HOST_VOLUME:
+      if (host_update(&host_volume, data[2], data[3])) {
+{{#rgbOverlay.volume}}
+        overlay_show_volume(data[2], data[3]);
+{{/rgbOverlay.volume}}
+      }
+      break;
+  }
+}
+{{/hostState}}
 
 uint8_t mouseSpeed = 1;
 void setMouseSpeed(uint8_t newMouseSpeed) {
@@ -479,6 +603,15 @@ void run_advanced (uint8_t command) {
         mappingIndex = 0;
       }
 {{/mappings}}
+      break;
+    case DO_LAYOUT_EN:
+    case DO_LAYOUT_RU:
+{{#hostState}}
+      if (host_select_layout(command == DO_LAYOUT_EN ? 0 : 1)) {
+        break;
+      }
+{{/hostState}}
+      run_advanced(DO_NEXT_LANGUAGE);
       break;
     case DO_NEXT_LANGUAGE:
       ; // empty statement for declarations
@@ -825,6 +958,9 @@ void keyboard_post_init_user(void) {
     rgb_matrix_enable();
   }
 {{/rgbOverlay}}
+{{#hostState}}
+  defer_exec(1000, host_hello, NULL);
+{{/hostState}}
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {

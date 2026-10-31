@@ -729,11 +729,18 @@ ${name} = ${value}
 `).join(''))
 }
 
-function getFeatures ({ osDetection = false, rgbOverlay = null }) {
+function getFeatures ({ osDetection = false, hostState = false, rgbOverlay = null }) {
   if (typeof osDetection !== 'boolean') {
     throw new Error(`Invalid osDetection: ${osDetection}.`)
   }
-  const overlay = rgbOverlay && { os: rgbOverlay.os && getOsOverlay(rgbOverlay.os, osDetection) }
+  if (typeof hostState !== 'boolean') {
+    throw new Error(`Invalid hostState: ${hostState}.`)
+  }
+  const overlay = rgbOverlay && {
+    os: rgbOverlay.os && getOsOverlay(rgbOverlay.os, osDetection),
+    layout: rgbOverlay.layout && getLayoutOverlay(rgbOverlay.layout, hostState),
+    volume: rgbOverlay.volume && getVolumeOverlay(rgbOverlay.volume, hostState)
+  }
   const config = {}
   const rules = {}
   if (osDetection) {
@@ -741,11 +748,14 @@ function getFeatures ({ osDetection = false, rgbOverlay = null }) {
     config.OS_DETECTION_KEYBOARD_RESET = ''
     config.OS_DETECTION_SINGLE_REPORT = ''
   }
-  if (overlay) {
+  if (hostState) {
+    rules.RAW_ENABLE = 'yes'
+  }
+  if (overlay || hostState) {
     rules.DEFERRED_EXEC_ENABLE = 'yes'
   }
 
-  return { config, rules, template: { osDetection, rgbOverlay: overlay } }
+  return { config, rules, template: { osDetection, hostState, rgbOverlay: overlay } }
 }
 
 function getOsOverlay ({ ms, macos, windows }, osDetection) {
@@ -754,6 +764,39 @@ function getOsOverlay ({ ms, macos, windows }, osDetection) {
   }
 
   return { ms: getOverlayDuration(ms), macos: getOverlayColor(macos), windows: getOverlayColor(windows) }
+}
+
+function getLayoutOverlay ({ ms, colors, other }, hostState) {
+  if (!hostState) {
+    throw new Error('rgbOverlay.layout needs hostState.')
+  }
+  if (!Array.isArray(colors) || colors.length === 0) {
+    throw new Error(`Invalid rgbOverlay.layout.colors: ${JSON.stringify(colors)}.`)
+  }
+
+  return {
+    ms: getOverlayDuration(ms),
+    colors: colors.map(color => `{${getOverlayColor(color)}}`).join(', '),
+    other: getOverlayColor(other)
+  }
+}
+
+function getVolumeOverlay ({ ms, first, count, color, muted, none }, hostState) {
+  if (!hostState) {
+    throw new Error('rgbOverlay.volume needs hostState.')
+  }
+  if (!Number.isInteger(first) || first < 0 || !Number.isInteger(count) || count <= 0 || first + count > 255) {
+    throw new Error(`Invalid rgbOverlay.volume LEDs: first ${first}, count ${count}.`)
+  }
+
+  return {
+    ms: getOverlayDuration(ms),
+    first,
+    count,
+    color: getOverlayColor(color),
+    muted: getOverlayColor(muted),
+    none: getOverlayColor(none)
+  }
 }
 
 function getOverlayDuration (ms) {

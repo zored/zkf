@@ -44,7 +44,8 @@ qmk_repo=https://github.com/qmk/qmk_firmware.git
 qmk_ref=0.34.7
 node_image=node:22-alpine
 qmk_image=ghcr.io/qmk/qmk_cli
-images="$node_image $qmk_image"
+host_image=ghcr.io/rust-cross/cargo-zigbuild:0.24.0
+images="$node_image $qmk_image $host_image"
 
 
 flash_with=wally
@@ -197,6 +198,63 @@ TEXT
   "$plover_python" -I os/plover/configure.py
   ;;
 
+ host-build|hb) ## Build the host helper (os/host) into firmwares/zkf-host-macos and firmwares/zkf-host.exe.
+  sdk_args=""
+  if [[ "$OS" = MACOSX ]]; then
+    # Docker cannot mount /Library: copy the Command Line Tools SDK into a volume (CI uses the image's SDK).
+    sdk=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+    if ! docker run --rm -v zkf-macos-sdk:/sdk alpine cat /sdk/SDKSettings.json | cmp -s - $sdk/SDKSettings.json; then
+      tar -C $sdk/ -cf - . | docker run --rm -i -v zkf-macos-sdk:/sdk alpine tar -xf - -C /sdk
+    fi
+    sdk_args="-v zkf-macos-sdk:/sdk:ro -e SDKROOT=/sdk"
+  fi
+  docker run --rm -v "/$PWD:/build" --workdir=//build/os/host -v zkf-cargo-registry:/usr/local/cargo/registry $sdk_args $host_image \
+    //bin/sh -c "cargo zigbuild --release --locked --target universal2-apple-darwin && cargo zigbuild --release --locked --target x86_64-pc-windows-gnu"
+  cp os/host/target/universal2-apple-darwin/release/zkf-host firmwares/zkf-host-macos
+  cp os/host/target/x86_64-pc-windows-gnu/release/zkf-host.exe firmwares/zkf-host.exe
+  ;;
+
+ host-install|hi) ## Run the host helper at login; layouts=<EN>,<RU> overrides the input sources.
+  case $OS in
+    MACOSX)
+      layouts=${layouts:-com.apple.keylayout.ABC,com.apple.keylayout.RussianWin}
+      label=com.zored.zkf-host
+      bin="$HOME/.local/bin/zkf-host"
+      plist="$HOME/Library/LaunchAgents/$label.plist"
+      launchctl bootout gui/$(id -u)/$label || true
+      mkdir -p "$(dirname "$bin")" "$(dirname "$plist")"
+      cp firmwares/zkf-host-macos "$bin"
+      cat > "$plist" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>$label</string>
+  <key>ProgramArguments</key>
+  <array><string>$bin</string><string>--layouts</string><string>$layouts</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardErrorPath</key><string>$HOME/Library/Logs/zkf-host.log</string>
+</dict>
+</plist>
+PLIST
+      launchctl bootstrap gui/$(id -u) "$plist"
+      ;;
+    WINDOWS)
+      layouts=${layouts:-0409,0419}
+      dir="$LOCALAPPDATA/zkf"
+      taskkill //IM zkf-host.exe //F || true
+      mkdir -p "$dir"
+      cp firmwares/zkf-host.exe "$dir/"
+      powershell -NoProfile -Command "\$s = (New-Object -ComObject WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Startup') + '\\zkf-host.lnk'); \$s.TargetPath = '$(cygpath -w "$dir")\\zkf-host.exe'; \$s.Arguments = '--layouts $layouts'; \$s.WindowStyle = 7; \$s.Save(); Invoke-Item \$s.FullName"
+      ;;
+    *)
+      echo "host-install supports macOS and Windows (Git Bash)."
+      exit 1
+      ;;
+  esac
+  ;;
+
  build-all|ba)
   for keyboard in $keyboards; do
     $0 build $keyboard
@@ -212,6 +270,7 @@ TEXT
  ci) ##
   ./project.sh sync
   ./project.sh build-all
+  ./project.sh host-build
   ;;
 
  prune-images)

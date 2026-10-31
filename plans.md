@@ -124,18 +124,28 @@ Facts (QMK `0.34.7` sources): `RAW_ENABLE` fits the USB endpoints on Planck (5 o
 
 One helper in Rust (`os/host`) for macOS and Windows; [qmk-hid-host](https://github.com/zzeneg/qmk-hid-host) is a code reference only (it has no mute, sends layouts as indexes, opens the device exclusively on macOS, ships unsigned rolling builds).
 
-- [ ] Spike: build a Rust binary that links IOKit, CoreAudio and Carbon in Docker with `cargo-zigbuild`, mounting the SDK of the installed Command Line Tools (`/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk`); run it on the Mac. `x86_64-pc-windows-gnu` in the same image. If the macOS build fails: Swift file built by the CLT `swiftc` plus a PowerShell 5.1 `.ps1` with `Add-Type` C#.
-- [ ] Protocol, 32-byte reports `[type, version, payload…]`:
+- [x] Spike: build a Rust binary that links IOKit, CoreAudio and Carbon in Docker with `cargo-zigbuild`, mounting the SDK of the installed Command Line Tools (`/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk`); run it on the Mac. `x86_64-pc-windows-gnu` in the same image. If the macOS build fails: Swift file built by the CLT `swiftc` plus a PowerShell 5.1 `.ps1` with `Add-Type` C#.
+  - Works first try in `ghcr.io/rust-cross/cargo-zigbuild:0.24.0` (Rust 1.93, zig 0.16): `universal2-apple-darwin` (769 KB, ad-hoc signed by the linker, runs on the arm64 Mac, reads input source and volume) and `x86_64-pc-windows-gnu` (410 KB). Docker Desktop refuses to mount `/Library`, so `host-build` copies the CLT SDK (27.0, 332 MB) into the `zkf-macos-sdk` volume; the image's bundled SDK 11.3 builds too (used in CI).
+- [x] Protocol, 32-byte reports `[type, version, payload…]`:
   - host → keyboard: `0x01` layout index (`0xFE` = a source not in the list), `0x02` volume 0–100 plus mute flag (`0xFF` = device without volume, e.g. HDMI).
   - keyboard → host: `0x80` hello (asks for the full state on connect), `0x81` select layout index.
   - The helper repeats the state every 5 s; after 15 s without a report the keyboard treats the state as unknown: no overlays, no layout-aware output. No guessing from the keyboard's own key presses.
-- [ ] Layout list from arguments, index = position: macOS `--layouts com.apple.keylayout.ABC,com.apple.keylayout.RussianWin`, Windows `0409,0419`.
-- [ ] macOS: input source from `kTISNotifySelectedKeyboardInputSourceChanged`, selection with `TISSelectInputSource`; volume and mute from CoreAudio listeners on the default output device, plus default-device changes. Reopen the device after sleep/wake and replug.
+- [x] Layout list from arguments, index = position: macOS `--layouts com.apple.keylayout.ABC,com.apple.keylayout.RussianWin`, Windows `0409,0419`.
+- [x] macOS: input source from `kTISNotifySelectedKeyboardInputSourceChanged`, selection with `TISSelectInputSource`; volume and mute from CoreAudio listeners on the default output device, plus default-device changes. Reopen the device after sleep/wake and replug.
+  - Implemented as a 100 ms poll on the main run loop (the TIS notification wakes it at once) instead of CoreAudio listeners: no listener re-registration on default-device changes. Volume = virtual main volume (`AudioHardwareService`), checked with `set volume` and live on Planck. The device is reopened on any read/write error.
 - [ ] Windows: layout by polling `GetKeyboardLayout` of the foreground window's thread (console windows may report wrong), volume and mute from `IAudioEndpointVolume` callbacks, selection on `0x81`.
-- [ ] Absolute switching: Caps tap = EN, Caps double-tap = RU (replaces the blind `DO_NEXT_LANGUAGE` toggle). macOS goes through the helper (`0x81`); Windows uses the native "Input language hot keys" (Ctrl+Shift+digit per language) if they work reliably on the machine, otherwise the helper. Unknown state or no helper: fall back to today's toggle.
+  - Implemented, compiles, not run yet: volume polled every 100 ms (default endpoint re-read each time), selection by `WM_INPUTLANGCHANGEREQUEST` to the foreground window.
+- [x] Absolute switching: Caps tap = EN, Caps double-tap = RU (replaces the blind `DO_NEXT_LANGUAGE` toggle). macOS goes through the helper (`0x81`); Windows uses the native "Input language hot keys" (Ctrl+Shift+digit per language) if they work reliably on the machine, otherwise the helper. Unknown state or no helper: fall back to today's toggle.
+  - `capsDance` tap = `doLayoutEn`, double tap = `doLayoutRu` on every board; both go through the helper on both hosts (no OS hotkeys to set up). Without `hostState` (ErgoDox) both act as `doNextLanguage`. Verified on Planck + macOS: tap → `0x81 0`, double tap → `0x81 1`, no-op when the layout is already active.
 - [ ] Install: `./project.sh host-install` sets up a LaunchAgent (macOS) or a Startup-folder shortcut (Windows). Release binaries come from CI next to the firmware.
+  - Written, not run yet on either host; `ci` runs `host-build`, release tags publish `zkf-host-macos` and `zkf-host.exe`.
 - [ ] Planck: `hostState` and overlays enabled; layout and volume overlays checked live on both hosts.
-- [ ] Docs: helper setup, protocol, `config.yaml` keys.
+  - macOS: done (layout overlay on Ctrl+Tab and Caps, volume bar, mute). Windows: pending.
+- [x] Docs: helper setup, protocol, `config.yaml` keys: [docs/host.md](docs/host.md), [compiler/README.md](compiler/README.md), [planck.md](docs/keyboards/planck.md).
+- [x] Size (`zored_base` = before, `off` = new code with `hostState: false`, `on` = `hostState: true`, measured with separate keymaps):
+  - Planck: absolute-switch fallback +68 B; `hostState` with layout and volume overlays +1480 B flash, +392 B RAM (USB endpoint buffers, taken from the ChibiOS heap); 64484 B of 256 KB.
+  - ErgoDox: fallback +34 B; `hostState` would add +834 B flash, +99 B RAM: 30466 of 32256 B, 1790 B free. Not enabled.
+  - YMD09: fallback +4 B; `hostState` would add +834 B flash, +109 B RAM: 28504 of 28672 B, 168 B free (with the `DEBOUNCE_TYPE` removal from the working copy). Not enabled.
 
 ### Phase C: layout-aware ASCII (experiments behind `layoutAwareAscii`)
 
@@ -156,8 +166,8 @@ Transient overlays on top of the running RGB matrix animation; nothing is persis
 - [x] `rgbToggle`: switch the animation off with `rgb_matrix_set_flags(LED_FLAG_NONE)` (as ZSA's stock code does) instead of `RM_TOGG`; `RM_TOGG` is intercepted (it acts on release), and a matrix disabled by older firmware is converted to `LED_FLAG_NONE` on boot. QMK runs no indicator callbacks while the matrix is disabled, suspended, timed out or in mode `NONE`, so with `RM_TOGG` off no overlay would show. Verified on Planck: the connect overlay shows with `LED_FLAG_NONE` and the board goes dark after it.
 - [ ] Overlays (Planck, 47 LEDs, indexes 0–35 rows 0–2, 36–46 bottom row, 2u space = 41):
   - [x] OS on connect: whole board, macOS white, Windows blue, 1 s (phase A).
-  - [ ] Input source change: whole board, EN light blue, RU orange, other purple, 0.6 s (phase B).
-  - [ ] Volume change: top row (12 keys) as a green bar, 1.5 s; muted: whole row red; no volume: grey (phase B).
+  - [x] Input source change: whole board, EN light blue, RU orange, other purple, 0.6 s (phase B). Verified on Planck + macOS.
+  - [x] Volume change: top row (12 keys) as a green bar, 1.5 s; muted: whole row red; no volume: grey (phase B). Verified on Planck + macOS; grey (no volume) not seen yet.
 - [ ] The 2 Planck layer LEDs keep showing layers.
 - [ ] YMD09 (RGB matrix, 9 LEDs): same overlays on the whole board; volume = number of lit keys.
 - [ ] ErgoDox base (3 single-colour LEDs, used for layers): no overlays.

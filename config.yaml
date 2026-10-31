@@ -379,11 +379,23 @@ keyboards:
         STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
     osDetection: true
+    hostState: true
     rgbOverlay:
       os: # On connect, whole board.
         ms: 1000
         macos: [255, 255, 255]
         windows: [0, 0, 255]
+      layout: # Input source change, whole board; colours by --layouts index (EN, RU), `other` for the rest.
+        ms: 600
+        colors: [[0, 160, 255], [255, 80, 0]]
+        other: [160, 0, 255]
+      volume: # Volume change, top row as a bar.
+        ms: 1500
+        first: 0
+        count: 12
+        color: [0, 255, 0]
+        muted: [255, 0, 0]
+        none: [80, 80, 80]
     layers:
       default:
         enableCombos: true
@@ -576,7 +588,8 @@ keys:
     - [holdSymbol]
   capsDance:
     tap:
-    - [doNextLanguage]
+    - [doLayoutEn]
+    - [doLayoutRu]
     hold:
     - [holdSymbol]
     - [holdSymbol, lCtrl]
