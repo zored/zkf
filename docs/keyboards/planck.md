@@ -34,8 +34,9 @@ Upstream builds report USB `3297:C6CE` (ZSA) instead of the fork's ID, and start
 ## Specifics
 
 - Audio with clicky sounds, off on every boot (`clicky_off()` in `keyboard_post_init_user`); RGB matrix keys (`RM_*`); 2 LEDs for the active layer.
-- Mouse keys tuned for smooth motion on a 240 Hz screen: a 1 px step every 4 ms (`MOUSEKEY_INTERVAL: 4`, `MOUSEKEY_MOVE_DELTA: 1`), top speed `26` px per tick, `200` ticks to reach it. Upstream raised the default `MOUSEKEY_MOVE_DELTA` from 5 to 8, which made the old values jerky.
+- Mouse keys tuned for smooth motion on a 240 Hz screen: a 1 px step every 4 ms (`MOUSEKEY_INTERVAL: 4`, `MOUSEKEY_MOVE_DELTA: 1`), top speed `26` px per tick, `200` ticks to reach it. Wheel: one line every 32 ms, half the shared 16 ms rate, same 2.9 s ramp (`MOUSEKEY_WHEEL_INTERVAL: 32`, `MOUSEKEY_WHEEL_TIME_TO_MAX: 90`). Upstream raised the default `MOUSEKEY_MOVE_DELTA` from 5 to 8, which made the old values jerky.
 - `history` layer on `a` hold.
+- A dance whose tap count reached its last action types the tap on release instead of waiting `TAPPING_TERM_TAP_DANCE` (270 ms): `tabDance` sends Tab at once, so `z` hold + Tab switches without delay.
 - `navigation2` (tap `;`, then hold `;`) holds RGB, audio and OS-mode keys:
   - RGB: `q`/`w` brightness, `e`/`r` saturation, `f`/`g` animation speed (slow `32` on every boot); bottom row under Tab / Enter / `[` / `]` / last key: previous / next mode / toggle / hue down / hue up.
   - Audio: `a` toggles clicks, `s`/`d` click pitch, `z` toggles music mode (keys play notes instead of typing until toggled off).

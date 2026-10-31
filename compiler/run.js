@@ -463,13 +463,15 @@ function getDanceTemplateData (layers, danceEnemies, keyFactory) {
   const actionNames = glueEnum(actionKeys)
   const actions = keys.map(key => `[${key.codeName}] = DANCE_MODIFIER()`).join(ARRAY_GLUE + INDENT)
   const enemies = getDanceEnemiesCases(keys, danceEnemies, keyFactory)
-  const counts = keys.map(k => `
+  const countCases = op => keys.map(k => `
     case ${k.codeName}:
-      if (state->count <= ${k.maxActionCount}) {
+      if (state->count ${op} ${k.maxActionCount}) {
         return;
       }
       break;
  `).join('\n')
+  const counts = countCases('<=')
+  const releases = countCases('<')
   return {
     names,
     actionNames,
@@ -478,7 +480,8 @@ function getDanceTemplateData (layers, danceEnemies, keyFactory) {
     onDanceReset,
     actions,
     enemies,
-    counts
+    counts,
+    releases
   }
 }
 

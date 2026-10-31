@@ -372,6 +372,8 @@ keyboards:
         MOUSEKEY_TIME_TO_MAX: 200
         MOUSEKEY_SLOW_SPEED: 2
         MOUSEKEY_FAST_SPEED: 9
+        MOUSEKEY_WHEEL_INTERVAL: 32
+        MOUSEKEY_WHEEL_TIME_TO_MAX: 90
         STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
     layers:

@@ -1124,6 +1124,227 @@ void on_dance_each_tap(tap_dance_state_t *state, void *user_data) {
   dance_flush_on_many_taps(state);
 }
 
+void on_dance_each_release(tap_dance_state_t *state, void *user_data) {
+  uint16_t dance_key = state->index;
+
+  switch (dance_key) {
+    
+    case DANCE_KC_CAPSDANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_ADANCE:
+      if (state->count < 1) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_ZDANCE:
+      if (state->count < 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_XDANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_CDANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_SEMICOLONDANCE:
+      if (state->count < 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_QUOTEDANCE:
+      if (state->count < 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_COMMADANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_DOTDANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_SLASHDANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_TABDANCE:
+      if (state->count < 1) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_PERCENTDANCE:
+      if (state->count < 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_CIRCUMFLEXDANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_LEFTSQUAREBRACKETDANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_HAPPYDANCE:
+      if (state->count < 4) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_SADDANCE:
+      if (state->count < 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_STRANGEDANCE:
+      if (state->count < 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_COOLDANCE:
+      if (state->count < 4) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_OKDANCE:
+      if (state->count < 3) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_LOVEDANCE:
+      if (state->count < 4) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F7DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F8DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F9DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F4DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F5DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F6DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F1DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F2DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F3DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+
+    case DANCE_KC_F10DANCE:
+      if (state->count < 2) {
+        return;
+      }
+      break;
+ 
+    default:
+      return;
+  }
+
+  dance_finish_as_tap(state);
+}
+
 void on_dance_finished(tap_dance_state_t *state, void *user_data) {
   if (state->count == 0) {
     return;
@@ -2472,7 +2693,7 @@ void on_dance_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 
-#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED(on_dance_each_tap, on_dance_finished, on_dance_reset)
+#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_WITH_RELEASE(on_dance_each_tap, on_dance_each_release, on_dance_finished, on_dance_reset)
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   if (IS_QK_TAP_DANCE(keycode)) {

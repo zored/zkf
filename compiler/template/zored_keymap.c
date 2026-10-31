@@ -647,6 +647,18 @@ void on_dance_each_tap(tap_dance_state_t *state, void *user_data) {
   dance_flush_on_many_taps(state);
 }
 
+void on_dance_each_release(tap_dance_state_t *state, void *user_data) {
+  uint16_t dance_key = state->index;
+
+  switch (dance_key) {
+    {{{dance.releases}}}
+    default:
+      return;
+  }
+
+  dance_finish_as_tap(state);
+}
+
 void on_dance_finished(tap_dance_state_t *state, void *user_data) {
   if (state->count == 0) {
     return;
@@ -668,7 +680,7 @@ void on_dance_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 
-#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED(on_dance_each_tap, on_dance_finished, on_dance_reset)
+#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_WITH_RELEASE(on_dance_each_tap, on_dance_each_release, on_dance_finished, on_dance_reset)
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
   if (IS_QK_TAP_DANCE(keycode)) {
