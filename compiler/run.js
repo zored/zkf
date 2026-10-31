@@ -26,10 +26,8 @@ function main () {
   )
   const files = new KeymapFiles(keyboard)
 
-  const { comboCount } = compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies, config)
-  compileSettings(keyboard, files, {
-    COMBO_COUNT: comboCount
-  })
+  compileKeymap(layers, keyboard, files, keyFactory, config.dance_enemies, config)
+  compileSettings(keyboard, files)
 
   console.log(`
 Keymap compiled. Files created.
@@ -82,7 +80,7 @@ class EmojiKey extends Key {
   }
 
   get layerCodeName () {
-    return `X(${this.codeName}) /*${this.emoji}*/`
+    return `UM(${this.codeName}) /*${this.emoji}*/`
   }
   get downCode () {
     return `
@@ -435,7 +433,7 @@ class TapDanceAction extends Action {
 function getConfig () {
   const yaml = require('js-yaml')
 
-  return yaml.safeLoad(fs.readFileSync('config.yaml', 'utf8'))
+  return yaml.load(fs.readFileSync('config.yaml', 'utf8'))
 }
 
 function glueEnum (items, initialValue = '1') {
@@ -541,7 +539,7 @@ function getDoKeys (layersKeys) {
 function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
   const Mustache = require('mustache')
 
-  const { combos, comboCount } = getCombos(keyboard.config.combos, keyFactory)
+  const combos = getCombos(keyboard.config.combos, keyFactory)
   const result = Mustache.render(fs.readFileSync('compiler/template/zored_keymap.c', 'utf8'), _.merge({
     dance: getDanceTemplateData(layers, danceEnemies, keyFactory),
     unicode: getUnicodeTemplateData(layers),
@@ -552,8 +550,6 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
     keyGroups: getKeyGroups(layers)
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
-
-  return { comboCount }
 }
 
 function getKeyGroups (layers) {
@@ -669,7 +665,7 @@ enum combo_names {
   ${indexDefinitions}
 };
 
-combo_t key_combos[COMBO_COUNT] = {
+combo_t key_combos[] = {
   ${comboMap}
 };
 `
@@ -684,11 +680,8 @@ combo_t key_combos[COMBO_COUNT] = {
   })()
 
   return {
-    comboCount: combos.length,
-    combos: {
-      definitions,
-      declarations
-    }
+    definitions,
+    declarations
   }
 }
 
@@ -717,20 +710,12 @@ void ${aliasPrefix}${aliasNumber}(${getArguments(aliasNumber)}) {
 `)).join('')
 }
 
-function compileSettings (keyboard, files, override) {
+function compileSettings (keyboard, files) {
   const { config, rules } = keyboard.settings
-
-  const getValue = (value, name) => {
-    if (override[name] !== undefined) {
-      return override[name]
-    }
-
-    return value
-  }
 
   files.add('config.h', _.map(config, (value, name) => `
 #undef ${name}
-#define ${name} ${getValue(value, name)}
+#define ${name} ${value}
 `).join(''))
 
   files.add('rules.mk', _.map(rules, (value, name) => `
@@ -855,7 +840,7 @@ class ErgodoxEz extends Keyboard {
     if (light < 1 || light > 3) {
       throw new Error(`Unknow Ergodox light #${light}`)
     }
-    return `ergodox_right_led_on(${light});`
+    return `ergodox_right_led_${light}_on();`
   }
 }
 class PlanckEz extends Keyboard {
@@ -864,6 +849,9 @@ class PlanckEz extends Keyboard {
   }
   get layoutCodeName () {
     return 'LAYOUT_planck_grid'
+  }
+  get keymapPath () {
+    return 'vendor/qmk_firmware/keyboards/zsa/planck_ez/keymaps/zored/'
   }
   getLightCode (light) {
     switch (light) {
@@ -893,9 +881,9 @@ class KeyboardFactory {
   }
   create (qmkName) {
     switch (qmkName) {
-      case 'ergodox_ez':
+      case 'ergodox_ez/base':
         return new ErgodoxEz(this.config)
-      case 'planck/ez':
+      case 'zsa/planck_ez/glow':
         return new PlanckEz(this.config)
       case 'ymdk/ymd09':
         return new Ymd09(this.config)

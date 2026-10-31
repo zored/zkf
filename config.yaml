@@ -281,10 +281,9 @@ keyboards:
     settings:
       # https://docs.qmk.fm/#/config_options?id=the-configh-file
       config: &config
-        COMBO_COUNT: 0 # - overriden by *combos.
         COMBO_TERM: 80
         ENCODER_RESOLUTION: 4
-        FORCE_NKRO: ''
+        NKRO_DEFAULT_ON: 'true'
         LEADER_TIMEOUT: 300
 
         # MK_3_SPEED: ''
@@ -305,6 +304,7 @@ keyboards:
 
         MOUSEKEY_DELAY: 0
         MOUSEKEY_INTERVAL: 16
+        MOUSEKEY_MOVE_DELTA: 5
         MOUSEKEY_MAX_SPEED: 16
         MOUSEKEY_SLOW_SPEED: 1
         MOUSEKEY_FAST_SPEED: 7
@@ -314,15 +314,14 @@ keyboards:
         MOUSEKEY_WHEEL_MAX_SPEED: 4
         MOUSEKEY_WHEEL_TIME_TO_MAX: 180
 
-        NO_ACTION_FUNCTION: ''
-        NO_ACTION_MACRO: ''
         NO_DEBUG: ''
         NO_PRINT: ''
         ONESHOT_TAP_TOGGLE: 5
         ONESHOT_TIMEOUT: 4000
         TAPPING_TERM: 110
         TAPPING_TERM_TAP_DANCE: 270
-        UNICODE_SELECTED_MODES: 'UC_OSX, UC_WINC'
+        TAPPING_TERM_PER_KEY: ''
+        UNICODE_SELECTED_MODES: 'UNICODE_MODE_MACOS, UNICODE_MODE_WINCOMPOSE'
         
         # My custom settings:
         TURBO_SIGNAL_TIMEOUT: 100
@@ -363,6 +362,13 @@ keyboards:
       config:
         <<: *config
         AUDIO_CLICKY: ''
+        AUDIO_DEFAULT_CLICKY_ON: 'false'
+        MOUSEKEY_INTERVAL: 4
+        MOUSEKEY_MOVE_DELTA: 1
+        MOUSEKEY_MAX_SPEED: 26
+        MOUSEKEY_TIME_TO_MAX: 200
+        MOUSEKEY_SLOW_SPEED: 2
+        MOUSEKEY_FAST_SPEED: 9
         STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
     layers:
@@ -440,7 +446,6 @@ keyboards:
         KEY_LOCK_ENABLE: 'no'
         LEADER_ENABLE: 'no'
         NKRO_ENABLE: 'no'
-        RGBLIGHT_ENABLE: 'yes'
         UNICODEMAP_ENABLE: 'no'
       config:
         <<: *config
@@ -643,7 +648,7 @@ map:
     '+': PPLS
     ',': COMM
     '-': MINS
-    ';': SCOLON
+    ';': SCLN
     '=': EQL
     '@': AT
     '[': LBRC 
@@ -651,8 +656,8 @@ map:
     ']': RBRC 
     '^': CIRC
     '`': GRV
-    'shift(': LSPO
-    'shift)': RSPC
+    'shift(': SC_LSPO
+    'shift)': SC_RSPC
     '{': LCBR
     '|': PIPE
     '}': RCBR
@@ -693,42 +698,48 @@ map:
     ю: '.'
     я: z
     backspace: BSPC
+    capsLock: CAPS
+    capslock: CAPS
+    lCtrl: LCTL
+    lShift: LSFT
+    rCtrl: RCTL
+    rShift: RSFT
     brightnessDown: BRID
     brightnessUp: BRIU
     down: DOWN
     enter: ENT
-    keyLock: LOCK
+    keyLock: QK_LOCK
     left: LEFT
-    leader: LEAD
+    leader: QK_LEAD
     mediaNext: MEDIA_NEXT_TRACK
     mediaPrev: MEDIA_PREV_TRACK
     mediaToggle: MEDIA_PLAY_PAUSE
-    macosMode: UC_M_OS
-    mouseDown: MS_D
-    mouseLeft: MS_L
-    mouseLeftButton: BTN1
-    mouseRight: MS_R
-    mouseRightButton: BTN2
-    mouseSlow: MS_ACCEL0 
-    mouseNormal: MS_ACCEL1
-    mouseFast: MS_ACCEL2
-    wheelClick: BTN3
-    mouseUp: MS_U
+    macosMode: UC_MAC
+    mouseDown: MS_DOWN
+    mouseLeft: MS_LEFT
+    mouseLeftButton: MS_BTN1
+    mouseRight: MS_RGHT
+    mouseRightButton: MS_BTN2
+    mouseSlow: MS_ACL0
+    mouseNormal: MS_ACL1
+    mouseFast: MS_ACL2
+    wheelClick: MS_BTN3
+    mouseUp: MS_UP
     pageDown: PGDN
     pageUp: PGUP
-    playMacro1: DYN_MACRO_PLAY1
-    playMacro2: DYN_MACRO_PLAY2
-    recordMacro1: DYN_REC_START1
-    recordMacro2: DYN_REC_START2
-    rgbBriDown: RGB_VAD
-    rgbBriUp: RGB_VAI
-    rgbHueDown: RGB_HUD
-    rgbHueUp: RGB_HUI
-    rgbNext: RGB_MOD
-    rgbPrev: RGB_RMOD
-    rgbSatDown: RGB_SAD
-    rgbSatUp: RGB_SAI
-    rgbToggle: RGB_TOG
+    playMacro1: DM_PLY1
+    playMacro2: DM_PLY2
+    recordMacro1: DM_REC1
+    recordMacro2: DM_REC2
+    rgbBriDown: RM_VALD
+    rgbBriUp: RM_VALU
+    rgbHueDown: RM_HUED
+    rgbHueUp: RM_HUEU
+    rgbNext: RM_NEXT
+    rgbPrev: RM_PREV
+    rgbSatDown: RM_SATD
+    rgbSatUp: RM_SATU
+    rgbToggle: RM_TOGG
     right: RGHT
     sA: STN_A
     sBR: STN_BR
@@ -766,7 +777,7 @@ map:
     sST3: STN_ST3
     sST4: STN_ST4
     sTL: STN_TL
-    stopRecordMacro: DYN_REC_STOP
+    stopRecordMacro: DM_RSTP
     sTR: STN_TR
     sU: STN_U
     sWL: STN_WL
@@ -775,23 +786,26 @@ map:
     volumeDown: VOLD
     volumeToggle: MUTE
     volumeUp: VOLU
-    wheelDown: WH_D
-    wheelLeft: WH_L
-    wheelRight: WH_R
-    wheelUp: WH_U
-    windowsMode: UC_M_WC
+    wheelDown: MS_WHLD
+    wheelLeft: MS_WHLL
+    wheelRight: MS_WHLR
+    wheelUp: MS_WHLU
+    windowsMode: UC_WINC
     audioClickToggle: CK_TOGG
     audioClickUp: CK_UP
     audioClickDown: CK_DOWN
-    musicToggle: MU_TOG
-    musicMode: MU_MOD
+    musicToggle: MU_TOGG
+    musicMode: MU_NEXT
   prefixes:
     - AU
     - CK
-    - DYN
+    - DM
     - MAGIC
+    - MS
     - MU
-    - RGB
+    - QK
+    - RM
+    - SC
     - STN
     - UC
     - ZKC

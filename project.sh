@@ -2,16 +2,16 @@
 # Contains helper code for easy work.
 set -ex
 
-keyboards="ergodox_ez planck/ez ymdk/ymd09"
+keyboards="ergodox_ez/base zsa/planck_ez/glow ymdk/ymd09"
 case $2 in
-  planck|planck/ez|p|2)
-    keyboard=planck/ez
+  planck|zsa/planck_ez/glow|p|2)
+    keyboard=zsa/planck_ez/glow
     ;;
   ymd09|ymdk/ymd09|y|3)
     keyboard=ymdk/ymd09
     ;;
   *)
-    keyboard=ergodox_ez
+    keyboard=ergodox_ez/base
     ;;
 esac
 
@@ -50,19 +50,22 @@ else
 fi
 
 export QMK_DIR=vendor/qmk_firmware
-node_image=node:12.4.0-alpine
-qmk_image=qmkfm/qmk_firmware
+qmk_repo=https://github.com/qmk/qmk_firmware.git
+qmk_ref=0.34.7
+node_image=node:22-alpine
+qmk_image=ghcr.io/qmk/qmk_cli
 images="$node_image $qmk_image"
 
 
 flash_with=wally
 case $keyboard in
-  planck/ez)
-    firmware_source=$QMK_DIR/planck_ez_zored.bin
+  zsa/planck_ez/glow)
+    firmware_source=$QMK_DIR/zsa_planck_ez_glow_zored.bin
     firmware_filename=planck.bin
+    flash_with=dfu-util
     ;;
-  ergodox_ez)
-    firmware_source=$QMK_DIR/ergodox_ez_zored.hex
+  ergodox_ez/base)
+    firmware_source=$QMK_DIR/ergodox_ez_base_zored.hex
     firmware_filename=ergodox_ez.hex
     ;;
   ymdk/ymd09)
@@ -79,6 +82,10 @@ case $1 in
 
   echo "Building firmware..."
   run $qmk_image "cd $QMK_DIR && make $keyboard:zored"
+  if [[ -f $firmware ]] && ! cmp -s $firmware_source $firmware; then
+    mkdir -p firmwares/previous
+    cp $firmware firmwares/previous/$(date +%Y%m%d-%H%M%S)-$firmware_filename
+  fi
   mv $firmware_source $firmware
  ;;
 
@@ -97,9 +104,13 @@ case $1 in
   run $node_image 'yarn install --no-bin-links --cwd=compiler'
 
   echo "Clone QMK with submodules."
-  if [[ ! -f "$QMK_DIR/Makefile" ]]; then
-    git clone -b zkf_stable_planck --single-branch --recurse-submodules https://github.com/zored/qmk_firmware.git $QMK_DIR
-    rm -rf $QMK_DIR/.git
+  if [[ ! -e "$QMK_DIR" ]]; then
+    git clone --branch $qmk_ref --depth 1 --recurse-submodules --shallow-submodules $qmk_repo $QMK_DIR
+  fi
+  actual_ref=$(git -C $QMK_DIR describe --tags --exact-match HEAD)
+  if [[ "$actual_ref" != "$qmk_ref" ]]; then
+    echo "$QMK_DIR is at '$actual_ref', expected '$qmk_ref': delete it and rerun sync."
+    exit 1
   fi
  ;;
 
@@ -141,6 +152,17 @@ ENTER BOOTLOADER ON YOUR KEYBOARD
 
 TEXT
   case $flash_with in
+    dfu-util)
+      dfu_util="/Applications/QMK Toolbox.app/Contents/Resources/dfu-util"
+      if pgrep -xq "QMK Toolbox"; then
+        echo "Quit QMK Toolbox first: it claims the DFU device (LIBUSB_ERROR_ACCESS)."
+        exit 1
+      fi
+      until "$dfu_util" -l | grep -qi 0483:df11; do
+        sleep 1
+      done
+      "$dfu_util" -a 0 -d 0483:df11 -s 0x08000000:leave -D $firmware
+      ;;
     dfu)
       run="dfu-programmer atmega32u4"
       while ! $run get bootloader-version; do

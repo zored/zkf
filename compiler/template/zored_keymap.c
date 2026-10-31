@@ -1,18 +1,6 @@
 {{! Keymap template for all of my keymaps. Has a lot of common code. }}
 
-{{#ergodox}}
-#include "ergodox_ez.h"
-{{/ergodox}}
-
-{{#planck}}
 #include QMK_KEYBOARD_H
-#include "muse.h"
-#include "eeprom.h"
-{{/planck}}
-
-{{#ymd09}}
-#include QMK_KEYBOARD_H
-{{/ymd09}}
 
 #include "action_layer.h"
 #include "version.h"
@@ -24,9 +12,6 @@
 enum custom_keycodes {
   ZKC_BTL = SAFE_RANGE,
   {{{layers.doKeys.names}}}
-
-  // At the end:
-  DYNAMIC_MACRO_RANGE,
 };
 
 enum operating_systems {
@@ -71,14 +56,14 @@ uint8_t map_code (uint8_t keycode) {
   switch (zored_os) {
     case OS_MACOS:
       switch (keycode) {
-        case KC_LCTRL:
+        case KC_LCTL:
           return KC_LGUI;
-        case KC_RCTRL:
+        case KC_RCTL:
           return KC_RGUI;
         case KC_LGUI:
-          return KC_LCTRL;
+          return KC_LCTL;
         case KC_RGUI:
-          return KC_RCTRL;
+          return KC_RCTL;
         case KC_MEDIA_PREV_TRACK:
           return KC_MEDIA_REWIND;
         case KC_MEDIA_NEXT_TRACK:
@@ -104,9 +89,9 @@ void code_up(uint8_t code) {
 }
 
 void code_hold_ms(uint8_t code, uint32_t timeout) {
-  code_down(KC_CAPSLOCK);
+  code_down(KC_CAPS);
   wait_ms(timeout);
-  code_up(KC_CAPSLOCK);
+  code_up(KC_CAPS);
 }
 
 // Helper functions:
@@ -191,7 +176,7 @@ bool turboHandlePress(uint16_t code, bool pressed) {
   }
   return false;
 }
-inline void turboTick(void) {
+static inline void turboTick(void) {
   if (!turbo.fingerPressing || turbo.keycode == 0) {
     return;
   }
@@ -253,7 +238,7 @@ void appSwitchRun(bool past, uint8_t target) {
             appSwitch.hold1 = KC_LGUI;
             break;
           case TARGET_TAB:
-            appSwitch.hold1 = KC_LCTRL;
+            appSwitch.hold1 = KC_LCTL;
             break;
         }
         break;
@@ -264,7 +249,7 @@ void appSwitchRun(bool past, uint8_t target) {
             appSwitch.hold1 = KC_LALT;
             break;
           case TARGET_TAB:
-            appSwitch.hold1 = KC_LCTRL;
+            appSwitch.hold1 = KC_LCTL;
             break;
         }
         break;
@@ -281,7 +266,7 @@ void appSwitchRun(bool past, uint8_t target) {
     case OS_MACOS:
       switch (target) {
         case TARGET_WINDOW:
-          tap = KC_TILDE;
+          tap = KC_TILD;
           break;
         default:
           break;
@@ -299,7 +284,7 @@ void appSwitchRun(bool past, uint8_t target) {
   appSwitch.active = true;
   appSwitch.target = target;
 }
-inline void appSwitchTimeout(void) {
+static inline void appSwitchTimeout(void) {
   if (!appSwitch.active) {
     return;
   }
@@ -311,21 +296,18 @@ inline void appSwitchTimeout(void) {
 {{/keyGroups.appSwitch}}
 
 
-extern uint8_t mk_max_speed;
-void mousekey_on(uint8_t code);
-void mousekey_off(uint8_t code);
 uint8_t mouseSpeed = 1;
 void setMouseSpeed(uint8_t newMouseSpeed) {
   // Turn off:
   if (mouseSpeed == newMouseSpeed || newMouseSpeed == 1) {
     mouseSpeed = 1;
-    mousekey_off(KC_MS_ACCEL2);
+    mousekey_off(MS_ACL2);
     mk_max_speed = MOUSEKEY_MAX_SPEED;  
     return;
   }
 
   mouseSpeed = newMouseSpeed;
-  mousekey_on(KC_MS_ACCEL2); // - make mk_max_speed the real mouse speed.
+  mousekey_on(MS_ACL2); // - make mk_max_speed the real mouse speed.
 
   switch (mouseSpeed) {
     case 0:
@@ -394,7 +376,7 @@ void run_advanced (uint8_t command) {
     case DO_NEXT_TAB:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(S(KC_RBRACKET)));
+          tap_code16(G(S(KC_RBRC)));
           break;
         case OS_WINDOWS:
           tap_code16(C(A(KC_RIGHT)));
@@ -403,7 +385,7 @@ void run_advanced (uint8_t command) {
     case DO_PREV_TAB:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(S(KC_LBRACKET)));
+          tap_code16(G(S(KC_LBRC)));
           break;
         case OS_WINDOWS:
           tap_code16(C(A(KC_LEFT)));
@@ -413,7 +395,7 @@ void run_advanced (uint8_t command) {
     case DO_FUTURE:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(KC_LBRACKET));
+          tap_code16(G(KC_LBRC));
           break;
         case OS_WINDOWS:
           tap_code16(A(KC_LEFT));
@@ -423,7 +405,7 @@ void run_advanced (uint8_t command) {
     case DO_PAST:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(KC_RBRACKET));
+          tap_code16(G(KC_RBRC));
           break;
         case OS_WINDOWS:
           tap_code16(A(KC_RIGHT));
@@ -448,7 +430,7 @@ void run_advanced (uint8_t command) {
       switch (zored_os) {
         case OS_WINDOWS:
           hold = KC_LALT;
-          tap = KC_LSHIFT;
+          tap = KC_LSFT;
           break;
         case OS_MACOS:
           hold = KC_LGUI;
@@ -472,7 +454,7 @@ void run_advanced (uint8_t command) {
       }
       break;
     case DO_AMPERSAND:
-      tap_code16(KC_AMPERSAND);
+      tap_code16(KC_AMPR);
       break;
     case DO_UNDERSCORE:
       SEND_STRING("_");
@@ -540,8 +522,7 @@ void run_advanced (uint8_t command) {
       }
       break;
     case DO_BOOTLOADER:
-      clear_keyboard();
-      bootloader_jump();
+      reset_keyboard();
       break;
     case DO_CLOSE:
       switch (zored_os) {
@@ -574,12 +555,12 @@ void tap_unicode(enum unicode_names name) {
   uint32_t code = pgm_read_dword(&unicode_map[name]);
   uint8_t input_mode = get_unicode_input_mode();
 
-  if (code > 0x10FFFF || (code > 0xFFFF && input_mode == UC_WIN)) {
+  if (code > 0x10FFFF || (code > 0xFFFF && input_mode == UNICODE_MODE_WINDOWS)) {
     unicode_input_cancel();
     return;
   }
 
-  if (code > 0xFFFF && input_mode == UC_OSX) {
+  if (code > 0xFFFF && input_mode == UNICODE_MODE_MACOS) {
     code -= 0x10000;
     uint32_t lo = code & 0x3FF, hi = (code & 0xFFC00) >> 10;
     register_hex32(hi + 0xD800);
@@ -600,7 +581,7 @@ unicode_map[] = {
 
 {{{combos.definitions}}}
 
-void process_combo_event(uint8_t combo_index, bool pressed) {
+void process_combo_event(uint16_t combo_index, bool pressed) {
   if (!pressed) {
     return;
   }
@@ -624,11 +605,21 @@ enum dance_action_names {
 
 static int dance_key_states[{{{dance.count}}}] = {0};
 
-void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
+void on_dance_finished(tap_dance_state_t *state, void *user_data);
+void on_dance_reset(tap_dance_state_t *state, void *user_data);
+
+void dance_finish_as_tap(tap_dance_state_t *state) {
+  state->pressed = false;
+  on_dance_finished(state, NULL);
+  on_dance_reset(state, NULL);
+  state->finished = true;
+}
+
+void dance_flush_on_many_taps(tap_dance_state_t *state) {
   if (state->count == 0) {
     return;
   }
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+  uint16_t dance_key = state->index;
 
   switch (dance_key) {
     {{{dance.counts}}}
@@ -636,16 +627,15 @@ void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
       return;
   }
 
-  state->timer = 0;
-  state->pressed = false;
+  dance_finish_as_tap(state);
 }
 
-void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
+void dance_tap_on_enemy_hold(tap_dance_state_t *state) {
   if (state->count == 0) {
     return;
   }
 
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+  uint16_t dance_key = state->index;
 
   switch(dance_key) {
     {{{dance.enemies}}}
@@ -653,28 +643,27 @@ void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
       return;
   }
 
-  state->timer = 0;
-  state->pressed = false;
+  dance_finish_as_tap(state);
 }
 
-void on_dance_each_tap(qk_tap_dance_state_t *state, void *user_data) {
+void on_dance_each_tap(tap_dance_state_t *state, void *user_data) {
   dance_tap_on_enemy_hold(state);
   dance_flush_on_many_taps(state);
 }
 
-void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
+void on_dance_finished(tap_dance_state_t *state, void *user_data) {
   if (state->count == 0) {
     return;
   }
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+  uint16_t dance_key = state->index;
 
   switch (dance_key) {
     {{{dance.onDance}}}
   }
 }
 
-void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+void on_dance_reset(tap_dance_state_t *state, void *user_data) {
+  uint16_t dance_key = state->index;
   switch (dance_key_states[dance_key]) {
     {{{dance.onDanceReset}}}
   }
@@ -683,15 +672,16 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
 }
 
 
-#define ACTION_TAP_DANCE_DOUBLE_TIME(kc1, kc2, tap_specific_tapping_term) { \
-    .fn = { qk_tap_dance_pair_on_each_tap, qk_tap_dance_pair_finished, qk_tap_dance_pair_reset }, \
-    .user_data = (void *)&((qk_tap_dance_pair_t) { kc1, kc2 }),  \
-    .custom_tapping_term = tap_specific_tapping_term, \
-  }
-#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_dance_each_tap, on_dance_finished, on_dance_reset, TAPPING_TERM_TAP_DANCE)
-#define DANCE_TWO(k1,k11) ACTION_TAP_DANCE_DOUBLE_TIME(k1, k11, TAPPING_TERM_TAP_DANCE)
+#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED(on_dance_each_tap, on_dance_finished, on_dance_reset)
 
-qk_tap_dance_action_t tap_dance_actions[] = {
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+  if (IS_QK_TAP_DANCE(keycode)) {
+    return TAPPING_TERM_TAP_DANCE;
+  }
+  return TAPPING_TERM;
+}
+
+tap_dance_action_t tap_dance_actions[] = {
     {{{dance.actions}}}
 };
 {{/dance}}
@@ -720,13 +710,9 @@ void matrix_init_user(void) {
   planck_ez_right_led_level(64);
   planck_ez_left_led_level(64);
   planck_ez_led_all_off();
-  clicky_off(); // TODO: maybe there is some ENV for that?
   {{/planck}}
 }
 
-{{^ymd09}}
-LEADER_EXTERNS();
-{{/ymd09}}
 void matrix_scan_user(void) {
 {{#keyGroups.turbo}}
   turboTick();
@@ -736,31 +722,31 @@ void matrix_scan_user(void) {
   appSwitchTimeout();
 {{/keyGroups.appSwitch}}
 
-{{^ymd09}}
-  LEADER_DICTIONARY() {
-    leading = false;
-    leader_end();
-    SEQ_ONE_KEY(KC_U) {
-      run_advanced(DO_LOGIN);
-    }
-    SEQ_ONE_KEY(KC_P) {
-      run_advanced(DO_ENPASS);
-    }
-    SEQ_ONE_KEY(KC_S) {
-      run_advanced(DO_SCREENSHOT);
-    }
-  }
-{{/ymd09}}
 }
 
-{{#unicode}}
-void keyboard_post_init_user(void) {
-  switch (get_unicode_input_mode()) {
-    case UC_OSX:
-      zored_os = OS_MACOS;
+{{^ymd09}}
+void leader_end_user(void) {
+  if (leader_sequence_one_key(KC_U)) {
+    run_advanced(DO_LOGIN);
+  } else if (leader_sequence_one_key(KC_P)) {
+    run_advanced(DO_ENPASS);
+  } else if (leader_sequence_one_key(KC_S)) {
+    run_advanced(DO_SCREENSHOT);
   }
 }
+{{/ymd09}}
+
+void keyboard_post_init_user(void) {
+{{#unicode}}
+  switch (get_unicode_input_mode()) {
+    case UNICODE_MODE_MACOS:
+      zored_os = OS_MACOS;
+  }
 {{/unicode}}
+{{#planck}}
+  clicky_off();
+{{/planck}}
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
@@ -802,13 +788,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 {{/keyGroups.appSwitch}}
 
   switch (keycode) {
-    case UC_M_OS:
+    case UC_MAC:
       zored_os = OS_MACOS;
-      break;
+      return true;
 
-    case UC_M_WC:
+    case UC_WINC:
       zored_os = OS_WINDOWS;
-      break;
+      return true;
 
     {{{layers.doKeys.cases}}}
 
@@ -821,8 +807,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
 {{^ymd09}}
-uint32_t layer_state_set_user(uint32_t state) {
-  uint8_t layer = biton32(state);
+layer_state_t layer_state_set_user(layer_state_t state) {
+  uint8_t layer = get_highest_layer(state);
 
 {{#ergodox}}
   ergodox_led_all_off();

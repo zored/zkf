@@ -1,6 +1,4 @@
 
-
-
 #include QMK_KEYBOARD_H
 
 #include "action_layer.h"
@@ -20,9 +18,6 @@ KC_DO_ONE_SHOT_ALT,
 KC_DO_ONE_SHOT_GUI,
 KC_DO_ONE_SHOT_SHIFT,
 
-
-  // At the end:
-  DYNAMIC_MACRO_RANGE,
 };
 
 enum operating_systems {
@@ -48,7 +43,7 @@ case KC_D: return KC_U;
 case KC_E: return KC_L;
 case KC_F: return KC_T;
 case KC_G: return KC_GRV;
-case KC_H: return KC_SCOLON;
+case KC_H: return KC_SCLN;
 case KC_I: return KC_P;
 case KC_J: return KC_B;
 case KC_K: return KC_Q;
@@ -68,7 +63,7 @@ case KC_X: return KC_W;
 case KC_Y: return KC_X;
 case KC_Z: return KC_I;
 case KC_COMM: return KC_O;
-case KC_SCOLON: return KC_RBRC;
+case KC_SCLN: return KC_RBRC;
 case KC_LBRC: return KC_S;
 case KC_RBRC: return KC_M;
 case KC_QUOT: return KC_QUOT;
@@ -108,10 +103,10 @@ case KC_X: return KC_J;
 case KC_Y: return KC_B;
 case KC_Z: return KC_Z;
 case KC_COMM: return KC_LBRC;
-case KC_SCOLON: return KC_GRV;
+case KC_SCLN: return KC_GRV;
 case KC_LBRC: return KC_DOT;
 case KC_RBRC: return KC_COMM;
-case KC_QUOT: return KC_SCOLON;
+case KC_QUOT: return KC_SCLN;
 case KC_DOT: return KC_RBRC;
 case KC_GRV: return KC_QUOT;
         }
@@ -130,7 +125,7 @@ case KC_F: return KC_F;
 case KC_G: return KC_B;
 case KC_H: return KC_D;
 case KC_I: return KC_Y;
-case KC_J: return KC_SCOLON;
+case KC_J: return KC_SCLN;
 case KC_K: return KC_G;
 case KC_L: return KC_E;
 case KC_M: return KC_K;
@@ -148,7 +143,7 @@ case KC_X: return KC_Q;
 case KC_Y: return KC_P;
 case KC_Z: return KC_I;
 case KC_COMM: return KC_DOT;
-case KC_SCOLON: return KC_RBRC;
+case KC_SCLN: return KC_RBRC;
 case KC_LBRC: return KC_O;
 case KC_RBRC: return KC_QUOT;
 case KC_QUOT: return KC_A;
@@ -177,7 +172,7 @@ case KC_D: return KC_U;
 case KC_E: return KC_L;
 case KC_F: return KC_T;
 case KC_G: return KC_GRV;
-case KC_H: return KC_SCOLON;
+case KC_H: return KC_SCLN;
 case KC_I: return KC_P;
 case KC_J: return KC_B;
 case KC_K: return KC_Q;
@@ -197,7 +192,7 @@ case KC_X: return KC_W;
 case KC_Y: return KC_X;
 case KC_Z: return KC_I;
 case KC_COMM: return KC_O;
-case KC_SCOLON: return KC_RBRC;
+case KC_SCLN: return KC_RBRC;
 case KC_LBRC: return KC_S;
 case KC_RBRC: return KC_M;
 case KC_QUOT: return KC_QUOT;
@@ -237,10 +232,10 @@ case KC_X: return KC_J;
 case KC_Y: return KC_B;
 case KC_Z: return KC_Z;
 case KC_COMM: return KC_LBRC;
-case KC_SCOLON: return KC_GRV;
+case KC_SCLN: return KC_GRV;
 case KC_LBRC: return KC_DOT;
 case KC_RBRC: return KC_COMM;
-case KC_QUOT: return KC_SCOLON;
+case KC_QUOT: return KC_SCLN;
 case KC_DOT: return KC_RBRC;
 case KC_GRV: return KC_QUOT;
         }
@@ -259,7 +254,7 @@ case KC_F: return KC_F;
 case KC_G: return KC_B;
 case KC_H: return KC_D;
 case KC_I: return KC_Y;
-case KC_J: return KC_SCOLON;
+case KC_J: return KC_SCLN;
 case KC_K: return KC_G;
 case KC_L: return KC_E;
 case KC_M: return KC_K;
@@ -277,7 +272,7 @@ case KC_X: return KC_Q;
 case KC_Y: return KC_P;
 case KC_Z: return KC_I;
 case KC_COMM: return KC_DOT;
-case KC_SCOLON: return KC_RBRC;
+case KC_SCLN: return KC_RBRC;
 case KC_LBRC: return KC_O;
 case KC_RBRC: return KC_QUOT;
 case KC_QUOT: return KC_A;
@@ -315,14 +310,14 @@ uint8_t map_code (uint8_t keycode) {
   switch (zored_os) {
     case OS_MACOS:
       switch (keycode) {
-        case KC_LCTRL:
+        case KC_LCTL:
           return KC_LGUI;
-        case KC_RCTRL:
+        case KC_RCTL:
           return KC_RGUI;
         case KC_LGUI:
-          return KC_LCTRL;
+          return KC_LCTL;
         case KC_RGUI:
-          return KC_RCTRL;
+          return KC_RCTL;
         case KC_MEDIA_PREV_TRACK:
           return KC_MEDIA_REWIND;
         case KC_MEDIA_NEXT_TRACK:
@@ -346,9 +341,9 @@ void code_up(uint8_t code) {
 }
 
 void code_hold_ms(uint8_t code, uint32_t timeout) {
-  code_down(KC_CAPSLOCK);
+  code_down(KC_CAPS);
   wait_ms(timeout);
-  code_up(KC_CAPSLOCK);
+  code_up(KC_CAPS);
 }
 
 // Helper functions:
@@ -360,6 +355,7 @@ enum do_command {
   DO_ENPASS,
   DO_MAIL,
   DO_LOGIN,
+  DO_COPY, DO_PASTE,
   DO_TERMINAL,
   DO_SCREENSHOT,
   DO_BOOTLOADER,
@@ -386,21 +382,18 @@ enum do_command {
 
 
 
-extern uint8_t mk_max_speed;
-void mousekey_on(uint8_t code);
-void mousekey_off(uint8_t code);
 uint8_t mouseSpeed = 1;
 void setMouseSpeed(uint8_t newMouseSpeed) {
   // Turn off:
   if (mouseSpeed == newMouseSpeed || newMouseSpeed == 1) {
     mouseSpeed = 1;
-    mousekey_off(KC_MS_ACCEL2);
+    mousekey_off(MS_ACL2);
     mk_max_speed = MOUSEKEY_MAX_SPEED;  
     return;
   }
 
   mouseSpeed = newMouseSpeed;
-  mousekey_on(KC_MS_ACCEL2); // - make mk_max_speed the real mouse speed.
+  mousekey_on(MS_ACL2); // - make mk_max_speed the real mouse speed.
 
   switch (mouseSpeed) {
     case 0:
@@ -445,7 +438,7 @@ void run_advanced (uint8_t command) {
     case DO_FUTURE:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(KC_LBRACKET));
+          tap_code16(G(KC_LBRC));
           break;
         case OS_WINDOWS:
           tap_code16(A(KC_LEFT));
@@ -455,7 +448,7 @@ void run_advanced (uint8_t command) {
     case DO_PAST:
       switch (zored_os) {
         case OS_MACOS:
-          tap_code16(G(KC_RBRACKET));
+          tap_code16(G(KC_RBRC));
           break;
         case OS_WINDOWS:
           tap_code16(A(KC_RIGHT));
@@ -478,7 +471,7 @@ void run_advanced (uint8_t command) {
       switch (zored_os) {
         case OS_WINDOWS:
           hold = KC_LALT;
-          tap = KC_LSHIFT;
+          tap = KC_LSFT;
           break;
         case OS_MACOS:
           hold = KC_LGUI;
@@ -502,7 +495,7 @@ void run_advanced (uint8_t command) {
       }
       break;
     case DO_AMPERSAND:
-      tap_code16(KC_AMPERSAND);
+      tap_code16(KC_AMPR);
       break;
     case DO_UNDERSCORE:
       SEND_STRING("_");
@@ -549,9 +542,28 @@ void run_advanced (uint8_t command) {
           break;
       }
       break;
+    case DO_COPY:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_C));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(KC_C));
+          break;
+      }
+      break;
+    case DO_PASTE:
+      switch (zored_os) {
+        case OS_MACOS:
+          tap_code16(G(KC_V));
+          break;
+        case OS_WINDOWS:
+          tap_code16(C(KC_V));
+          break;
+      }
+      break;
     case DO_BOOTLOADER:
-      clear_keyboard();
-      bootloader_jump();
+      reset_keyboard();
       break;
     case DO_CLOSE:
       switch (zored_os) {
@@ -635,7 +647,7 @@ enum dance_action_names {
   ACTION_SEQ__HOLD_LAYER_LAYER3B_13,
   ACTION_SEQ__D_15,
   ACTION_SEQ__HOLD_LAYER_LAYER4_17,
-  ACTION_SEQ__LCTRL_18,
+  ACTION_SEQ__LCTL_18,
   ACTION_SEQ__E_20,
   ACTION_SEQ__HOLD_LAYER_LAYER5_22,
   ACTION_SEQ__LALT_23,
@@ -644,13 +656,13 @@ enum dance_action_names {
   ACTION_SEQ__LGUI_28,
   ACTION_SEQ__G_30,
   ACTION_SEQ__HOLD_LAYER_LAYER7_32,
-  ACTION_SEQ__LSHIFT_33,
+  ACTION_SEQ__LSFT_33,
   ACTION_SEQ__H_35,
   ACTION_SEQ__HOLD_LAYER_LAYER8A_37,
   ACTION_SEQ__HOLD_LAYER_LAYER8B_38,
   ACTION_SEQ__I_40,
   ACTION_SEQ__HOLD_LAYER_LAYER9_42,
-  ACTION_SEQ__RSHIFT_43,
+  ACTION_SEQ__RSFT_43,
   ACTION_SEQ__F1_45,
   ACTION_SEQ__F11_46,
   ACTION_SEQ__F2_49,
@@ -675,11 +687,21 @@ enum dance_action_names {
 
 static int dance_key_states[46] = {0};
 
-void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
+void on_dance_finished(tap_dance_state_t *state, void *user_data);
+void on_dance_reset(tap_dance_state_t *state, void *user_data);
+
+void dance_finish_as_tap(tap_dance_state_t *state) {
+  state->pressed = false;
+  on_dance_finished(state, NULL);
+  on_dance_reset(state, NULL);
+  state->finished = true;
+}
+
+void dance_flush_on_many_taps(tap_dance_state_t *state) {
   if (state->count == 0) {
     return;
   }
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+  uint16_t dance_key = state->index;
 
   switch (dance_key) {
     
@@ -819,16 +841,15 @@ void dance_flush_on_many_taps(qk_tap_dance_state_t *state) {
       return;
   }
 
-  state->timer = 0;
-  state->pressed = false;
+  dance_finish_as_tap(state);
 }
 
-void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
+void dance_tap_on_enemy_hold(tap_dance_state_t *state) {
   if (state->count == 0) {
     return;
   }
 
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+  uint16_t dance_key = state->index;
 
   switch(dance_key) {
     
@@ -836,20 +857,19 @@ void dance_tap_on_enemy_hold(qk_tap_dance_state_t *state) {
       return;
   }
 
-  state->timer = 0;
-  state->pressed = false;
+  dance_finish_as_tap(state);
 }
 
-void on_dance_each_tap(qk_tap_dance_state_t *state, void *user_data) {
+void on_dance_each_tap(tap_dance_state_t *state, void *user_data) {
   dance_tap_on_enemy_hold(state);
   dance_flush_on_many_taps(state);
 }
 
-void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
+void on_dance_finished(tap_dance_state_t *state, void *user_data) {
   if (state->count == 0) {
     return;
   }
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+  uint16_t dance_key = state->index;
 
   switch (dance_key) {
     
@@ -978,8 +998,8 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
             return;
       
           case 2:
-            code_down(KC_LCTRL);
-            dance_key_states[dance_key] = ACTION_SEQ__LCTRL_18;
+            code_down(KC_LCTL);
+            dance_key_states[dance_key] = ACTION_SEQ__LCTL_18;
             return;
       
           default:
@@ -1095,8 +1115,8 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
             return;
       
           case 2:
-            code_down(KC_LSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__LSHIFT_33;
+            code_down(KC_LSFT);
+            dance_key_states[dance_key] = ACTION_SEQ__LSFT_33;
             return;
       
           default:
@@ -1174,8 +1194,8 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
             return;
       
           case 2:
-            code_down(KC_RSHIFT);
-            dance_key_states[dance_key] = ACTION_SEQ__RSHIFT_43;
+            code_down(KC_RSFT);
+            dance_key_states[dance_key] = ACTION_SEQ__RSFT_43;
             return;
       
           default:
@@ -1495,8 +1515,8 @@ void on_dance_finished(qk_tap_dance_state_t *state, void *user_data) {
   }
 }
 
-void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
-  uint16_t dance_key = state->keycode - QK_TAP_DANCE;
+void on_dance_reset(tap_dance_state_t *state, void *user_data) {
+  uint16_t dance_key = state->index;
   switch (dance_key_states[dance_key]) {
     case ACTION_SEQ__HOLD_LAYER_LAYER1A_3:
             layer_off(LAYER_LAYER1A);
@@ -1531,8 +1551,8 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             layer_off(LAYER_LAYER4);
             break;
     
-          case ACTION_SEQ__LCTRL_18:
-            code_up(KC_LCTRL);
+          case ACTION_SEQ__LCTL_18:
+            code_up(KC_LCTL);
             break;
         case ACTION_SEQ__D_15:
             code_up(KC_D);
@@ -1564,8 +1584,8 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             layer_off(LAYER_LAYER7);
             break;
     
-          case ACTION_SEQ__LSHIFT_33:
-            code_up(KC_LSHIFT);
+          case ACTION_SEQ__LSFT_33:
+            code_up(KC_LSFT);
             break;
         case ACTION_SEQ__G_30:
             code_up(KC_G);
@@ -1586,8 +1606,8 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
             layer_off(LAYER_LAYER9);
             break;
     
-          case ACTION_SEQ__RSHIFT_43:
-            code_up(KC_RSHIFT);
+          case ACTION_SEQ__RSFT_43:
+            code_up(KC_RSFT);
             break;
         case ACTION_SEQ__I_40:
             code_up(KC_I);
@@ -1689,15 +1709,16 @@ void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
 }
 
 
-#define ACTION_TAP_DANCE_DOUBLE_TIME(kc1, kc2, tap_specific_tapping_term) { \
-    .fn = { qk_tap_dance_pair_on_each_tap, qk_tap_dance_pair_finished, qk_tap_dance_pair_reset }, \
-    .user_data = (void *)&((qk_tap_dance_pair_t) { kc1, kc2 }),  \
-    .custom_tapping_term = tap_specific_tapping_term, \
-  }
-#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_dance_each_tap, on_dance_finished, on_dance_reset, TAPPING_TERM_TAP_DANCE)
-#define DANCE_TWO(k1,k11) ACTION_TAP_DANCE_DOUBLE_TIME(k1, k11, TAPPING_TERM_TAP_DANCE)
+#define DANCE_MODIFIER() ACTION_TAP_DANCE_FN_ADVANCED(on_dance_each_tap, on_dance_finished, on_dance_reset)
 
-qk_tap_dance_action_t tap_dance_actions[] = {
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+  if (IS_QK_TAP_DANCE(keycode)) {
+    return TAPPING_TERM_TAP_DANCE;
+  }
+  return TAPPING_TERM;
+}
+
+tap_dance_action_t tap_dance_actions[] = {
     [DANCE_KC_Y1DANCE] = DANCE_MODIFIER(),
   [DANCE_KC_Y2DANCE] = DANCE_MODIFIER(),
   [DANCE_KC_Y3DANCE] = DANCE_MODIFIER(),
@@ -1740,8 +1761,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [LAYER_LAYER1B] = LAYOUT(
   
 /* 0 */ TG(LAYER_LAYER1B),KC_PGDN,KC_PGUP,
-/* 1 */ KC_BTN1,KC_MS_U,KC_BTN2,
-/* 2 */ KC_MS_L,KC_MS_D,KC_MS_R
+/* 1 */ MS_BTN1,MS_UP,MS_BTN2,
+/* 2 */ MS_LEFT,MS_DOWN,MS_RGHT
 )
   ,
 
@@ -1771,7 +1792,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_LAYER3A] = LAYOUT(
   
-/* 0 */ UC_M_WC,UC_M_OS,_______,
+/* 0 */ UC_WINC,UC_MAC,_______,
 /* 1 */ KC_DO_NEXT_MAPPING,KC_DO_NEXT_LANGUAGE,_______,
 /* 2 */ KC_DO_BOOTLOADER,_______,_______
 )
@@ -1803,7 +1824,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_LAYER6] = LAYOUT(
   
-/* 0 */ KC_Z,KC_COMM,KC_SCOLON,
+/* 0 */ KC_Z,KC_COMM,KC_SCLN,
 /* 1 */ KC_LBRC,KC_RBRC,_______,
 /* 2 */ KC_QUOT,KC_DOT,KC_GRV
 )
@@ -1819,9 +1840,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_LAYER8A] = LAYOUT(
   
-/* 0 */ RGB_VAD,RGB_TOG,RGB_VAI,
-/* 1 */ RGB_HUD,RGB_MOD,RGB_HUI,
-/* 2 */ RGB_SAD,_______,RGB_SAI
+/* 0 */ RM_VALD,RM_TOGG,RM_VALU,
+/* 1 */ RM_HUED,RM_NEXT,RM_HUEU,
+/* 2 */ RM_SATD,_______,RM_SATU
 )
   ,
 
@@ -1857,6 +1878,7 @@ void matrix_scan_user(void) {
 }
 
 
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
 
@@ -1877,13 +1899,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 
   switch (keycode) {
-    case UC_M_OS:
+    case UC_MAC:
       zored_os = OS_MACOS;
-      break;
+      return true;
 
-    case UC_M_WC:
+    case UC_WINC:
       zored_os = OS_WINDOWS;
-      break;
+      return true;
 
     // Do keys:
 

@@ -37,9 +37,10 @@ Prove the flashing workflow on firmware already known to work, before changing a
 
 The fork branch `zkf_stable_planck` is upstream `ae46e6a` (2020-02) plus one patch: after an interrupted tap dance switches layers, `process_record_quantum()` re-reads the keycode, so a key typed fast after a layer dance comes from the new layer. Upstream has the same fix since [qmk/qmk_firmware#17935](https://github.com/qmk/qmk_firmware/pull/17935) (2022-10), with tests in `tests/tap_dance/tap_dance_layers/`. Other fork branches hold nothing still needed: `ACTION_TAP_DANCE_DOUBLE_TIME` maps to `TAPPING_TERM_PER_KEY`, Anne Pro 2 is upstream.
 
-- [ ] Evaluate QMK External Userspace (`qmk_userspace`) as the target layout: keymaps outside the QMK tree, `qmk compile` in a container. Unverified: how it pins a QMK revision. Decide: userspace vs current `vendor/` clone.
-- [ ] Point `project.sh sync` at upstream `qmk/qmk_firmware`, pinned to a release tag or commit.
-- [ ] Replace the `qmkfm/qmk_firmware` image with the current official QMK CLI container; check for an arm64 build.
+- [x] Evaluate QMK External Userspace: rejected, local core patches are likely. `vendor/qmk_firmware` stays a clone, now with `.git`.
+- [x] Point `project.sh sync` at upstream `qmk/qmk_firmware`, pinned by `qmk_ref` (`0.34.7`).
+- [x] Replace the `qmkfm/qmk_firmware` image with `ghcr.io/qmk/qmk_cli` (native arm64).
+- [ ] CI: `release.yaml` still uses old actions; check `./project.sh ci` on the new images.
 - [ ] Fork housekeeping in [zored/qmk_firmware](https://github.com/zored/qmk_firmware) (ask before deleting anything):
   - [ ] Tag `archive/zkf_stable_planck`, `archive/zkf_stable_ap2`, `archive/zored`, `archive/zkf`.
   - [ ] Sync `master` with upstream; it becomes the fork's working and default branch.
@@ -50,12 +51,13 @@ The fork branch `zkf_stable_planck` is upstream `ae46e6a` (2020-02) plus one pat
 
 Per board, in order YMD09 → Planck → ErgoDox, each closed by the keyboard check.
 
-- [ ] Template renames: `qk_tap_dance_state_t` → `tap_dance_state_t`, `KC_LCTRL`-style aliases, `UC_OSX` / `UC_M_OS` unicode modes, `LEADER_EXTERNS` / leader API, `biton32`, `DYNAMIC_MACRO_RANGE`, `layer_state_set_user` signature.
-- [ ] `TAPPING_TERM_TAP_DANCE` → `TAPPING_TERM_PER_KEY` + `get_tapping_term()`.
-- [ ] Compiler: Node LTS image, `js-yaml` 4 (`load` instead of `safeLoad`), current eslint.
-- [ ] YMD09.
-- [ ] Planck.
-- [ ] ErgoDox.
+- [x] Template renames: `tap_dance_state_t`, `KC_LCTL`-style names, `UNICODE_MODE_*`, `leader_end_user()`, `get_highest_layer`, `layer_state_t`, `UM()`, `RM_*` / `MS_*` keycodes, `NKRO_DEFAULT_ON`.
+- [x] `TAPPING_TERM_TAP_DANCE` → `TAPPING_TERM_PER_KEY` + `get_tapping_term()`.
+- [x] Compiler: `node:22-alpine`, `js-yaml` 4 (`load`).
+- [ ] Compiler: current eslint.
+- [ ] YMD09: compiles on `0.34.7`; pending: board not at hand.
+- [ ] Planck: smoke, fast typing, dance enemies, RGB, audio, mouse pass; daily use pending.
+- [ ] ErgoDox: compiles on `0.34.7` (`ergodox_ez/base`; confirm the board variant); pending: board not at hand.
 - [ ] Tag a release `v3.0.0` once all three pass.
 
 ## Phase 3: docs
@@ -96,6 +98,13 @@ Unicode keys on macOS (`UC_OSX`) type only while the "Unicode Hex Input" input s
 
 - [ ] Compare options: macOS-only build sending emoji another way (e.g. a host-side helper or text replacement), a separate OS-specific firmware binary, or dropping emoji from firmware.
 - [ ] Decide whether a second binary per board (macOS / Windows) is worth it over the runtime `macosMode` / `windowsMode` switch.
+
+## Feature: OS input source awareness
+
+The keyboard guesses the active RU/EN layout; `DO_NEXT_LANGUAGE` only toggles blindly.
+
+- [ ] Host → keyboard over Raw HID (`RAW_ENABLE`): a small host helper sends the current input source on change; the keymap reacts (layer, mapping, LED).
+- [ ] Evaluate QMK OS detection (`OS_DETECTION_ENABLE`) to pick macOS / Windows mode automatically instead of `macosMode` / `windowsMode`.
 
 ## Feature: Plover steno on ErgoDox
 
