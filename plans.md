@@ -99,12 +99,65 @@ Unicode keys on macOS (`UC_OSX`) type only while the "Unicode Hex Input" input s
 - [ ] Compare options: macOS-only build sending emoji another way (e.g. a host-side helper or text replacement), a separate OS-specific firmware binary, or dropping emoji from firmware.
 - [ ] Decide whether a second binary per board (macOS / Windows) is worth it over the runtime `macosMode` / `windowsMode` switch.
 
-## Feature: OS input source awareness
+## Feature: host awareness (OS, input source, volume)
 
-The keyboard guesses the active RU/EN layout; `DO_NEXT_LANGUAGE` only toggles blindly.
+The keyboard knows which OS it is plugged into, the active input source and the output volume, and reacts: OS-specific shortcuts, absolute RU/EN switching, RGB overlays ([RGB status overlays](#feature-rgb-status-overlays)). Hosts: macOS and Windows; the boards switch between them through a KVM. Phases go in order A → B → C.
 
-- [ ] Host → keyboard over Raw HID (`RAW_ENABLE`): a small host helper sends the current input source on change; the keymap reacts (layer, mapping, LED).
-- [ ] Evaluate QMK OS detection (`OS_DETECTION_ENABLE`) to pick macOS / Windows mode automatically instead of `macosMode` / `windowsMode`.
+Every part is a per-board flag in `config.yaml`, and the compiler emits no code for a disabled part: `osDetection`, `hostState` (also gates `RAW_ENABLE`), `rgbOverlay`, `layoutAwareAscii`. Each item records its flash/RAM growth from `qmk compile`. Budget: at most ~1.5 KB for all parts on AVR boards (ErgoDox `0.34.7` build: 28.7 KB of ~32 KB); Planck (61 KB of 256 KB) is not limited.
+
+Facts (QMK `0.34.7` sources): `RAW_ENABLE` fits the USB endpoints on Planck (5 of 7), YMD09 (5 of 6, LUFA) and ErgoDox (6 of 6: no room for `CONSOLE` after it). Raw HID: usage page `0xFF60`, usage `0x61`, 32-byte reports, `raw_hid_receive` / `raw_hid_send`; the keyboard can push. A vendor-page interface opens on macOS without the Input Monitoring permission. No QMK feature knows host volume or input source.
+
+### Phase A: OS detection (no host helper)
+
+- [ ] Planck: `OS_DETECTION_ENABLE` with `OS_DETECTION_KEYBOARD_RESET` (the KVM may keep USB powered, so the board resets to re-detect) and `OS_DETECTION_SINGLE_REPORT` (ARM Macs fire the callback again minutes later).
+- [ ] Verify on hardware through the KVM: switching to the Mac and to the Windows machine each detects the right OS. If the KVM emulates a keyboard instead of passing USB through, detection and Raw HID cannot work: record that and stop the phase.
+- [ ] `process_detected_host_os_user` sets the mode: macOS and iOS → macOS; Windows and Linux → Windows; unsure → keep the mode saved in EEPROM. The mode drives everything `zored_os` drives today (`DO_*` shortcuts, `DO_NEXT_LANGUAGE`, emoji panel) plus the unicode input mode.
+- [ ] `macosMode` / `windowsMode` stay as a manual override until the next connect.
+- [ ] Connect overlay ([RGB status overlays](#feature-rgb-status-overlays)): whole board white for macOS, blue for Windows, 1 s.
+- [ ] ErgoDox and YMD09: same logic behind `osDetection`, size recorded; hardware check when the boards are at hand.
+- [ ] Docs: `docs/keyboards/planck.md` (OS detection, override keys), `compiler/README.md` (flags).
+
+### Phase B: host helper
+
+One helper in Rust (`os/host`) for macOS and Windows; [qmk-hid-host](https://github.com/zzeneg/qmk-hid-host) is a code reference only (it has no mute, sends layouts as indexes, opens the device exclusively on macOS, ships unsigned rolling builds).
+
+- [ ] Spike: build a Rust binary that links IOKit, CoreAudio and Carbon in Docker with `cargo-zigbuild`, mounting the SDK of the installed Command Line Tools (`/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk`); run it on the Mac. `x86_64-pc-windows-gnu` in the same image. If the macOS build fails: Swift file built by the CLT `swiftc` plus a PowerShell 5.1 `.ps1` with `Add-Type` C#.
+- [ ] Protocol, 32-byte reports `[type, version, payload…]`:
+  - host → keyboard: `0x01` layout index (`0xFE` = a source not in the list), `0x02` volume 0–100 plus mute flag (`0xFF` = device without volume, e.g. HDMI).
+  - keyboard → host: `0x80` hello (asks for the full state on connect), `0x81` select layout index.
+  - The helper repeats the state every 5 s; after 15 s without a report the keyboard treats the state as unknown: no overlays, no layout-aware output. No guessing from the keyboard's own key presses.
+- [ ] Layout list from arguments, index = position: macOS `--layouts com.apple.keylayout.ABC,com.apple.keylayout.RussianWin`, Windows `0409,0419`.
+- [ ] macOS: input source from `kTISNotifySelectedKeyboardInputSourceChanged`, selection with `TISSelectInputSource`; volume and mute from CoreAudio listeners on the default output device, plus default-device changes. Reopen the device after sleep/wake and replug.
+- [ ] Windows: layout by polling `GetKeyboardLayout` of the foreground window's thread (console windows may report wrong), volume and mute from `IAudioEndpointVolume` callbacks, selection on `0x81`.
+- [ ] Absolute switching: Caps tap = EN, Caps double-tap = RU (replaces the blind `DO_NEXT_LANGUAGE` toggle). macOS goes through the helper (`0x81`); Windows uses the native "Input language hot keys" (Ctrl+Shift+digit per language) if they work reliably on the machine, otherwise the helper. Unknown state or no helper: fall back to today's toggle.
+- [ ] Install: `./project.sh host-install` sets up a LaunchAgent (macOS) or a Startup-folder shortcut (Windows). Release binaries come from CI next to the firmware.
+- [ ] Planck: `hostState` and overlays enabled; layout and volume overlays checked live on both hosts.
+- [ ] Docs: helper setup, protocol, `config.yaml` keys.
+
+### Phase C: layout-aware ASCII (experiments behind `layoutAwareAscii`)
+
+With RU active, firmware ASCII output (symbol layer, `SEND_STRING` macros like `doArrow`, combos) types the wrong characters: `.` → `ю`, `,` → `б`, `->` → `-Ю`.
+
+- [ ] C1: for characters that exist in RussianWin, send the RussianWin key instead (`.` → `/`, `,` → `Shift+/`, `/` → `Shift+\`, `;` → `Shift+4`, `:` → `Shift+6`, `?` → `Shift+7`, `"` → `Shift+2`). The compiler generates the table. Unknown state: today's behaviour.
+- [ ] C2: characters missing from RussianWin (`[ ] { } < > ' @ # $ ^ & ~` and backtick): select EN through the helper, wait for the layout report, type, select RU back. Separate flag; measure the delay.
+
+### Ideas
+
+- System-wide mic mute from the helper with a key and an overlay. Risks: the built-in Mac mic often has no settable mute, Zoom and Electron AGC raise the input volume back, the call app keeps showing "unmuted". No API found for the VK WorkSpace in-call mute state.
+
+## Feature: RGB status overlays
+
+Transient overlays on top of the running RGB matrix animation; nothing is persistent. Colours and durations live in `config.yaml`.
+
+- [ ] Draw overlays in `rgb_matrix_indicators_advanced_user`, expire them with `defer_exec` (`DEFERRED_EXEC_ENABLE`).
+- [ ] `rgbToggle`: switch the animation off with `rgb_matrix_set_flags(LED_FLAG_NONE)` (as ZSA's stock code does) instead of `RM_TOGG`. QMK runs no indicator callbacks while the matrix is disabled, suspended, timed out or in mode `NONE`, so with `RM_TOGG` off no overlay would show. Unverified that indicators render with `LED_FLAG_NONE`: check on hardware.
+- [ ] Overlays (Planck, 47 LEDs, indexes 0–35 rows 0–2, 36–46 bottom row, 2u space = 41):
+  - [ ] OS on connect: whole board, macOS white, Windows blue, 1 s (phase A).
+  - [ ] Input source change: whole board, EN light blue, RU orange, other purple, 0.6 s (phase B).
+  - [ ] Volume change: top row (12 keys) as a green bar, 1.5 s; muted: whole row red; no volume: grey (phase B).
+- [ ] The 2 Planck layer LEDs keep showing layers.
+- [ ] YMD09 (RGB matrix, 9 LEDs): same overlays on the whole board; volume = number of lit keys.
+- [ ] ErgoDox base (3 single-colour LEDs, used for layers): no overlays.
 
 ## Feature: Plover steno
 
