@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZKF Workflow</title>
+<style>
+:root {
+  --bg: #f6f5f2;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --muted: #6b6b70;
+  --line: #e4e2dc;
+  --now: #2f7d4f;
+  --now-soft: #e6f2ea;
+  --later: #8a5a00;
+  --later-soft: #fbf0d9;
+  --code: #f0eee8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141416;
+    --card: #1e1e21;
+    --text: #ececef;
+    --muted: #9a9aa2;
+    --line: #2e2e33;
+    --now: #6fcf97;
+    --now-soft: #1c2d23;
+    --later: #f2c062;
+    --later-soft: #2f2716;
+    --code: #2a2a2f;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 1100px; margin: 0 auto; padding: 40px 16px 64px; }
+h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: -0.02em; }
+.lead { margin: 0 0 32px; color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  border-top: 4px solid var(--accent);
+}
+.card.now { --accent: var(--now); --soft: var(--now-soft); }
+.card.later { --accent: var(--later); --soft: var(--later-soft); }
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+h2 { margin: 10px 0 4px; font-size: 21px; }
+.card > p { margin: 0 0 18px; color: var(--muted); }
+h3 { margin: 20px 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+ol.flow { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+ol.flow li {
+  position: relative;
+  padding: 0 0 14px 38px;
+  counter-increment: step;
+}
+ol.flow li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 0;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--soft); color: var(--accent);
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+ol.flow li:not(:last-child)::after {
+  content: ""; position: absolute; left: 12px; top: 28px; bottom: 2px;
+  width: 2px; background: var(--line);
+}
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+td { padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+td:first-child { white-space: nowrap; font-weight: 600; padding-right: 14px; }
+tr:last-child td { border-bottom: 0; }
+code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+a { color: var(--accent, var(--now)); }
+footer { margin-top: 32px; color: var(--muted); font-size: 13px; }
+footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>ZKF workflow</h1>
+  <p class="lead">How I build and flash my keyboards today, and where it is heading.</p>
+
+  <div class="cards">
+    <section class="card now">
+      <span class="badge">Now</span>
+      <h2>QMK 2020 fork, Docker build</h2>
+      <p>Firmware <code>v2.2.1</code> on every QMK board. One build path, a different flasher per board.</p>
+
+      <h3>Change a keymap</h3>
+      <ol class="flow">
+        <li>Edit <a href="https://github.com/zored/zkf/blob/master/config.yaml" target="_blank">config.yaml</a>.</li>
+        <li><code>./project.sh build &lt;kb&gt;</code>: Node compiler + <code>qmkfm/qmk_firmware</code> in Docker, fork <code>zkf_stable_planck</code>.</li>
+        <li>Firmware lands in <code>firmwares/</code>.</li>
+        <li>Enter the bootloader, flash from the host.</li>
+        <li>Commit <code>config.yaml</code> + <code>example/</code>; tag <code>v*</code> for a final release.</li>
+      </ol>
+
+      <h3>Boards</h3>
+      <table>
+        <tr><td><a href="https://github.com/zored/zkf/blob/master/docs/keyboards/ymd09.md" target="_blank">YMD09</a></td><td>QMK · <code>dfu-programmer</code></td></tr>
+        <tr><td><a href="https://github.com/zored/zkf/blob/master/docs/keyboards/planck.md" target="_blank">Planck EZ</a></td><td>QMK · <code>wally-cli</code></td></tr>
+        <tr><td><a href="https://github.com/zored/zkf/blob/master/docs/keyboards/ergodox_ez.md" target="_blank">ErgoDox EZ</a></td><td>QMK · <code>wally-cli</code></td></tr>
+        <tr><td><a href="https://github.com/zored/zkf/blob/master/docs/keyboards/dao44.md" target="_blank">DAO44</a></td><td>ZMK fork · <code>.uf2</code> copy</td></tr>
+        <tr><td><a href="https://github.com/zored/zkf/blob/master/docs/keyboards/annepro2.md" target="_blank">Anne Pro 2</a></td><td>not in use</td></tr>
+      </table>
+    </section>
+
+    <section class="card later">
+      <span class="badge">Later</span>
+      <h2>Upstream QMK, one flasher</h2>
+      <p>Same keymaps on current QMK. Each phase ends with the keyboard check, board by board.</p>
+
+      <h3>Phases</h3>
+      <ol class="flow">
+        <li><b>Baseline</b>: current firmware for all boards in <code>firmwares/</code>, reflashed through QMK Toolbox.</li>
+        <li><b>Upstream</b>: build against pinned upstream QMK; fork archived to <code>archive/*</code> tags.</li>
+        <li><b>Migrate</b>: template on the current QMK API, YMD09 → Planck → ErgoDox, release <code>v3.0.0</code>.</li>
+        <li><b>Docs</b>: per-board pages kept current.</li>
+        <li><b>DAO44</b>: current ZMK.</li>
+        <li><b>Anne Pro 2</b>: upstream <code>annepro2</code>, Shine, <code>annepro2_tools</code>.</li>
+      </ol>
+
+      <h3>Boards</h3>
+      <table>
+        <tr><td>YMD09, Planck, ErgoDox</td><td>upstream QMK · QMK Toolbox</td></tr>
+        <tr><td>DAO44</td><td>ZMK · <code>.uf2</code> copy</td></tr>
+        <tr><td>Anne Pro 2</td><td>upstream QMK · <code>annepro2_tools</code></td></tr>
+      </table>
+
+      <h3>New features</h3>
+      <table>
+        <tr><td>Password key</td><td>set at local compile time (<code>secrets.h</code>, never in git or CI), changeable at runtime via EEPROM</td></tr>
+      </table>
+    </section>
+  </div>
+
+  <footer>
+    <a href="https://github.com/zored/zkf/blob/master/plans.md" target="_blank">plans.md</a> ·
+    <a href="https://github.com/zored/zkf/blob/master/zored_qmk.md" target="_blank">zored_qmk.md</a> ·
+    <a href="./index.htm">layout viewer</a>
+  </footer>
+</main>
+</body>
+</html>

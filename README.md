@@ -1,16 +1,16 @@
-[![Build Status](https://travis-ci.org/zored/zkf.svg?branch=master)](https://travis-ci.org/zored/zkf)
-
-
 # ZKF
 Zored Keyboard Firmwares — are [simply configured](config.yaml) keyboard firmwares based on [QMK](https://github.com/qmk/qmk_firmware).
 
-[Github page is here](https://zored.github.io/zkf/).
+[Github page is here](https://zored.github.io/zkf/): layout viewer and [workflow](https://zored.github.io/zkf/workflow.htm).
 
-I have:
-- [Ergodox](https://ergodox-ez.com).
-- [Planck](https://ergodox-ez.com/pages/planck).
-- [YMD09](https://github.com/qmk/qmk_firmware/tree/master/keyboards/ymdk/ymd09).
-- [DAO44](https://github.com/yumagulovrn/dao-choc-ble) (based on [ZMK framework fork](https://github.com/zored/dao-zmk-config/tree/zored)).
+## Keyboards
+| Keyboard | Framework | Docs |
+|---|---|---|
+| [ErgoDox EZ](https://ergodox-ez.com) | QMK via ZKF | [ergodox_ez.md](docs/keyboards/ergodox_ez.md) |
+| [Planck EZ](https://ergodox-ez.com/pages/planck) | QMK via ZKF | [planck.md](docs/keyboards/planck.md) |
+| [YMD09](https://github.com/qmk/qmk_firmware/tree/master/keyboards/ymdk/ymd09) | QMK via ZKF | [ymd09.md](docs/keyboards/ymd09.md) |
+| [DAO44](https://github.com/yumagulovrn/dao-choc-ble) | [ZMK](https://github.com/zored/dao-zmk-config/tree/zored) | [dao44.md](docs/keyboards/dao44.md) |
+| Anne Pro 2 | QMK (planned) | [annepro2.md](docs/keyboards/annepro2.md) |
 
 Supports Windows and macOS.
 
@@ -22,8 +22,10 @@ Supports Windows and macOS.
 ### How it works
 - [YAML file](config.yaml) is a readable config.
 - JavaScript code [compiles](compiler/README.md) config into keymap files.
-- QMK (with [my patches](patches/)) builds firmware.
-- Teensy flashes firmware into keyboard.
+- QMK ([my fork](https://github.com/zored/qmk_firmware/tree/zkf_stable_planck)) builds firmware in Docker.
+- The host flashes firmware into the keyboard.
+
+Details: [zored_qmk.md](zored_qmk.md). Roadmap: [plans.md](plans.md).
 
 ## Additional info
-- To make Russian layout on MacOS smae with Windows run `./project.sh provision` and choose `Русская BG46` as Russian input source.
+- To make Russian layout on MacOS same with Windows run `./project.sh provision-host` and choose `Русская BG46` as Russian input source.
