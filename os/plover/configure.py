@@ -7,6 +7,7 @@ from plover.oslayer.config import CONFIG_FILE
 
 DICTIONARIES = Path(__file__).resolve().parent / "dictionaries"
 EXTENSION = "zkf_layout_fix"
+MACHINE = "Machine Configuration"
 ENGLISH = "System: English Stenotype"
 TRILLO = "System: Russian Trillo"
 TRILLO_ASSETS = [
@@ -30,15 +31,18 @@ def entry(path):
 
 
 def with_first(dictionaries, first):
-    return [first] + [d for d in dictionaries if d["path"] != first["path"]]
+    return [first] + [d for d in dictionaries if Path(d["path"]).expanduser() != Path(first["path"])]
 
 
 config = configparser.RawConfigParser()
 if not config.read(CONFIG_FILE, encoding="utf-8"):
     sys.exit(f"Plover config not found: {CONFIG_FILE}")
-for section in ("Plugins", ENGLISH, TRILLO):
+for section in (MACHINE, "Plugins", ENGLISH, TRILLO):
     if not config.has_section(section):
         config.add_section(section)
+
+config.set(MACHINE, "machine_type", "Plover HID")
+config.set(MACHINE, "auto_start", "True")
 
 extensions = set(json.loads(config.get("Plugins", "enabled_extensions", fallback="[]")))
 config.set("Plugins", "enabled_extensions", json.dumps(sorted(extensions | {EXTENSION})))

@@ -4,18 +4,21 @@ ErgoDox EZ and Planck EZ have a `steno` layer that speaks Plover HID. Board-spec
 
 ## Start
 
+In Claude Code, `/steno-init` walks through these steps and checks each one.
+
 1. Install [Plover](https://www.openstenoproject.org/plover/) 5.1+ (verified with 5.4.2 on macOS).
-2. Plover → Configure → Machine: **Plover HID**. Leave Plover running: the HID interface is separate from the keyboard, so normal typing is not affected.
+2. Leave Plover running: the HID interface is separate from the keyboard, so normal typing is not affected.
 3. Optional Russian: Plover → Plugins Manager → install `plover-russian-trillo`, restart Plover.
 4. Quit Plover and run:
    ```bash
    ./project.sh plover-setup
    ```
    It installs the `plover-zkf` plugin from [os/plover](../os/plover) and updates `plover.cfg`:
+   - machine **Plover HID**, output enabled on start (`auto_start`: without it Plover starts with output off, strokes reach the paper tape but type nothing);
    - enables the `zkf_layout_fix` extension (input source fix, system by input source, Trillo fix);
    - prepends [english.json](../os/plover/dictionaries/english.json) to the English dictionaries;
    - writes the Russian Trillo section: [trillo.json](../os/plover/dictionaries/trillo.json) on top of the Trillo dictionaries, Trillo keys mapped to Plover HID.
-5. Start Plover, enable output, enter the `steno` layer on the keyboard.
+5. Start Plover, enter the `steno` layer on the keyboard.
 
 ## Systems
 
