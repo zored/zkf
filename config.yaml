@@ -361,7 +361,6 @@ keyboards:
         <<: *rules
         AUDIO_ENABLE: 'yes'
         DYNAMIC_MACRO_ENABLE: 'no'
-        PLOVER_HID_ENABLE: 'no'
       config:
         <<: *config
         AUDIO_CLICKY: ''
@@ -397,7 +396,7 @@ keyboards:
             - [~, ~, mouseRightButton, mouseUp, mouseLeftButton, ~, ~, brightnessDown, brightnessUp, ~, ~, ~]
             - [~, ~, mouseLeft, mouseDown, mouseRight, ~, left, down, up, right, ~, ~]
             - [~, ~, ~, ~, ~, ~, wheelLeft, wheelDown, wheelUp, wheelRight, ~, ~]
-            - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, ~]
+            - [~, ~, ~, ~, ~, ~, ~, volumeDown, volumeUp, volumeToggle, ~, toggleSteno]
       navigation2:
         lights: [1]
         keys:
@@ -440,6 +439,13 @@ keyboards:
             - [~, 4, 5, 6, f3, f4, ~, ~, ~, ~, ~, ~]
             - [~, 7, 8, 9, f5, f6, ~, ~, ~, ~, ~, ~]
             - [~, ~, 0, ~, ~, ~, ~, ~, ~, ~, ~, ~]
+      steno:
+        lights: [1,2]
+        keys:
+            - [~, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
+            - [~, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
+            - [~, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
+            - [~, ~, ~, sA, sO, ~, ~, sE, sU, ~, ~, toggleSteno]
   ymd09:
     settings:
       rules:

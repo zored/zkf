@@ -40,3 +40,10 @@ Upstream builds report USB `3297:C6CE` (ZSA) instead of the fork's ID, and start
   - RGB: `q`/`w` brightness, `e`/`r` saturation, `f`/`g` animation speed (slow `32` on every boot); bottom row under Tab / Enter / `[` / `]` / last key: previous / next mode / toggle / hue down / hue up.
   - Audio: `a` toggles clicks, `s`/`d` click pitch, `z` toggles music mode (keys play notes instead of typing until toggled off).
   - `i` Windows mode, `o` macOS mode; `y` powers the host off and `u` puts it to sleep.
+
+## Steno (Plover)
+
+- Protocol: Plover HID (`PLOVER_HID_ENABLE`); normal typing is not affected, so Plover can stay on.
+- Enter: toggle `navigation` (second key of the bottom row), then press the bottom-right key (`toggleSteno`). Press it again to leave `steno`; `navigation` stays on until `toggleNavigation`.
+- Layout: number bar on the top row, `S T P H *` / `S K W R *` on the left, `* F P L T D` / `* R B G S Z` on the right, `A O` under Del / Backspace, `E U` under Tab / Enter. Both LEDs on.
+- Plover: machine "Plover HID" (built in since Plover 5.1, earlier versions need the `plover-machine-hid` plugin). The HID interface is verified on macOS; strokes are not verified in Plover yet.
