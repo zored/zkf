@@ -9,6 +9,15 @@
 | Flash tool | none: copy `.uf2` to the `NRF52BOOT` drive (`./run.sh flash left <dir>` automates it on macOS) |
 | Layout | [dao.keymap](https://github.com/zored/dao-zmk-config/blob/zored/config/boards/arm/dao/dao.keymap) |
 
+## Build
+
+In the config repo: `./run.sh image flow-build-docker` once, then `./run.sh image flow`. Quirks seen on an arm64 Mac:
+
+- Set `DOCKER_DEFAULT_PLATFORM=linux/amd64`: `init` downloads `yq_linux_amd64`, the base image is multi-arch.
+- `run.sh image build` calls `docker exec -it`; outside a terminal drop `-it`: `docker exec zored-dao ./run.sh build`.
+- `run.sh image save` fails on a fresh clone: run `mkdir -p flash` first.
+- `west update` fetches anonymously from GitHub and can fail with `could not read Username`; rerun it.
+
 ## Enter bootloader
 
 Slide power to `OFF`, connect USB-C, press `RESET` twice. The `NRF52BOOT` drive appears.

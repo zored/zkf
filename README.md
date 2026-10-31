@@ -25,7 +25,7 @@ Supports Windows and macOS.
 - QMK ([my fork](https://github.com/zored/qmk_firmware/tree/zkf_stable_planck)) builds firmware in Docker.
 - The host flashes firmware into the keyboard.
 
-Details: [zored_qmk.md](zored_qmk.md). Roadmap: [plans.md](plans.md).
+Roadmap: [plans.md](plans.md).
 
 ## Additional info
 - To make Russian layout on MacOS same with Windows run `./project.sh provision-host` and choose `Русская BG46` as Russian input source.

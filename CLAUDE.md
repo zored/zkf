@@ -2,7 +2,7 @@
 
 YAML-configured keymaps for my QMK keyboards. `config.yaml` → `compiler/run.js` → QMK keymap → firmware.
 
-- What exists and why: [zored_qmk.md](zored_qmk.md)
+- `config.yaml` keys and template features: [compiler/README.md](compiler/README.md)
 - Roadmap, known issues, keyboard check order: [plans.md](plans.md)
 - How to flash each board, its bootloader, its layout: [docs/keyboards/](docs/keyboards/)
 

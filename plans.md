@@ -2,7 +2,7 @@
 
 Order matters: finish a phase before starting the next. Keyboards always go **YMD09 → Planck → ErgoDox → DAO44 → Anne Pro 2**: the simplest board first, the daily driver last, the non-QMK boards after.
 
-Context: [zored_qmk.md](zored_qmk.md). Per-board steps: [docs/keyboards/](docs/keyboards/).
+Per-board steps: [docs/keyboards/](docs/keyboards/). Config and template reference: [compiler/README.md](compiler/README.md).
 
 ## Keyboard check (reused by every phase)
 
@@ -24,15 +24,18 @@ Prove the flashing workflow on firmware already known to work, before changing a
 - [ ] Collect current firmware in `firmwares/`:
   - [ ] `./project.sh download ymd09`, `planck`, `ergodox_ez` (`v2.2.1` = current master code).
   - [ ] DAO44: build `dao_left` / `dao_right` `.uf2` from [zored/dao-zmk-config@zored](https://github.com/zored/dao-zmk-config/tree/zored) in Docker (`./run.sh image flow`), copy into `firmwares/`.
-- [ ] Install QMK Toolbox on the host.
-- [ ] Reflash the same firmware through QMK Toolbox: YMD09 → Planck → ErgoDox (keyboard check, smoke only).
+- [x] Install QMK Toolbox on the host: `brew install --cask qmk-toolbox`.
+- [ ] Reflash the same firmware through QMK Toolbox (keyboard check, smoke only):
+  - [ ] YMD09.
+  - [x] Planck.
+  - [ ] ErgoDox.
 - [ ] DAO44: reflash both halves via `.uf2` copy, re-pair halves.
 - [ ] Remove the `wally-cli` check from `project.sh sync` (it blocks a fresh clone); drop the wally/dfu flash branches once Toolbox works for all three.
 - [ ] Write `docs/keyboards/*.md` findings back (bootloader entry, Toolbox quirks).
 
 ## Phase 1: build against upstream QMK
 
-The fork's only patch (tap-dance re-lookup) is upstream since [qmk/qmk_firmware#17935](https://github.com/qmk/qmk_firmware/pull/17935) (2022-10).
+The fork branch `zkf_stable_planck` is upstream `ae46e6a` (2020-02) plus one patch: after an interrupted tap dance switches layers, `process_record_quantum()` re-reads the keycode, so a key typed fast after a layer dance comes from the new layer. Upstream has the same fix since [qmk/qmk_firmware#17935](https://github.com/qmk/qmk_firmware/pull/17935) (2022-10), with tests in `tests/tap_dance/tap_dance_layers/`. Other fork branches hold nothing still needed: `ACTION_TAP_DANCE_DOUBLE_TIME` maps to `TAPPING_TERM_PER_KEY`, Anne Pro 2 is upstream.
 
 - [ ] Evaluate QMK External Userspace (`qmk_userspace`) as the target layout: keymaps outside the QMK tree, `qmk compile` in a container. Unverified: how it pins a QMK revision. Decide: userspace vs current `vendor/` clone.
 - [ ] Point `project.sh sync` at upstream `qmk/qmk_firmware`, pinned to a release tag or commit.
@@ -59,6 +62,7 @@ Per board, in order YMD09 → Planck → ErgoDox, each closed by the keyboard ch
 
 - [ ] `docs/keyboards/<kb>.md` updated for every board: framework, firmware source, flash tool, bootloader entry, layout link.
 - [ ] README: board table pointing at those files.
+- [ ] README: host setup (`brew install --cask qmk-toolbox`) and a build → Toolbox flash example instead of `build-and-flash` (`wally-cli`).
 - [ ] `docs/workflow.htm`: move "later" items into "now" as they land.
 - [ ] Idea: show DAO44 in the `docs/` layout viewer.
 
@@ -85,6 +89,19 @@ Threat model accepted: the keyboard stays at home; anyone holding it can dump fl
 - [ ] **Compile-time**: `secrets.h` (gitignored), included via `__has_include`; CI builds a stub, so release artifacts stay clean.
 - [ ] **Runtime change**: a record mode that stores a new password in EEPROM, overriding the compiled one; survives reflash until EEPROM is reset.
 - [ ] Guard against accidental typing: leader sequence or combo, never a single key.
+
+## Feature: emoji without a special macOS input source
+
+Unicode keys on macOS (`UC_OSX`) type only while the "Unicode Hex Input" input source is active, a third source next to RU/EN.
+
+- [ ] Compare options: macOS-only build sending emoji another way (e.g. a host-side helper or text replacement), a separate OS-specific firmware binary, or dropping emoji from firmware.
+- [ ] Decide whether a second binary per board (macOS / Windows) is worth it over the runtime `macosMode` / `windowsMode` switch.
+
+## Feature: Plover steno on ErgoDox
+
+- [ ] Check that NKRO is active, not only compiled in (`NKRO_ENABLE: 'yes'` needs `FORCE_NKRO` or an `NK_TOGG` key; unverified).
+- [ ] Add a steno layer for Plover's "Keyboard" machine (NKRO), or QMK `STENO_ENABLE` with GeminiPR; pick one.
+- [ ] ErgoDox first; Planck later if useful.
 
 ## Known issues
 

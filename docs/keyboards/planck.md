@@ -15,11 +15,18 @@
 
 ## Flash
 
-1. Open `firmwares/planck.bin` in QMK Toolbox.
-2. Enter bootloader; Toolbox reports an STM32 DFU device.
-3. Flash.
+Verified with `v2.2.1`.
+
+1. Install QMK Toolbox once: `brew install --cask qmk-toolbox`.
+2. Open `firmwares/planck.bin` in QMK Toolbox; the MCU dropdown does not matter for STM32 DFU.
+3. Enter bootloader; Toolbox logs `STM32 DFU device connected: STMicroelectronics STM32  BOOTLOADER (0483:DF11:2200)`.
+4. Flash; the log ends with `Flash complete` and the board restarts by itself.
 
 ## Specifics
 
 - Audio with clicky sounds, RGB keys, 2 LEDs for the active layer.
 - `history` layer on `a` hold.
+- `navigation2` (tap `;`, then hold `;`) holds RGB, audio and OS-mode keys:
+  - RGB: `q`/`w` brightness, `e`/`r` saturation; bottom row under Tab / Enter / `[` / `]` / last key: previous / next mode / toggle / hue down / hue up.
+  - Audio: `a` toggles clicks, `s`/`d` click pitch, `z` toggles music mode (keys play notes instead of typing until toggled off).
+  - `i` Windows mode, `o` macOS mode; `y` powers the host off and `u` puts it to sleep.

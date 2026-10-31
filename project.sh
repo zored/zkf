@@ -101,13 +101,6 @@ case $1 in
     git clone -b zkf_stable_planck --single-branch --recurse-submodules https://github.com/zored/qmk_firmware.git $QMK_DIR
     rm -rf $QMK_DIR/.git
   fi
-
-  echo "Checking firmware flasher presence..."
-  if [[ $wally != '' ]] && [[ ! -e $wally ]]; then
-    echo "Install Wally ($wally):"
-    echo "https://ergodox-ez.com/pages/wally"
-    exit 1
-  fi
  ;;
 
  download|d) ## Download firmware.
