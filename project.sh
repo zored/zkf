@@ -212,7 +212,6 @@ TEXT
  ci) ##
   ./project.sh sync
   ./project.sh build-all
-  ./project.sh prune-images
   ;;
 
  prune-images)
