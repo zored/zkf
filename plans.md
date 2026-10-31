@@ -112,7 +112,9 @@ The keyboard guesses the active RU/EN layout; `DO_NEXT_LANGUAGE` only toggles bl
 - [x] Protocol: Plover HID (`PLOVER_HID_ENABLE`, +440 bytes on ErgoDox). GeminiPR costs +1.3 KB and a serial port; the "Keyboard" machine needs Plover toggled in sync with the layer.
 - [x] `steno` layer on ErgoDox (top inner key of the left half on `navigation`) and Planck (bottom-right key on `navigation`); YMD09 keeps `PLOVER_HID_ENABLE: 'no'`.
 - [x] Planck flashed: macOS sees the Plover HID interface (usage page `0xFF50`, usage `0x4C56`).
-- [ ] Verify strokes in Plover (not installed yet); ErgoDox not flashed.
+- [x] Planck: strokes verified in Plover 5.4.2 with the ABC input source; non-steno keys are `KC_NO` (transparent keys fell through to `capsDance`, which taps `Cmd+Space`).
+- [ ] ErgoDox: flash and verify.
+- [ ] Switch the macOS input source to ABC on entering `steno` (with RussianWin, Plover types Latin letters through the Cmd layer: `had` hides apps via `Cmd+H`); needs input source awareness, see the feature above.
 - [ ] Russian: needs a Russian steno system/dictionary in Plover; `ST_X1`..`ST_X14` could switch dictionaries.
 
 ## Known issues

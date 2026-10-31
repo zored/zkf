@@ -259,25 +259,25 @@ keyboards:
         lights: [1, 2, 3]
         keys:
           left:
-            - [~, ~, ~, ~, ~, ~, toggleSteno]
-            - [~, sN1, sN2, sN3, sN4, sN5, ~]
-            - [~, sS1, sTL, sPL, sHL, sST1]
-            - [~, sS2, sKL, sWL, sRL, sST2, ~]
-            - [~, ~, ~, sA, sO]
+            - [none, none, none, none, none, none, toggleSteno]
+            - [none, sN1, sN2, sN3, sN4, sN5, none]
+            - [none, sS1, sTL, sPL, sHL, sST1]
+            - [none, sS2, sKL, sWL, sRL, sST2, none]
+            - [none, none, none, sA, sO]
           left-thumb:
-            - [~, ~]
-            - [~]
-            - [sA, sO, ~]
+            - [none, none]
+            - [none]
+            - [sA, sO, none]
           right:
-            - [~, ~, ~, ~, ~, ~, ~]
-            - [~, sN6, sN7, sN8, sN9, sNA, sNB]
+            - [none, none, none, none, none, none, none]
+            - [none, sN6, sN7, sN8, sN9, sNA, sNB]
             - [   sST3, sFR, sPR, sLR, sTR, sDR]
-            - [~, sST4, sRR, sBR, sGR, sSR, sZR]
-            - [sE, sU, ~, ~, ~]
+            - [none, sST4, sRR, sBR, sGR, sSR, sZR]
+            - [sE, sU, none, none, none]
           right-thumb:
-            - [~, ~]
-            - [~]
-            - [~, sE, sU]
+            - [none, none]
+            - [none]
+            - [none, sE, sU]
     settings:
       # https://docs.qmk.fm/#/config_options?id=the-configh-file
       config: &config
@@ -442,10 +442,10 @@ keyboards:
       steno:
         lights: [1,2]
         keys:
-            - [~, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
-            - [~, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
-            - [~, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
-            - [~, ~, ~, sA, sO, ~, ~, sE, sU, ~, ~, toggleSteno]
+            - [none, sN1, sN2, sN3, sN4, sN5, sN6, sN7, sN8, sN9, sNA, sNB]
+            - [none, sS1, sTL, sPL, sHL, sST1, sST3, sFR, sPR, sLR, sTR, sDR]
+            - [none, sS2, sKL, sWL, sRL, sST2, sST4, sRR, sBR, sGR, sSR, sZR]
+            - [none, none, none, sA, sO, none, none, sE, sU, none, none, toggleSteno]
   ymd09:
     settings:
       rules:
@@ -736,6 +736,7 @@ map:
     mouseFast: MS_ACL2
     wheelClick: MS_BTN3
     mouseUp: MS_UP
+    none: NO
     pageDown: PGDN
     pageUp: PGUP
     playMacro1: DM_PLY1

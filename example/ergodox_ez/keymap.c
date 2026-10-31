@@ -2728,22 +2728,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_STENO] = LAYOUT_ergodox(
   
-/* left-0 */ _______,_______,_______,_______,_______,_______,TG(LAYER_STENO),
-/* left-1 */ _______,ST_N1,ST_N2,ST_N3,ST_N4,ST_N5,_______,
-/* left-2 */ _______,ST_S1,ST_TL,ST_PL,ST_HL,ST_ST1,
-/* left-3 */ _______,ST_S2,ST_KL,ST_WL,ST_RL,ST_ST2,_______,
-/* left-4 */ _______,_______,_______,ST_A,ST_O,
-/* left-thumb-0 */ _______,_______,
-/* left-thumb-1 */ _______,
-/* left-thumb-2 */ ST_A,ST_O,_______,
-/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
-/* right-1 */ _______,ST_N6,ST_N7,ST_N8,ST_N9,ST_NA,ST_NB,
+/* left-0 */ KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,TG(LAYER_STENO),
+/* left-1 */ KC_NO,ST_N1,ST_N2,ST_N3,ST_N4,ST_N5,KC_NO,
+/* left-2 */ KC_NO,ST_S1,ST_TL,ST_PL,ST_HL,ST_ST1,
+/* left-3 */ KC_NO,ST_S2,ST_KL,ST_WL,ST_RL,ST_ST2,KC_NO,
+/* left-4 */ KC_NO,KC_NO,KC_NO,ST_A,ST_O,
+/* left-thumb-0 */ KC_NO,KC_NO,
+/* left-thumb-1 */ KC_NO,
+/* left-thumb-2 */ ST_A,ST_O,KC_NO,
+/* right-0 */ KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,
+/* right-1 */ KC_NO,ST_N6,ST_N7,ST_N8,ST_N9,ST_NA,ST_NB,
 /* right-2 */ ST_ST3,ST_FR,ST_PR,ST_LR,ST_TR,ST_DR,
-/* right-3 */ _______,ST_ST4,ST_RR,ST_BR,ST_GR,ST_SR,ST_ZR,
-/* right-4 */ ST_E,ST_U,_______,_______,_______,
-/* right-thumb-0 */ _______,_______,
-/* right-thumb-1 */ _______,
-/* right-thumb-2 */ _______,ST_E,ST_U
+/* right-3 */ KC_NO,ST_ST4,ST_RR,ST_BR,ST_GR,ST_SR,ST_ZR,
+/* right-4 */ ST_E,ST_U,KC_NO,KC_NO,KC_NO,
+/* right-thumb-0 */ KC_NO,KC_NO,
+/* right-thumb-1 */ KC_NO,
+/* right-thumb-2 */ KC_NO,ST_E,ST_U
 )
   
 };

@@ -29,5 +29,6 @@
 
 - Protocol: Plover HID (`PLOVER_HID_ENABLE`); normal typing is not affected, so Plover can stay on.
 - Enter: toggle `navigation`, then press the top inner key of the left half (`toggleSteno`). Press it again to leave `steno`; `navigation` stays on until `toggleNavigation`.
-- LEDs: all three on.
+- LEDs: all three on. Keys outside the steno chart are `KC_NO`, so nothing falls through to lower layers.
 - Plover: machine "Plover HID" (built in since Plover 5.1, earlier versions need the `plover-machine-hid` plugin). Not verified on hardware yet.
+- macOS input source must be ABC (English) while stenoing: with a Russian layout Plover finds Latin letters only on the Cmd layer and sends `Cmd+H` for `h`, which hides the front app.

@@ -44,6 +44,7 @@ Upstream builds report USB `3297:C6CE` (ZSA) instead of the fork's ID, and start
 ## Steno (Plover)
 
 - Protocol: Plover HID (`PLOVER_HID_ENABLE`); normal typing is not affected, so Plover can stay on.
-- Enter: toggle `navigation` (second key of the bottom row), then press the bottom-right key (`toggleSteno`). Press it again to leave `steno`; `navigation` stays on until `toggleNavigation`.
-- Layout: number bar on the top row, `S T P H *` / `S K W R *` on the left, `* F P L T D` / `* R B G S Z` on the right, `A O` under Del / Backspace, `E U` under Tab / Enter. Both LEDs on.
-- Plover: machine "Plover HID" (built in since Plover 5.1, earlier versions need the `plover-machine-hid` plugin). The HID interface is verified on macOS; strokes are not verified in Plover yet.
+- Enter: toggle `navigation` (second key of the bottom row) or hold `;`, then press the bottom-right key (`toggleSteno`). Press it again to leave `steno`; `navigation` stays on until `toggleNavigation`.
+- Layout: number bar on the top row, `S T P H *` / `S K W R *` on the left, `* F P L T D` / `* R B G S Z` on the right, `A O` under Del / Backspace, `E U` under Tab / Enter. Both LEDs on. Keys outside the steno chart are `KC_NO`, so nothing falls through to lower layers.
+- Plover: machine "Plover HID" (built in since Plover 5.1, earlier versions need the `plover-machine-hid` plugin). Verified with Plover 5.4.2 on macOS.
+- macOS input source must be ABC (English) while stenoing: with a Russian layout Plover finds Latin letters only on the Cmd layer and sends `Cmd+H` for `h`, which hides the front app.
