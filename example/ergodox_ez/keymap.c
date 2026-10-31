@@ -720,7 +720,8 @@ LAYER_DEFAULT = 0,
   LAYER_NAVIGATION,
   LAYER_EMOJI,
   LAYER_NAVIGATION2,
-  LAYER_HISTORY
+  LAYER_HISTORY,
+  LAYER_STENO
 };
 
 enum dance_keys {
@@ -2647,7 +2648,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [LAYER_NAVIGATION] = LAYOUT_ergodox(
   
-/* left-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* left-0 */ _______,_______,_______,_______,_______,_______,TG(LAYER_STENO),
 /* left-1 */ _______,_______,MS_BTN2,MS_UP,MS_BTN1,_______,_______,
 /* left-2 */ _______,_______,MS_LEFT,MS_DOWN,MS_RGHT,_______,
 /* left-3 */ _______,_______,_______,_______,_______,_______,_______,
@@ -2726,6 +2727,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* right-thumb-0 */ _______,_______,
 /* right-thumb-1 */ _______,
 /* right-thumb-2 */ _______,_______,_______
+)
+  ,
+
+[LAYER_STENO] = LAYOUT_ergodox(
+  
+/* left-0 */ _______,_______,_______,_______,_______,_______,TG(LAYER_STENO),
+/* left-1 */ _______,ST_N1,ST_N2,ST_N3,ST_N4,ST_N5,_______,
+/* left-2 */ _______,ST_S1,ST_TL,ST_PL,ST_HL,ST_ST1,
+/* left-3 */ _______,ST_S2,ST_KL,ST_WL,ST_RL,ST_ST2,_______,
+/* left-4 */ _______,_______,_______,ST_A,ST_O,
+/* left-thumb-0 */ _______,_______,
+/* left-thumb-1 */ _______,
+/* left-thumb-2 */ ST_A,ST_O,_______,
+/* right-0 */ _______,_______,_______,_______,_______,_______,_______,
+/* right-1 */ _______,ST_N6,ST_N7,ST_N8,ST_N9,ST_NA,ST_NB,
+/* right-2 */ ST_ST3,ST_FR,ST_PR,ST_LR,ST_TR,ST_DR,
+/* right-3 */ _______,ST_ST4,ST_RR,ST_BR,ST_GR,ST_SR,ST_ZR,
+/* right-4 */ ST_E,ST_U,_______,_______,_______,
+/* right-thumb-0 */ _______,_______,
+/* right-thumb-1 */ _______,
+/* right-thumb-2 */ _______,ST_E,ST_U
 )
   
 };
@@ -2904,6 +2926,10 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     
       case LAYER_HISTORY:
         combo_disable(); ergodox_right_led_3_on();
+        break;
+    
+      case LAYER_STENO:
+        combo_disable(); ergodox_right_led_1_on(); ergodox_right_led_2_on(); ergodox_right_led_3_on();
         break;
     
   }

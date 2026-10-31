@@ -24,3 +24,10 @@
 - Only board with `game`, `gameNumbers`, `gameMouse`, `gameMirror` layers and the turbo button.
 - 3 LEDs show the active layer (`lights` per layer).
 - Combos and leader are on.
+
+## Steno (Plover)
+
+- Protocol: Plover HID (`PLOVER_HID_ENABLE`); normal typing is not affected, so Plover can stay on.
+- Enter: toggle `navigation`, then press the top inner key of the left half (`toggleSteno`). Press it again to leave `steno`; `navigation` stays on until `toggleNavigation`.
+- LEDs: all three on.
+- Plover: machine "Plover HID" (built in since Plover 5.1, earlier versions need the `plover-machine-hid` plugin). Not verified on hardware yet.

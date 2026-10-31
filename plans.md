@@ -108,9 +108,12 @@ The keyboard guesses the active RU/EN layout; `DO_NEXT_LANGUAGE` only toggles bl
 
 ## Feature: Plover steno on ErgoDox
 
-- [ ] Check that NKRO is active, not only compiled in (`NKRO_ENABLE: 'yes'` needs `FORCE_NKRO` or an `NK_TOGG` key; unverified).
-- [ ] Add a steno layer for Plover's "Keyboard" machine (NKRO), or QMK `STENO_ENABLE` with GeminiPR; pick one.
-- [ ] ErgoDox first; Planck later if useful.
+- [x] NKRO is active: `NKRO_DEFAULT_ON: 'true'` sets it in `eeconfig_init()`, which runs on the first 0.34.7 boot because the EEPROM magic changed (`0xFEEC` → `0xFEE3`). Checked in QMK sources, not on hardware.
+- [x] Protocol: Plover HID (`PLOVER_HID_ENABLE`, +440 bytes). GeminiPR costs +1.3 KB and a serial port; the "Keyboard" machine needs Plover toggled in sync with the layer.
+- [x] `steno` layer on ErgoDox, toggled by the top inner key of the left half on `navigation`; Planck and YMD09 keep `PLOVER_HID_ENABLE: 'no'`.
+- [ ] Verify on hardware with Plover (pending: board not at hand).
+- [ ] Russian: needs a Russian steno system/dictionary in Plover; `ST_X1`..`ST_X14` could switch dictionaries.
+- [ ] Planck later if useful.
 
 ## Known issues
 
