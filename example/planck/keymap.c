@@ -24,21 +24,78 @@ KC_DO_PAST_WINDOW,
 };
 
 enum operating_systems {
-  OS_MACOS = 1,
-  OS_WINDOWS,
-} zored_os = OS_WINDOWS;
+  ZOS_MACOS = 1,
+  ZOS_WINDOWS,
+} zored_os = ZOS_WINDOWS;
+
+static rgb_t overlay_color;
+static bool overlay_active = false;
+static deferred_token overlay_token = INVALID_DEFERRED_TOKEN;
+
+static uint32_t overlay_expire(uint32_t trigger_time, void *cb_arg) {
+  overlay_active = false;
+  overlay_token = INVALID_DEFERRED_TOKEN;
+  return 0;
+}
+
+void overlay_show(uint8_t r, uint8_t g, uint8_t b, uint32_t duration_ms) {
+  overlay_color = (rgb_t){.r = r, .g = g, .b = b};
+  overlay_active = true;
+  cancel_deferred_exec(overlay_token);
+  overlay_token = defer_exec(duration_ms, overlay_expire, NULL);
+}
+
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+  // With LED_FLAG_NONE no effect repaints, so clear what an expired overlay left.
+  if (!overlay_active && rgb_matrix_get_flags() != LED_FLAG_NONE) {
+    return false;
+  }
+  rgb_t color = overlay_active ? overlay_color : (rgb_t){0};
+  for (uint8_t i = led_min; i < led_max; i++) {
+    rgb_matrix_set_color(i, color.r, color.g, color.b);
+  }
+  return false;
+}
+
+void rgb_toggle(void) {
+  rgb_matrix_set_flags(rgb_matrix_get_flags() == LED_FLAG_NONE ? LED_FLAG_ALL : LED_FLAG_NONE);
+}
+
+bool process_detected_host_os_user(os_variant_t detected_os) {
+  switch (detected_os) {
+    case OS_MACOS:
+    case OS_IOS:
+      zored_os = ZOS_MACOS;
+      break;
+    case OS_WINDOWS:
+    case OS_LINUX:
+      zored_os = ZOS_WINDOWS;
+      break;
+    default:
+      return true;
+  }
+#ifdef UNICODE_COMMON_ENABLE
+  set_unicode_input_mode(zored_os == ZOS_MACOS ? UNICODE_MODE_MACOS : UNICODE_MODE_WINCOMPOSE);
+#endif
+  if (zored_os == ZOS_MACOS) {
+    overlay_show(255, 255, 255, 1000);
+  } else {
+    overlay_show(0, 0, 255, 1000);
+  }
+  return true;
+}
 
 
 uint8_t map_mod (uint8_t mod) {
   switch (zored_os) {
-    case OS_MACOS:
+    case ZOS_MACOS:
       switch (mod) {
         case MOD_LCTL:
           return MOD_LGUI;
         case MOD_LGUI:
           return MOD_LCTL;
       }
-    case OS_WINDOWS:
+    case ZOS_WINDOWS:
       break;
   }
 
@@ -51,7 +108,7 @@ void do_one_shot (uint8_t keycode) {
 
 uint8_t map_code (uint8_t keycode) {
   switch (zored_os) {
-    case OS_MACOS:
+    case ZOS_MACOS:
       switch (keycode) {
         case KC_LCTL:
           return KC_LGUI;
@@ -66,7 +123,7 @@ uint8_t map_code (uint8_t keycode) {
         case KC_MEDIA_NEXT_TRACK:
           return KC_MEDIA_FAST_FORWARD;
       }
-    case OS_WINDOWS:
+    case ZOS_WINDOWS:
       break;
   }
 
@@ -177,7 +234,7 @@ void appSwitchRun(bool past, uint8_t target) {
   if (!appSwitch.active) {
     appSwitch.hold2 = 0;
     switch (zored_os) {
-      case OS_MACOS:
+      case ZOS_MACOS:
         switch (target) {
           case TARGET_APP:
           case TARGET_WINDOW:
@@ -209,7 +266,7 @@ void appSwitchRun(bool past, uint8_t target) {
 
   uint16_t tap = KC_TAB;
   switch (zored_os) {
-    case OS_MACOS:
+    case ZOS_MACOS:
       switch (target) {
         case TARGET_WINDOW:
           tap = KC_TILD;
@@ -271,10 +328,10 @@ void run_advanced (uint8_t command) {
   switch (command) {
     case DO_FIND_BEGIN:
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code(KC_LGUI);
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_SPC));
           break;
       }
@@ -314,40 +371,40 @@ void run_advanced (uint8_t command) {
       break;
     case DO_NEXT_TAB:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(S(KC_RBRC)));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(C(A(KC_RIGHT)));
           break;
       }
       break;
     case DO_PREV_TAB:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(S(KC_LBRC)));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(C(A(KC_LEFT)));
           break;
       }
       break;
     case DO_FUTURE:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_LBRC));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(A(KC_LEFT));
           break;
       }
       break;
     case DO_PAST:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_RBRC));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(A(KC_RIGHT));
           break;
       }
@@ -362,11 +419,11 @@ void run_advanced (uint8_t command) {
       uint32_t timeout = 50;
 
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           hold = KC_LALT;
           tap = KC_LSFT;
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           hold = KC_LGUI;
           tap = KC_SPC;
           break;
@@ -379,10 +436,10 @@ void run_advanced (uint8_t command) {
       break;
     case DO_EMOJI_PANEL:
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(G(KC_DOT));
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(C(KC_SPC)));
           break;
       }
@@ -410,10 +467,10 @@ void run_advanced (uint8_t command) {
     case DO_TERMINAL:
       run_advanced(DO_FIND_BEGIN);
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           SEND_STRING("conemu");
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           SEND_STRING("iterm");
           break;
       }
@@ -427,30 +484,30 @@ void run_advanced (uint8_t command) {
       break;
     case DO_SCREENSHOT:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(C(S(KC_4))));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(G(S(KC_S)));
           break;
       }
       break;
     case DO_COPY:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_C));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(C(KC_C));
           break;
       }
       break;
     case DO_PASTE:
       switch (zored_os) {
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_V));
           break;
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(C(KC_V));
           break;
       }
@@ -460,10 +517,10 @@ void run_advanced (uint8_t command) {
       break;
     case DO_CLOSE:
       switch (zored_os) {
-        case OS_WINDOWS:
+        case ZOS_WINDOWS:
           tap_code16(A(KC_F4));
           break;
-        case OS_MACOS:
+        case ZOS_MACOS:
           tap_code16(G(KC_Q));
           break;
       }
@@ -2858,16 +2915,28 @@ void leader_end_user(void) {
 void keyboard_post_init_user(void) {
   switch (get_unicode_input_mode()) {
     case UNICODE_MODE_MACOS:
-      zored_os = OS_MACOS;
+      zored_os = ZOS_MACOS;
   }
   clicky_off();
   rgb_matrix_set_speed_noeeprom(RGB_MATRIX_DEFAULT_SPD);
+  // Indicators do not run on a disabled matrix: keep it enabled, "off" is LED_FLAG_NONE.
+  if (!rgb_matrix_is_enabled()) {
+    rgb_matrix_set_flags(LED_FLAG_NONE);
+    rgb_matrix_enable();
+  }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   bool pressed = record->event.pressed;
 
 
+
+  if (keycode == RM_TOGG) {
+    if (pressed) {
+      rgb_toggle();
+    }
+    return false;
+  }
 
   if (!pressed) {
     return true;
@@ -2887,11 +2956,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   switch (keycode) {
     case UC_MAC:
-      zored_os = OS_MACOS;
+      zored_os = ZOS_MACOS;
       return true;
 
     case UC_WINC:
-      zored_os = OS_WINDOWS;
+      zored_os = ZOS_WINDOWS;
       return true;
 
     // Do keys:

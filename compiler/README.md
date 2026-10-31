@@ -14,6 +14,8 @@ Entrypoint is [here](run.js).
 | `keyboards.<kb>.layers.<name>` | `keys` (rows or split blocks like `left`, `right-thumb`), `lights` (LED indices on), `enableCombos` |
 | `keyboards.<kb>.settings.config` | becomes `config.h`; custom knobs: `TURBO_*`, `APP_SWITCH_TIMEOUT`, `MOUSEKEY_SLOW/FAST_SPEED`, `TAPPING_TERM_TAP_DANCE` |
 | `keyboards.<kb>.settings.rules` | becomes `rules.mk`; Planck and YMD09 inherit ErgoDox's via YAML anchors |
+| `keyboards.<kb>.osDetection` | `true`: QMK OS detection (`OS_DETECTION_ENABLE`, `OS_DETECTION_KEYBOARD_RESET`, `OS_DETECTION_SINGLE_REPORT`) picks the OS mode on every connect |
+| `keyboards.<kb>.rgbOverlay` | RGB matrix overlays (`DEFERRED_EXEC_ENABLE`); `os: {ms, macos: [r, g, b], windows: [r, g, b]}` colours the whole board on connect, needs `osDetection`. Also makes `RM_TOGG` toggle `LED_FLAG_NONE` instead of disabling the matrix |
 | `keyboards.<kb>.combos` | combos on a fixed letter-pair grid (`we rt yu io / sd fg hj kl / vb nm`) |
 | `keyboards.ymd09.mappings` | before/after strings: `ru` phonetic Russian, `en_fast` / `ru_fast` alternate layouts |
 | `keys.<name>Dance` | tap dances: `tap: [[seq]...]`, `hold: [[seq]...]`, indexed by tap count |
@@ -21,11 +23,14 @@ Entrypoint is [here](run.js).
 | `map.keys` | aliases to QMK codes; Cyrillic letters map to their ЙЦУКЕН positions |
 | `map.prefixes` | codes that skip the `KC_` prefix |
 
+Parts behind a disabled flag emit no code.
+
 Key names: `doXxx` → custom keycode `DO_XXX`, `holdX` / `toggleX` → `MO()` / `TG()`, an emoji char → unicodemap `X()`.
 
 ## Template features
 
-- **OS mode** (macOS / Windows): `UC_M_OS` / `UC_M_WC` switch it, auto-detected from unicode mode at boot. On macOS Ctrl↔Gui swap and media prev/next become rewind/fast-forward.
+- **OS mode** (macOS / Windows): `UC_MAC` / `UC_WINC` switch it, restored from the unicode mode at boot. With `osDetection` the host OS sets it on connect (macOS, iOS → macOS; Windows, Linux → Windows; unsure → keeps the saved mode) together with the unicode mode; the keys override it until the next connect. On macOS Ctrl↔Gui swap and media prev/next become rewind/fast-forward.
+- **RGB overlays** (`rgbOverlay`): drawn in `rgb_matrix_indicators_advanced_user` over the running animation, expired by `defer_exec`.
 - **`DO_*` actions**, OS-aware: copy, paste, close, screenshot, next language, find begin/end, launch Enpass / terminal, type email and login, `->`, `=>`, `!=`, `_`, `&`, emoji panel, history back/forward, bootloader.
 - **One-shot mods**: `DO_ONE_SHOT_CTRL/ALT/GUI/SHIFT`.
 - **Turbo**: `DO_ONE_SHOT_TURBO`, the next key auto-repeats while held.

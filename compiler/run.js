@@ -550,7 +550,8 @@ function compileKeymap (layers, keyboard, files, keyFactory, danceEnemies) {
     functions: getFunctions(),
     combos,
     mappings: getMappings(keyboard.config.mappings, keyFactory),
-    keyGroups: getKeyGroups(layers)
+    keyGroups: getKeyGroups(layers),
+    ...keyboard.features.template
   }, keyboard.getTemplateData(layers)))
   files.add('keymap.c', result)
 }
@@ -714,7 +715,9 @@ void ${aliasPrefix}${aliasNumber}(${getArguments(aliasNumber)}) {
 }
 
 function compileSettings (keyboard, files) {
-  const { config, rules } = keyboard.settings
+  const { features } = keyboard
+  const config = { ...keyboard.settings.config, ...features.config }
+  const rules = { ...keyboard.settings.rules, ...features.rules }
 
   files.add('config.h', _.map(config, (value, name) => `
 #undef ${name}
@@ -724,6 +727,48 @@ function compileSettings (keyboard, files) {
   files.add('rules.mk', _.map(rules, (value, name) => `
 ${name} = ${value}
 `).join(''))
+}
+
+function getFeatures ({ osDetection = false, rgbOverlay = null }) {
+  if (typeof osDetection !== 'boolean') {
+    throw new Error(`Invalid osDetection: ${osDetection}.`)
+  }
+  const overlay = rgbOverlay && { os: rgbOverlay.os && getOsOverlay(rgbOverlay.os, osDetection) }
+  const config = {}
+  const rules = {}
+  if (osDetection) {
+    rules.OS_DETECTION_ENABLE = 'yes'
+    config.OS_DETECTION_KEYBOARD_RESET = ''
+    config.OS_DETECTION_SINGLE_REPORT = ''
+  }
+  if (overlay) {
+    rules.DEFERRED_EXEC_ENABLE = 'yes'
+  }
+
+  return { config, rules, template: { osDetection, rgbOverlay: overlay } }
+}
+
+function getOsOverlay ({ ms, macos, windows }, osDetection) {
+  if (!osDetection) {
+    throw new Error('rgbOverlay.os needs osDetection.')
+  }
+
+  return { ms: getOverlayDuration(ms), macos: getOverlayColor(macos), windows: getOverlayColor(windows) }
+}
+
+function getOverlayDuration (ms) {
+  if (!Number.isInteger(ms) || ms <= 0) {
+    throw new Error(`Invalid overlay duration: ${ms}.`)
+  }
+  return ms
+}
+
+function getOverlayColor (color) {
+  const isChannel = value => Number.isInteger(value) && value >= 0 && value <= 255
+  if (!Array.isArray(color) || color.length !== 3 || !color.every(isChannel)) {
+    throw new Error(`Invalid overlay color: ${JSON.stringify(color)}. Expected [r, g, b], 0-255.`)
+  }
+  return color.join(', ')
 }
 
 // general
@@ -824,6 +869,9 @@ class Keyboard {
   }
   get settings () {
     return this.config.settings
+  }
+  get features () {
+    return getFeatures(this.config)
   }
   get keymapPath () {
     return 'vendor/qmk_firmware/keyboards/' + this.configName + '/keymaps/zored/'

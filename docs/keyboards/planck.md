@@ -38,9 +38,16 @@ Upstream builds report USB `3297:C6CE` (ZSA) instead of the fork's ID, and start
 - `history` layer on `a` hold.
 - A dance whose tap count reached its last action types the tap on release instead of waiting `TAPPING_TERM_TAP_DANCE` (270 ms): `tabDance` sends Tab at once, so `z` hold + Tab switches without delay.
 - `navigation2` (tap `;`, then hold `;`) holds RGB, audio and OS-mode keys:
-  - RGB: `q`/`w` brightness, `e`/`r` saturation, `f`/`g` animation speed (slow `32` on every boot); bottom row under Tab / Enter / `[` / `]` / last key: previous / next mode / toggle / hue down / hue up.
+  - RGB: `q`/`w` brightness, `e`/`r` saturation, `f`/`g` animation speed (slow `32` on every boot); bottom row under Tab / Enter / `[` / `]` / last key: previous / next mode / toggle / hue down / hue up. Toggle switches the animation off with `LED_FLAG_NONE` and keeps the matrix enabled, so overlays still show; a matrix disabled by an older firmware is converted on boot.
   - Audio: `a` toggles clicks, `s`/`d` click pitch, `z` toggles music mode (keys play notes instead of typing until toggled off).
-  - `i` Windows mode, `o` macOS mode; `y` powers the host off and `u` puts it to sleep.
+  - `i` Windows mode, `o` macOS mode (override until the next connect, see below); `y` powers the host off and `u` puts it to sleep.
+
+## OS detection
+
+- On every connect QMK fingerprints the host's USB descriptor requests (`OS_DETECTION_ENABLE`) and sets the OS mode and the unicode mode: macOS and iOS → macOS, Windows and Linux → Windows, unsure → the mode saved in EEPROM stays.
+- The whole board flashes for 1 s: white for macOS, blue for Windows (`rgbOverlay.os` in [config.yaml](../../config.yaml)). No flash means the host was not recognised.
+- KVM switching: `OS_DETECTION_KEYBOARD_RESET` resets the board when USB comes back while it stays powered, so detection runs again; `OS_DETECTION_SINGLE_REPORT` ignores the second report ARM Macs send minutes later.
+- `i` / `o` on `navigation2` override the mode until the next connect.
 
 ## Steno (Plover)
 

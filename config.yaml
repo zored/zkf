@@ -355,12 +355,14 @@ keyboards:
       - [doTerminal, doNotEquals, doScreenshot, doClose]
       - [doEmojiPanel, '*', doUnderscore, doAmpersand]
       - [~, doArrow]
+    osDetection: true
   planck:
     settings:
       rules:
         <<: *rules
         AUDIO_ENABLE: 'yes'
         DYNAMIC_MACRO_ENABLE: 'no'
+        DEBOUNCE_TYPE: asym_eager_defer_pk
       config:
         <<: *config
         AUDIO_CLICKY: ''
@@ -376,6 +378,12 @@ keyboards:
         MOUSEKEY_WHEEL_TIME_TO_MAX: 90
         STARTUP_SONG: SONG(NO_SOUND)
     combos: *combos
+    osDetection: true
+    rgbOverlay:
+      os: # On connect, whole board.
+        ms: 1000
+        macos: [255, 255, 255]
+        windows: [0, 0, 255]
     layers:
       default:
         enableCombos: true
@@ -454,6 +462,7 @@ keyboards:
         <<: *rules
         COMBO_ENABLE: 'no'
         DYNAMIC_MACRO_ENABLE: 'no'
+        DEBOUNCE_TYPE: asym_eager_defer_pk
         PLOVER_HID_ENABLE: 'no'
         EXTRAKEY_ENABLE: 'no'
         KEY_LOCK_ENABLE: 'no'
@@ -463,6 +472,7 @@ keyboards:
       config:
         <<: *config
     combos: []
+    osDetection: true
     mappings:
       ru:
       - "abcdefghijklmnopqrstuvwxyz,;[]'.`"
