@@ -1,4 +1,5 @@
 import ctypes
+import json
 import sys
 from threading import Thread
 
@@ -8,6 +9,7 @@ from plover.registry import registry
 SHORTCUT_MODIFIERS = 1 | 16
 LATIN_SYSTEM = "English Stenotype"
 NON_LATIN_SYSTEM = "Russian Trillo"
+TRILLO_PACKAGE = "plover_russian_trillo"
 
 
 def _steps(sequence):
@@ -28,6 +30,20 @@ def _fix_trillo_implicit_hyphens():
 _fix_trillo_implicit_hyphens()
 
 
+def _trillo_loader(original, normalizer):
+    def _load(dictionary, filename):
+        if TRILLO_PACKAGE not in filename:
+            return original(dictionary, filename)
+        with open(filename, encoding="utf-8") as fp:
+            entries = json.load(fp)
+        with normalizer(filename) as normalize_steno:
+            dictionary.update(
+                (normalize_steno(steno.replace("*Ё", "Ё*")), text) for steno, text in entries.items()
+            )
+
+    return _load
+
+
 class LayoutFix:
     def __init__(self, engine):
         self._engine = engine
@@ -39,6 +55,9 @@ class LayoutFix:
         self._ascii_capable_key = layout_module.kTISPropertyInputSourceIsASCIICapable
         self._carbon.CFBooleanGetValue.argtypes = [ctypes.c_void_p]
         self._carbon.CFBooleanGetValue.restype = ctypes.c_bool
+        self._json_class = registry.get_plugin("dictionary", "json").obj
+        self._original_load = self._json_class._load
+        self._normalizer = sys.modules[self._json_class.__module__].StenoNormalizer
 
     def start(self):
         original = self._original
@@ -54,10 +73,12 @@ class LayoutFix:
             on_layout()
 
         self._layout_class._update_layout = _update_layout
+        self._json_class._load = _trillo_loader(self._original_load, self._normalizer)
         Thread(target=self._layout._update_layout, daemon=True).start()
 
     def stop(self):
         self._layout_class._update_layout = self._original
+        self._json_class._load = self._original_load
         self._layout._update_layout()
 
     def _on_layout(self):

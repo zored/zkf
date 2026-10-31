@@ -118,7 +118,7 @@ The keyboard guesses the active RU/EN layout; `DO_NEXT_LANGUAGE` only toggles bl
 - [x] Russian: `plover-russian-trillo` 0.0.2 (Tréal chart); `X1`..`X3` added to both `steno` layers, Trillo → Plover HID keymap and switch strokes (`R*UFS` / `ХЦ`) written by `./project.sh plover-setup`. Docs: [docs/plover.md](docs/plover.md).
 - [x] Planck: `steno` entered with `;` + bottom-left key and left with the bottom-left key (was `;` + bottom-right, both on the right hand).
 - [x] Planck: flashed; steno on RussianWin and Trillo strokes work (Plover 5.4.2). The packaged app keeps `KeyboardLayout` in `plover.oslayer.keyboardlayout`, so the extension patches the class of the live emulation object, not the `osx` module.
-- [x] Trillo on Plover 5: the extension drops `Н-` from Trillo's implicit hyphen keys (Plover 5 requires unique letters there).
+- [x] Trillo on Plover 5: the extension drops `Н-` from Trillo's implicit hyphen keys (Plover 5 requires unique letters there) and loads its 67 `*Ё` prefix/suffix keys as `Ё*`.
 - [x] System follows the macOS input source (ASCII-capable → English, else Trillo), via the same extension. Checked live on ABC and RussianWin.
 - [ ] Upstream: report the Cmd-layer lookup to Plover (`plover/oslayer/osx/keyboardlayout.py`).
 
