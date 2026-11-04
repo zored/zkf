@@ -68,6 +68,20 @@ Per board, in order YMD09 → Planck → ErgoDox, each closed by the keyboard ch
 - [ ] `docs/workflow.htm`: move "later" items into "now" as they land.
 - [ ] Idea: show DAO44 in the `docs/` layout viewer.
 
+### Layout viewer redesign
+
+[zored.github.io/zkf](https://zored.github.io/zkf/) (`docs/index.htm`, `docs/js/main.js`, `docs/css/main.css`) today: plain text columns, 80 px cells that clip labels (`doNextLa…`, `doFuture…`), dance details in `alert()`, `<select>` pickers, PT Sans not applied, no dark theme, no mobile layout.
+
+- [ ] Keycaps: equal-size bordered caps on a grid; ErgoDox halves side by side with thumb clusters placed, Planck 4×12, YMD09 3×3.
+- [ ] Labels: readable names instead of raw config keys (`doCopy` → Copy, `holdSymbol` → layer chip, `~` → faint transparent, `KC_NO` → empty); full name in a tooltip.
+- [ ] Dances inline: tap on top, hold underneath, multi-tap in a popover; no `alert()`.
+- [ ] Colour by kind: letters, modifiers, layer keys, dances, `DO_*` actions, transparent; legend.
+- [ ] Navigation: keyboard and layer tabs instead of `<select>`; YMD09 mapping toggle; URL hash kept for deep links.
+- [ ] Theme tokens shared with `docs/workflow.htm`: light/dark, 16 px gutters, no horizontal scroll on phone width.
+- [ ] `?ref=<branch>` loads `config.yaml` from that branch, so `fresh_start` changes can be checked before merge (default `master`).
+- [ ] Deps: pinned js-yaml 4, drop lodash, remove leftover `console.log`.
+- [ ] Verify on all three QMK boards and every layer, light and dark, desktop and phone width.
+
 ## Phase 4: DAO44 on current ZMK
 
 - [ ] Move from `ftc/zmk@mouse-ftc` to upstream ZMK if mouse keys are upstream by then (unverified).
@@ -157,6 +171,19 @@ With RU active, firmware ASCII output (symbol layer, `SEND_STRING` macros like `
 ### Ideas
 
 - System-wide mic mute from the helper with a key and an overlay. Risks: the built-in Mac mic often has no settable mute, Zoom and Electron AGC raise the input volume back, the call app keeps showing "unmuted". No API found for the VK WorkSpace in-call mute state.
+
+## Feature: KVM switch key
+
+One key moves the desk to the other computer. Today `~/switch_to_windows.command` runs `m1ddc set input 15`: DDC/CI sets the MSI MPG 321URX input to DisplayPort 1, and the monitor's built-in KVM follows the input, taking the keyboard with it. The keyboard cannot speak DDC itself; the host has to.
+
+- [ ] Facts: the Mac's input value (USB-C, likely `27`; check with `m1ddc get input` while on the Mac), whether the KVM switch is reliable from DDC alone, and a Windows way to set VCP `0x60` (`SetVCPFeature` from `dxva2`, or NirSoft ControlMyMonitor) for the way back.
+- [ ] Decide the trigger:
+  - **A. Hotkey, no helper**: the key sends a dedicated chord (e.g. `Ctrl+Alt+Gui+F19`). macOS: a Shortcuts.app shortcut with "Run Shell Script" bound to it. Windows: a Start-menu `.lnk` with a "Shortcut key", or AutoHotkey. Works now; two hotkey setups to maintain.
+  - **B. Raw HID**: a `0x82` "select monitor input" report to the Phase B helper, which sets VCP `0x60` itself (IOAVService on macOS like m1ddc, `SetVCPFeature` on Windows). Same key on both hosts, no OS hotkeys; needs Phase B.
+  - Proposal: A now, move to B when the helper lands.
+- [ ] Key: `doKvmSwitch` on `navigation2` next to `i` / `o` (OS modes), never on a base layer. It sends "switch to the other host": the target follows the current OS mode.
+- [ ] Confirmation: after the switch, OS detection runs on reconnect (`OS_DETECTION_KEYBOARD_RESET`) and the connect overlay flashes the new host's colour; no flash = the keyboard did not follow.
+- [ ] Planck first, then ErgoDox and YMD09 when at hand; document in `docs/keyboards/<kb>.md`.
 
 ## Feature: RGB status overlays
 
